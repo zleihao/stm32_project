@@ -1,0 +1,776 @@
+ARM GAS  /tmp/ccPKHTHc.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"common.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.itoa,"ax",%progbits
+  16              		.align	1
+  17              		.arch armv7-m
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	itoa:
+  24              	.LVL0:
+  25              	.LFB30:
+  26              		.file 1 "./Hardware/Common/common.c"
+   1:./Hardware/Common/common.c **** #include "common.h"
+   2:./Hardware/Common/common.c **** #include "stm32f10x.h"
+   3:./Hardware/Common/common.c **** #include <stdarg.h>
+   4:./Hardware/Common/common.c **** 
+   5:./Hardware/Common/common.c **** 
+   6:./Hardware/Common/common.c **** 
+   7:./Hardware/Common/common.c **** static char *                 itoa                                ( int value, char * string, int r
+   8:./Hardware/Common/common.c **** 
+   9:./Hardware/Common/common.c **** 
+  10:./Hardware/Common/common.c **** 
+  11:./Hardware/Common/common.c **** /*
+  12:./Hardware/Common/common.c ****  * 函数名：USART2_printf
+  13:./Hardware/Common/common.c ****  * 描述  ：格式化输出，类似于C库中的printf，但这里没有用到C库
+  14:./Hardware/Common/common.c ****  * 输入  ：-USARTx 串口通道，这里只用到了串口2，即USART2
+  15:./Hardware/Common/common.c ****  *		     -Data   要发送到串口的内容的指针
+  16:./Hardware/Common/common.c ****  *			   -...    其他参数
+  17:./Hardware/Common/common.c ****  * 输出  ：无
+  18:./Hardware/Common/common.c ****  * 返回  ：无 
+  19:./Hardware/Common/common.c ****  * 调用  ：外部调用
+  20:./Hardware/Common/common.c ****  *         典型应用USART2_printf( USART2, "\r\n this is a demo \r\n" );
+  21:./Hardware/Common/common.c ****  *            		 USART2_printf( USART2, "\r\n %d \r\n", i );
+  22:./Hardware/Common/common.c ****  *            		 USART2_printf( USART2, "\r\n %s \r\n", j );
+  23:./Hardware/Common/common.c ****  */
+  24:./Hardware/Common/common.c **** void USART_printf ( USART_TypeDef * USARTx, char * Data, ... )
+  25:./Hardware/Common/common.c **** {
+  26:./Hardware/Common/common.c **** 	const char *s;
+  27:./Hardware/Common/common.c **** 	int d;   
+  28:./Hardware/Common/common.c **** 	char buf[16];
+  29:./Hardware/Common/common.c **** 
+  30:./Hardware/Common/common.c **** 	
+  31:./Hardware/Common/common.c **** 	va_list ap;
+  32:./Hardware/Common/common.c **** 	va_start(ap, Data);
+ARM GAS  /tmp/ccPKHTHc.s 			page 2
+
+
+  33:./Hardware/Common/common.c **** 
+  34:./Hardware/Common/common.c **** 	while ( * Data != 0 )     // 判断是否到达字符串结束符
+  35:./Hardware/Common/common.c **** 	{				                          
+  36:./Hardware/Common/common.c **** 		if ( * Data == 0x5c )  //'\'
+  37:./Hardware/Common/common.c **** 		{									  
+  38:./Hardware/Common/common.c **** 			switch ( *++Data )
+  39:./Hardware/Common/common.c **** 			{
+  40:./Hardware/Common/common.c **** 				case 'r':							          //回车符
+  41:./Hardware/Common/common.c **** 				USART_SendData(USARTx, 0x0d);
+  42:./Hardware/Common/common.c **** 				Data ++;
+  43:./Hardware/Common/common.c **** 				break;
+  44:./Hardware/Common/common.c **** 
+  45:./Hardware/Common/common.c **** 				case 'n':							          //换行符
+  46:./Hardware/Common/common.c **** 				USART_SendData(USARTx, 0x0a);	
+  47:./Hardware/Common/common.c **** 				Data ++;
+  48:./Hardware/Common/common.c **** 				break;
+  49:./Hardware/Common/common.c **** 
+  50:./Hardware/Common/common.c **** 				default:
+  51:./Hardware/Common/common.c **** 				Data ++;
+  52:./Hardware/Common/common.c **** 				break;
+  53:./Hardware/Common/common.c **** 			}			 
+  54:./Hardware/Common/common.c **** 		}
+  55:./Hardware/Common/common.c **** 		
+  56:./Hardware/Common/common.c **** 		else if ( * Data == '%')
+  57:./Hardware/Common/common.c **** 		{									  //
+  58:./Hardware/Common/common.c **** 			switch ( *++Data )
+  59:./Hardware/Common/common.c **** 			{				
+  60:./Hardware/Common/common.c **** 				case 's':										  //字符串
+  61:./Hardware/Common/common.c **** 				s = va_arg(ap, const char *);
+  62:./Hardware/Common/common.c **** 				
+  63:./Hardware/Common/common.c **** 				for ( ; *s; s++) 
+  64:./Hardware/Common/common.c **** 				{
+  65:./Hardware/Common/common.c **** 					USART_SendData(USARTx,*s);
+  66:./Hardware/Common/common.c **** 					while( USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET );
+  67:./Hardware/Common/common.c **** 				}
+  68:./Hardware/Common/common.c **** 				
+  69:./Hardware/Common/common.c **** 				Data++;
+  70:./Hardware/Common/common.c **** 				
+  71:./Hardware/Common/common.c **** 				break;
+  72:./Hardware/Common/common.c **** 
+  73:./Hardware/Common/common.c **** 				case 'd':			
+  74:./Hardware/Common/common.c **** 					//十进制
+  75:./Hardware/Common/common.c **** 				d = va_arg(ap, int);
+  76:./Hardware/Common/common.c **** 				
+  77:./Hardware/Common/common.c **** 				itoa(d, buf, 10);
+  78:./Hardware/Common/common.c **** 				
+  79:./Hardware/Common/common.c **** 				for (s = buf; *s; s++) 
+  80:./Hardware/Common/common.c **** 				{
+  81:./Hardware/Common/common.c **** 					USART_SendData(USARTx,*s);
+  82:./Hardware/Common/common.c **** 					while( USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET );
+  83:./Hardware/Common/common.c **** 				}
+  84:./Hardware/Common/common.c **** 				
+  85:./Hardware/Common/common.c **** 				Data++;
+  86:./Hardware/Common/common.c **** 				
+  87:./Hardware/Common/common.c **** 				break;
+  88:./Hardware/Common/common.c **** 				
+  89:./Hardware/Common/common.c **** 				default:
+ARM GAS  /tmp/ccPKHTHc.s 			page 3
+
+
+  90:./Hardware/Common/common.c **** 				Data++;
+  91:./Hardware/Common/common.c **** 				
+  92:./Hardware/Common/common.c **** 				break;
+  93:./Hardware/Common/common.c **** 				
+  94:./Hardware/Common/common.c **** 			}		 
+  95:./Hardware/Common/common.c **** 		}
+  96:./Hardware/Common/common.c **** 		
+  97:./Hardware/Common/common.c **** 		else USART_SendData(USARTx, *Data++);
+  98:./Hardware/Common/common.c **** 		
+  99:./Hardware/Common/common.c **** 		while ( USART_GetFlagStatus ( USARTx, USART_FLAG_TXE ) == RESET );
+ 100:./Hardware/Common/common.c **** 		
+ 101:./Hardware/Common/common.c **** 	}
+ 102:./Hardware/Common/common.c **** }
+ 103:./Hardware/Common/common.c **** 
+ 104:./Hardware/Common/common.c **** 
+ 105:./Hardware/Common/common.c **** /*
+ 106:./Hardware/Common/common.c ****  * 函数名：itoa
+ 107:./Hardware/Common/common.c ****  * 描述  ：将整形数据转换成字符串
+ 108:./Hardware/Common/common.c ****  * 输入  ：-radix =10 表示10进制，其他结果为0
+ 109:./Hardware/Common/common.c ****  *         -value 要转换的整形数
+ 110:./Hardware/Common/common.c ****  *         -buf 转换后的字符串
+ 111:./Hardware/Common/common.c ****  *         -radix = 10
+ 112:./Hardware/Common/common.c ****  * 输出  ：无
+ 113:./Hardware/Common/common.c ****  * 返回  ：无
+ 114:./Hardware/Common/common.c ****  * 调用  ：被USART2_printf()调用
+ 115:./Hardware/Common/common.c ****  */
+ 116:./Hardware/Common/common.c **** static char * itoa( int value, char *string, int radix )
+ 117:./Hardware/Common/common.c **** {
+  27              		.loc 1 117 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  32              		.loc 1 117 1 is_stmt 0 view .LVU1
+  33 0000 30B4     		push	{r4, r5}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 5, -4
+  38 0002 0446     		mov	r4, r0
+  39 0004 0846     		mov	r0, r1
+  40              	.LVL1:
+ 118:./Hardware/Common/common.c **** 	int     i, d;
+  41              		.loc 1 118 2 is_stmt 1 view .LVU2
+ 119:./Hardware/Common/common.c **** 	int     flag = 0;
+  42              		.loc 1 119 2 view .LVU3
+ 120:./Hardware/Common/common.c **** 	char    *ptr = string;
+  43              		.loc 1 120 2 view .LVU4
+ 121:./Hardware/Common/common.c **** 
+ 122:./Hardware/Common/common.c **** 	/* This implementation only works for decimal numbers. */
+ 123:./Hardware/Common/common.c **** 	if (radix != 10)
+  44              		.loc 1 123 2 view .LVU5
+  45              		.loc 1 123 5 is_stmt 0 view .LVU6
+  46 0006 0A2A     		cmp	r2, #10
+  47 0008 03D0     		beq	.L2
+ 124:./Hardware/Common/common.c **** 	{
+ 125:./Hardware/Common/common.c **** 		*ptr = 0;
+ARM GAS  /tmp/ccPKHTHc.s 			page 4
+
+
+  48              		.loc 1 125 3 is_stmt 1 view .LVU7
+  49              		.loc 1 125 8 is_stmt 0 view .LVU8
+  50 000a 0023     		movs	r3, #0
+  51 000c 0B70     		strb	r3, [r1]
+ 126:./Hardware/Common/common.c **** 		return string;
+  52              		.loc 1 126 3 is_stmt 1 view .LVU9
+  53              	.LVL2:
+  54              	.L3:
+ 127:./Hardware/Common/common.c **** 	}
+ 128:./Hardware/Common/common.c **** 
+ 129:./Hardware/Common/common.c **** 	if (!value)
+ 130:./Hardware/Common/common.c **** 	{
+ 131:./Hardware/Common/common.c **** 		*ptr++ = 0x30;
+ 132:./Hardware/Common/common.c **** 		*ptr = 0;
+ 133:./Hardware/Common/common.c **** 		return string;
+ 134:./Hardware/Common/common.c **** 	}
+ 135:./Hardware/Common/common.c **** 
+ 136:./Hardware/Common/common.c **** 	/* if this is a negative value insert the minus sign. */
+ 137:./Hardware/Common/common.c **** 	if (value < 0)
+ 138:./Hardware/Common/common.c **** 	{
+ 139:./Hardware/Common/common.c **** 		*ptr++ = '-';
+ 140:./Hardware/Common/common.c **** 
+ 141:./Hardware/Common/common.c **** 		/* Make the value positive. */
+ 142:./Hardware/Common/common.c **** 		value *= -1;
+ 143:./Hardware/Common/common.c **** 		
+ 144:./Hardware/Common/common.c **** 	}
+ 145:./Hardware/Common/common.c **** 
+ 146:./Hardware/Common/common.c **** 	for (i = 10000; i > 0; i /= 10)
+ 147:./Hardware/Common/common.c **** 	{
+ 148:./Hardware/Common/common.c **** 		d = value / i;
+ 149:./Hardware/Common/common.c **** 
+ 150:./Hardware/Common/common.c **** 		if (d || flag)
+ 151:./Hardware/Common/common.c **** 		{
+ 152:./Hardware/Common/common.c **** 			*ptr++ = (char)(d + 0x30);
+ 153:./Hardware/Common/common.c **** 			value -= (d * i);
+ 154:./Hardware/Common/common.c **** 			flag = 1;
+ 155:./Hardware/Common/common.c **** 		}
+ 156:./Hardware/Common/common.c **** 	}
+ 157:./Hardware/Common/common.c **** 
+ 158:./Hardware/Common/common.c **** 	/* Null terminate the string. */
+ 159:./Hardware/Common/common.c **** 	*ptr = 0;
+ 160:./Hardware/Common/common.c **** 
+ 161:./Hardware/Common/common.c **** 	return string;
+ 162:./Hardware/Common/common.c **** 
+ 163:./Hardware/Common/common.c **** } /* NCL_Itoa */
+  55              		.loc 1 163 1 is_stmt 0 view .LVU10
+  56 000e 30BC     		pop	{r4, r5}
+  57              	.LCFI1:
+  58              		.cfi_remember_state
+  59              		.cfi_restore 5
+  60              		.cfi_restore 4
+  61              		.cfi_def_cfa_offset 0
+  62              	.LVL3:
+  63              		.loc 1 163 1 view .LVU11
+  64 0010 7047     		bx	lr
+  65              	.LVL4:
+  66              	.L2:
+ARM GAS  /tmp/ccPKHTHc.s 			page 5
+
+
+  67              	.LCFI2:
+  68              		.cfi_restore_state
+ 129:./Hardware/Common/common.c **** 	{
+  69              		.loc 1 129 2 is_stmt 1 view .LVU12
+ 129:./Hardware/Common/common.c **** 	{
+  70              		.loc 1 129 5 is_stmt 0 view .LVU13
+  71 0012 34B1     		cbz	r4, .L12
+ 137:./Hardware/Common/common.c **** 	{
+  72              		.loc 1 137 2 is_stmt 1 view .LVU14
+ 137:./Hardware/Common/common.c **** 	{
+  73              		.loc 1 137 5 is_stmt 0 view .LVU15
+  74 0014 002C     		cmp	r4, #0
+  75 0016 09DB     		blt	.L13
+ 120:./Hardware/Common/common.c **** 
+  76              		.loc 1 120 11 view .LVU16
+  77 0018 0A46     		mov	r2, r1
+  78              	.LVL5:
+  79              	.L5:
+ 120:./Hardware/Common/common.c **** 
+  80              		.loc 1 120 11 discriminator 1 view .LVU17
+  81 001a 0021     		movs	r1, #0
+  82 001c 42F21073 		movw	r3, #10000
+  83 0020 18E0     		b	.L8
+  84              	.LVL6:
+  85              	.L12:
+ 131:./Hardware/Common/common.c **** 		*ptr = 0;
+  86              		.loc 1 131 3 is_stmt 1 view .LVU18
+ 131:./Hardware/Common/common.c **** 		*ptr = 0;
+  87              		.loc 1 131 10 is_stmt 0 view .LVU19
+  88 0022 3023     		movs	r3, #48
+  89 0024 0B70     		strb	r3, [r1]
+ 132:./Hardware/Common/common.c **** 		return string;
+  90              		.loc 1 132 3 is_stmt 1 view .LVU20
+ 132:./Hardware/Common/common.c **** 		return string;
+  91              		.loc 1 132 8 is_stmt 0 view .LVU21
+  92 0026 0023     		movs	r3, #0
+  93 0028 4B70     		strb	r3, [r1, #1]
+ 133:./Hardware/Common/common.c **** 	}
+  94              		.loc 1 133 3 is_stmt 1 view .LVU22
+ 133:./Hardware/Common/common.c **** 	}
+  95              		.loc 1 133 10 is_stmt 0 view .LVU23
+  96 002a F0E7     		b	.L3
+  97              	.LVL7:
+  98              	.L13:
+ 139:./Hardware/Common/common.c **** 
+  99              		.loc 1 139 3 is_stmt 1 view .LVU24
+ 139:./Hardware/Common/common.c **** 
+ 100              		.loc 1 139 7 is_stmt 0 view .LVU25
+ 101 002c 0A46     		mov	r2, r1
+ 102              	.LVL8:
+ 139:./Hardware/Common/common.c **** 
+ 103              		.loc 1 139 10 view .LVU26
+ 104 002e 2D23     		movs	r3, #45
+ 105 0030 02F8013B 		strb	r3, [r2], #1
+ 106              	.LVL9:
+ 142:./Hardware/Common/common.c **** 		
+ 107              		.loc 1 142 3 is_stmt 1 view .LVU27
+ARM GAS  /tmp/ccPKHTHc.s 			page 6
+
+
+ 142:./Hardware/Common/common.c **** 		
+ 108              		.loc 1 142 9 is_stmt 0 view .LVU28
+ 109 0034 6442     		rsbs	r4, r4, #0
+ 110              	.LVL10:
+ 142:./Hardware/Common/common.c **** 		
+ 111              		.loc 1 142 9 view .LVU29
+ 112 0036 F0E7     		b	.L5
+ 113              	.LVL11:
+ 114              	.L6:
+ 152:./Hardware/Common/common.c **** 			value -= (d * i);
+ 115              		.loc 1 152 4 is_stmt 1 view .LVU30
+ 152:./Hardware/Common/common.c **** 			value -= (d * i);
+ 116              		.loc 1 152 13 is_stmt 0 view .LVU31
+ 117 0038 3035     		adds	r5, r5, #48
+ 118              	.LVL12:
+ 152:./Hardware/Common/common.c **** 			value -= (d * i);
+ 119              		.loc 1 152 11 view .LVU32
+ 120 003a 02F8015B 		strb	r5, [r2], #1
+ 121              	.LVL13:
+ 153:./Hardware/Common/common.c **** 			flag = 1;
+ 122              		.loc 1 153 4 is_stmt 1 view .LVU33
+ 123 003e 94FBF3F1 		sdiv	r1, r4, r3
+ 124              	.LVL14:
+ 153:./Hardware/Common/common.c **** 			flag = 1;
+ 125              		.loc 1 153 4 is_stmt 0 view .LVU34
+ 126 0042 03FB1144 		mls	r4, r3, r1, r4
+ 127              	.LVL15:
+ 154:./Hardware/Common/common.c **** 		}
+ 128              		.loc 1 154 4 is_stmt 1 view .LVU35
+ 154:./Hardware/Common/common.c **** 		}
+ 129              		.loc 1 154 9 is_stmt 0 view .LVU36
+ 130 0046 0121     		movs	r1, #1
+ 131              	.LVL16:
+ 132              	.L7:
+ 146:./Hardware/Common/common.c **** 	{
+ 133              		.loc 1 146 25 is_stmt 1 discriminator 2 view .LVU37
+ 146:./Hardware/Common/common.c **** 	{
+ 134              		.loc 1 146 27 is_stmt 0 discriminator 2 view .LVU38
+ 135 0048 084D     		ldr	r5, .L15
+ 136 004a 85FB03C5 		smull	ip, r5, r5, r3
+ 137 004e DB17     		asrs	r3, r3, #31
+ 138              	.LVL17:
+ 146:./Hardware/Common/common.c **** 	{
+ 139              		.loc 1 146 27 discriminator 2 view .LVU39
+ 140 0050 C3EBA503 		rsb	r3, r3, r5, asr #2
+ 141              	.LVL18:
+ 142              	.L8:
+ 146:./Hardware/Common/common.c **** 	{
+ 143              		.loc 1 146 18 is_stmt 1 discriminator 1 view .LVU40
+ 146:./Hardware/Common/common.c **** 	{
+ 144              		.loc 1 146 2 is_stmt 0 discriminator 1 view .LVU41
+ 145 0054 002B     		cmp	r3, #0
+ 146 0056 06DD     		ble	.L14
+ 148:./Hardware/Common/common.c **** 
+ 147              		.loc 1 148 3 is_stmt 1 view .LVU42
+ 148:./Hardware/Common/common.c **** 
+ 148              		.loc 1 148 5 is_stmt 0 view .LVU43
+ARM GAS  /tmp/ccPKHTHc.s 			page 7
+
+
+ 149 0058 94FBF3F5 		sdiv	r5, r4, r3
+ 150              	.LVL19:
+ 150:./Hardware/Common/common.c **** 		{
+ 151              		.loc 1 150 3 is_stmt 1 view .LVU44
+ 150:./Hardware/Common/common.c **** 		{
+ 152              		.loc 1 150 6 is_stmt 0 view .LVU45
+ 153 005c 002D     		cmp	r5, #0
+ 154 005e EBD1     		bne	.L6
+ 150:./Hardware/Common/common.c **** 		{
+ 155              		.loc 1 150 9 discriminator 1 view .LVU46
+ 156 0060 0029     		cmp	r1, #0
+ 157 0062 F1D0     		beq	.L7
+ 158 0064 E8E7     		b	.L6
+ 159              	.LVL20:
+ 160              	.L14:
+ 159:./Hardware/Common/common.c **** 
+ 161              		.loc 1 159 2 is_stmt 1 view .LVU47
+ 159:./Hardware/Common/common.c **** 
+ 162              		.loc 1 159 7 is_stmt 0 view .LVU48
+ 163 0066 0023     		movs	r3, #0
+ 164              	.LVL21:
+ 159:./Hardware/Common/common.c **** 
+ 165              		.loc 1 159 7 view .LVU49
+ 166 0068 1370     		strb	r3, [r2]
+ 161:./Hardware/Common/common.c **** 
+ 167              		.loc 1 161 2 is_stmt 1 view .LVU50
+ 161:./Hardware/Common/common.c **** 
+ 168              		.loc 1 161 9 is_stmt 0 view .LVU51
+ 169 006a D0E7     		b	.L3
+ 170              	.L16:
+ 171              		.align	2
+ 172              	.L15:
+ 173 006c 67666666 		.word	1717986919
+ 174              		.cfi_endproc
+ 175              	.LFE30:
+ 177              		.section	.text.USART_printf,"ax",%progbits
+ 178              		.align	1
+ 179              		.global	USART_printf
+ 180              		.syntax unified
+ 181              		.thumb
+ 182              		.thumb_func
+ 183              		.fpu softvfp
+ 185              	USART_printf:
+ 186              	.LVL22:
+ 187              	.LFB29:
+  25:./Hardware/Common/common.c **** 	const char *s;
+ 188              		.loc 1 25 1 is_stmt 1 view -0
+ 189              		.cfi_startproc
+ 190              		@ args = 4, pretend = 12, frame = 24
+ 191              		@ frame_needed = 0, uses_anonymous_args = 1
+  25:./Hardware/Common/common.c **** 	const char *s;
+ 192              		.loc 1 25 1 is_stmt 0 view .LVU53
+ 193 0000 0EB4     		push	{r1, r2, r3}
+ 194              	.LCFI3:
+ 195              		.cfi_def_cfa_offset 12
+ 196              		.cfi_offset 1, -12
+ 197              		.cfi_offset 2, -8
+ARM GAS  /tmp/ccPKHTHc.s 			page 8
+
+
+ 198              		.cfi_offset 3, -4
+ 199 0002 70B5     		push	{r4, r5, r6, lr}
+ 200              	.LCFI4:
+ 201              		.cfi_def_cfa_offset 28
+ 202              		.cfi_offset 4, -28
+ 203              		.cfi_offset 5, -24
+ 204              		.cfi_offset 6, -20
+ 205              		.cfi_offset 14, -16
+ 206 0004 87B0     		sub	sp, sp, #28
+ 207              	.LCFI5:
+ 208              		.cfi_def_cfa_offset 56
+ 209 0006 0446     		mov	r4, r0
+ 210 0008 0BAB     		add	r3, sp, #44
+ 211 000a 53F8045B 		ldr	r5, [r3], #4
+  26:./Hardware/Common/common.c **** 	int d;   
+ 212              		.loc 1 26 2 is_stmt 1 view .LVU54
+  27:./Hardware/Common/common.c **** 	char buf[16];
+ 213              		.loc 1 27 2 view .LVU55
+  28:./Hardware/Common/common.c **** 
+ 214              		.loc 1 28 2 view .LVU56
+  31:./Hardware/Common/common.c **** 	va_start(ap, Data);
+ 215              		.loc 1 31 2 view .LVU57
+  32:./Hardware/Common/common.c **** 
+ 216              		.loc 1 32 2 view .LVU58
+ 217 000e 0193     		str	r3, [sp, #4]
+  34:./Hardware/Common/common.c **** 	{				                          
+ 218              		.loc 1 34 2 view .LVU59
+  34:./Hardware/Common/common.c **** 	{				                          
+ 219              		.loc 1 34 8 is_stmt 0 view .LVU60
+ 220 0010 46E0     		b	.L18
+ 221              	.LVL23:
+ 222              	.L36:
+  38:./Hardware/Common/common.c **** 			{
+ 223              		.loc 1 38 4 is_stmt 1 view .LVU61
+  38:./Hardware/Common/common.c **** 			{
+ 224              		.loc 1 38 13 is_stmt 0 view .LVU62
+ 225 0012 6B78     		ldrb	r3, [r5, #1]	@ zero_extendqisi2
+  38:./Hardware/Common/common.c **** 			{
+ 226              		.loc 1 38 4 view .LVU63
+ 227 0014 6E2B     		cmp	r3, #110
+ 228 0016 07D0     		beq	.L20
+  38:./Hardware/Common/common.c **** 			{
+ 229              		.loc 1 38 4 view .LVU64
+ 230 0018 722B     		cmp	r3, #114
+ 231 001a 0BD1     		bne	.L21
+  41:./Hardware/Common/common.c **** 				Data ++;
+ 232              		.loc 1 41 5 is_stmt 1 view .LVU65
+ 233 001c 0D21     		movs	r1, #13
+ 234 001e 2046     		mov	r0, r4
+ 235 0020 FFF7FEFF 		bl	USART_SendData
+ 236              	.LVL24:
+  42:./Hardware/Common/common.c **** 				break;
+ 237              		.loc 1 42 5 view .LVU66
+  42:./Hardware/Common/common.c **** 				break;
+ 238              		.loc 1 42 10 is_stmt 0 view .LVU67
+ 239 0024 0235     		adds	r5, r5, #2
+ 240              	.LVL25:
+ARM GAS  /tmp/ccPKHTHc.s 			page 9
+
+
+  43:./Hardware/Common/common.c **** 
+ 241              		.loc 1 43 5 is_stmt 1 view .LVU68
+ 242 0026 35E0     		b	.L32
+ 243              	.LVL26:
+ 244              	.L20:
+  46:./Hardware/Common/common.c **** 				Data ++;
+ 245              		.loc 1 46 5 view .LVU69
+ 246 0028 0A21     		movs	r1, #10
+ 247 002a 2046     		mov	r0, r4
+ 248 002c FFF7FEFF 		bl	USART_SendData
+ 249              	.LVL27:
+  47:./Hardware/Common/common.c **** 				break;
+ 250              		.loc 1 47 5 view .LVU70
+  47:./Hardware/Common/common.c **** 				break;
+ 251              		.loc 1 47 10 is_stmt 0 view .LVU71
+ 252 0030 0235     		adds	r5, r5, #2
+ 253              	.LVL28:
+  48:./Hardware/Common/common.c **** 
+ 254              		.loc 1 48 5 is_stmt 1 view .LVU72
+ 255 0032 2FE0     		b	.L32
+ 256              	.LVL29:
+ 257              	.L21:
+  51:./Hardware/Common/common.c **** 				break;
+ 258              		.loc 1 51 5 view .LVU73
+  51:./Hardware/Common/common.c **** 				break;
+ 259              		.loc 1 51 10 is_stmt 0 view .LVU74
+ 260 0034 0235     		adds	r5, r5, #2
+ 261              	.LVL30:
+  52:./Hardware/Common/common.c **** 			}			 
+ 262              		.loc 1 52 5 is_stmt 1 view .LVU75
+ 263 0036 2DE0     		b	.L32
+ 264              	.LVL31:
+ 265              	.L28:
+  65:./Hardware/Common/common.c **** 					while( USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET );
+ 266              		.loc 1 65 6 view .LVU76
+ 267 0038 2046     		mov	r0, r4
+ 268 003a FFF7FEFF 		bl	USART_SendData
+ 269              	.LVL32:
+  66:./Hardware/Common/common.c **** 				}
+ 270              		.loc 1 66 6 view .LVU77
+ 271              	.L27:
+  66:./Hardware/Common/common.c **** 				}
+ 272              		.loc 1 66 67 discriminator 1 view .LVU78
+  66:./Hardware/Common/common.c **** 				}
+ 273              		.loc 1 66 11 discriminator 1 view .LVU79
+  66:./Hardware/Common/common.c **** 				}
+ 274              		.loc 1 66 13 is_stmt 0 discriminator 1 view .LVU80
+ 275 003e 8021     		movs	r1, #128
+ 276 0040 2046     		mov	r0, r4
+ 277 0042 FFF7FEFF 		bl	USART_GetFlagStatus
+ 278              	.LVL33:
+  66:./Hardware/Common/common.c **** 				}
+ 279              		.loc 1 66 11 discriminator 1 view .LVU81
+ 280 0046 0028     		cmp	r0, #0
+ 281 0048 F9D0     		beq	.L27
+  63:./Hardware/Common/common.c **** 				{
+ 282              		.loc 1 63 17 is_stmt 1 view .LVU82
+ARM GAS  /tmp/ccPKHTHc.s 			page 10
+
+
+  63:./Hardware/Common/common.c **** 				{
+ 283              		.loc 1 63 18 is_stmt 0 view .LVU83
+ 284 004a 0136     		adds	r6, r6, #1
+ 285              	.LVL34:
+ 286              	.L26:
+  63:./Hardware/Common/common.c **** 				{
+ 287              		.loc 1 63 13 is_stmt 1 discriminator 1 view .LVU84
+ 288 004c 3178     		ldrb	r1, [r6]	@ zero_extendqisi2
+  63:./Hardware/Common/common.c **** 				{
+ 289              		.loc 1 63 5 is_stmt 0 discriminator 1 view .LVU85
+ 290 004e 0029     		cmp	r1, #0
+ 291 0050 F2D1     		bne	.L28
+  69:./Hardware/Common/common.c **** 				
+ 292              		.loc 1 69 5 is_stmt 1 view .LVU86
+  69:./Hardware/Common/common.c **** 				
+ 293              		.loc 1 69 9 is_stmt 0 view .LVU87
+ 294 0052 0235     		adds	r5, r5, #2
+ 295              	.LVL35:
+  71:./Hardware/Common/common.c **** 
+ 296              		.loc 1 71 5 is_stmt 1 view .LVU88
+ 297 0054 1EE0     		b	.L32
+ 298              	.LVL36:
+ 299              	.L24:
+  75:./Hardware/Common/common.c **** 				
+ 300              		.loc 1 75 5 view .LVU89
+  75:./Hardware/Common/common.c **** 				
+ 301              		.loc 1 75 7 is_stmt 0 view .LVU90
+ 302 0056 019B     		ldr	r3, [sp, #4]
+ 303 0058 1A1D     		adds	r2, r3, #4
+ 304 005a 0192     		str	r2, [sp, #4]
+  77:./Hardware/Common/common.c **** 				
+ 305              		.loc 1 77 5 is_stmt 1 view .LVU91
+ 306 005c 0A22     		movs	r2, #10
+ 307 005e 02A9     		add	r1, sp, #8
+ 308 0060 1868     		ldr	r0, [r3]
+ 309 0062 FFF7FEFF 		bl	itoa
+ 310              	.LVL37:
+  79:./Hardware/Common/common.c **** 				{
+ 311              		.loc 1 79 5 view .LVU92
+  79:./Hardware/Common/common.c **** 				{
+ 312              		.loc 1 79 12 is_stmt 0 view .LVU93
+ 313 0066 02AE     		add	r6, sp, #8
+  79:./Hardware/Common/common.c **** 				{
+ 314              		.loc 1 79 5 view .LVU94
+ 315 0068 09E0     		b	.L29
+ 316              	.LVL38:
+ 317              	.L31:
+  81:./Hardware/Common/common.c **** 					while( USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET );
+ 318              		.loc 1 81 6 is_stmt 1 view .LVU95
+ 319 006a 2046     		mov	r0, r4
+ 320 006c FFF7FEFF 		bl	USART_SendData
+ 321              	.LVL39:
+  82:./Hardware/Common/common.c **** 				}
+ 322              		.loc 1 82 6 view .LVU96
+ 323              	.L30:
+  82:./Hardware/Common/common.c **** 				}
+ 324              		.loc 1 82 67 discriminator 1 view .LVU97
+ARM GAS  /tmp/ccPKHTHc.s 			page 11
+
+
+  82:./Hardware/Common/common.c **** 				}
+ 325              		.loc 1 82 11 discriminator 1 view .LVU98
+  82:./Hardware/Common/common.c **** 				}
+ 326              		.loc 1 82 13 is_stmt 0 discriminator 1 view .LVU99
+ 327 0070 8021     		movs	r1, #128
+ 328 0072 2046     		mov	r0, r4
+ 329 0074 FFF7FEFF 		bl	USART_GetFlagStatus
+ 330              	.LVL40:
+  82:./Hardware/Common/common.c **** 				}
+ 331              		.loc 1 82 11 discriminator 1 view .LVU100
+ 332 0078 0028     		cmp	r0, #0
+ 333 007a F9D0     		beq	.L30
+  79:./Hardware/Common/common.c **** 				{
+ 334              		.loc 1 79 23 is_stmt 1 discriminator 2 view .LVU101
+  79:./Hardware/Common/common.c **** 				{
+ 335              		.loc 1 79 24 is_stmt 0 discriminator 2 view .LVU102
+ 336 007c 0136     		adds	r6, r6, #1
+ 337              	.LVL41:
+ 338              	.L29:
+  79:./Hardware/Common/common.c **** 				{
+ 339              		.loc 1 79 19 is_stmt 1 discriminator 1 view .LVU103
+ 340 007e 3178     		ldrb	r1, [r6]	@ zero_extendqisi2
+  79:./Hardware/Common/common.c **** 				{
+ 341              		.loc 1 79 5 is_stmt 0 discriminator 1 view .LVU104
+ 342 0080 0029     		cmp	r1, #0
+ 343 0082 F2D1     		bne	.L31
+  85:./Hardware/Common/common.c **** 				
+ 344              		.loc 1 85 5 is_stmt 1 view .LVU105
+  85:./Hardware/Common/common.c **** 				
+ 345              		.loc 1 85 9 is_stmt 0 view .LVU106
+ 346 0084 0235     		adds	r5, r5, #2
+ 347              	.LVL42:
+  87:./Hardware/Common/common.c **** 				
+ 348              		.loc 1 87 5 is_stmt 1 view .LVU107
+ 349 0086 05E0     		b	.L32
+ 350              	.LVL43:
+ 351              	.L25:
+  90:./Hardware/Common/common.c **** 				
+ 352              		.loc 1 90 5 view .LVU108
+  90:./Hardware/Common/common.c **** 				
+ 353              		.loc 1 90 9 is_stmt 0 view .LVU109
+ 354 0088 0235     		adds	r5, r5, #2
+ 355              	.LVL44:
+  92:./Hardware/Common/common.c **** 				
+ 356              		.loc 1 92 5 is_stmt 1 view .LVU110
+ 357 008a 03E0     		b	.L32
+ 358              	.L23:
+  97:./Hardware/Common/common.c **** 		
+ 359              		.loc 1 97 8 view .LVU111
+  97:./Hardware/Common/common.c **** 		
+ 360              		.loc 1 97 36 is_stmt 0 view .LVU112
+ 361 008c 0135     		adds	r5, r5, #1
+ 362              	.LVL45:
+  97:./Hardware/Common/common.c **** 		
+ 363              		.loc 1 97 8 view .LVU113
+ 364 008e 2046     		mov	r0, r4
+ 365 0090 FFF7FEFF 		bl	USART_SendData
+ARM GAS  /tmp/ccPKHTHc.s 			page 12
+
+
+ 366              	.LVL46:
+ 367              	.L32:
+  99:./Hardware/Common/common.c **** 		
+ 368              		.loc 1 99 68 is_stmt 1 discriminator 1 view .LVU114
+  99:./Hardware/Common/common.c **** 		
+ 369              		.loc 1 99 9 discriminator 1 view .LVU115
+  99:./Hardware/Common/common.c **** 		
+ 370              		.loc 1 99 11 is_stmt 0 discriminator 1 view .LVU116
+ 371 0094 8021     		movs	r1, #128
+ 372 0096 2046     		mov	r0, r4
+ 373 0098 FFF7FEFF 		bl	USART_GetFlagStatus
+ 374              	.LVL47:
+  99:./Hardware/Common/common.c **** 		
+ 375              		.loc 1 99 9 discriminator 1 view .LVU117
+ 376 009c 0028     		cmp	r0, #0
+ 377 009e F9D0     		beq	.L32
+ 378              	.LVL48:
+ 379              	.L18:
+  34:./Hardware/Common/common.c **** 	{				                          
+ 380              		.loc 1 34 8 is_stmt 1 view .LVU118
+  34:./Hardware/Common/common.c **** 	{				                          
+ 381              		.loc 1 34 10 is_stmt 0 view .LVU119
+ 382 00a0 2978     		ldrb	r1, [r5]	@ zero_extendqisi2
+  34:./Hardware/Common/common.c **** 	{				                          
+ 383              		.loc 1 34 8 view .LVU120
+ 384 00a2 69B1     		cbz	r1, .L35
+  36:./Hardware/Common/common.c **** 		{									  
+ 385              		.loc 1 36 3 is_stmt 1 view .LVU121
+  36:./Hardware/Common/common.c **** 		{									  
+ 386              		.loc 1 36 6 is_stmt 0 view .LVU122
+ 387 00a4 5C29     		cmp	r1, #92
+ 388 00a6 B4D0     		beq	.L36
+  56:./Hardware/Common/common.c **** 		{									  //
+ 389              		.loc 1 56 8 is_stmt 1 view .LVU123
+  56:./Hardware/Common/common.c **** 		{									  //
+ 390              		.loc 1 56 11 is_stmt 0 view .LVU124
+ 391 00a8 2529     		cmp	r1, #37
+ 392 00aa EFD1     		bne	.L23
+  58:./Hardware/Common/common.c **** 			{				
+ 393              		.loc 1 58 4 is_stmt 1 view .LVU125
+ 394              	.LVL49:
+  58:./Hardware/Common/common.c **** 			{				
+ 395              		.loc 1 58 13 is_stmt 0 view .LVU126
+ 396 00ac 6B78     		ldrb	r3, [r5, #1]	@ zero_extendqisi2
+  58:./Hardware/Common/common.c **** 			{				
+ 397              		.loc 1 58 4 view .LVU127
+ 398 00ae 642B     		cmp	r3, #100
+ 399 00b0 D1D0     		beq	.L24
+ 400 00b2 732B     		cmp	r3, #115
+ 401 00b4 E8D1     		bne	.L25
+  61:./Hardware/Common/common.c **** 				
+ 402              		.loc 1 61 5 is_stmt 1 view .LVU128
+  61:./Hardware/Common/common.c **** 				
+ 403              		.loc 1 61 7 is_stmt 0 view .LVU129
+ 404 00b6 019B     		ldr	r3, [sp, #4]
+ 405 00b8 1A1D     		adds	r2, r3, #4
+ 406 00ba 0192     		str	r2, [sp, #4]
+ARM GAS  /tmp/ccPKHTHc.s 			page 13
+
+
+ 407 00bc 1E68     		ldr	r6, [r3]
+  63:./Hardware/Common/common.c **** 				{
+ 408              		.loc 1 63 5 is_stmt 1 view .LVU130
+ 409 00be C5E7     		b	.L26
+ 410              	.LVL50:
+ 411              	.L35:
+ 102:./Hardware/Common/common.c **** 
+ 412              		.loc 1 102 1 is_stmt 0 view .LVU131
+ 413 00c0 07B0     		add	sp, sp, #28
+ 414              	.LCFI6:
+ 415              		.cfi_def_cfa_offset 28
+ 416              		@ sp needed
+ 417 00c2 BDE87040 		pop	{r4, r5, r6, lr}
+ 418              	.LCFI7:
+ 419              		.cfi_restore 14
+ 420              		.cfi_restore 6
+ 421              		.cfi_restore 5
+ 422              		.cfi_restore 4
+ 423              		.cfi_def_cfa_offset 12
+ 424              	.LVL51:
+ 102:./Hardware/Common/common.c **** 
+ 425              		.loc 1 102 1 view .LVU132
+ 426 00c6 03B0     		add	sp, sp, #12
+ 427              	.LCFI8:
+ 428              		.cfi_restore 3
+ 429              		.cfi_restore 2
+ 430              		.cfi_restore 1
+ 431              		.cfi_def_cfa_offset 0
+ 432 00c8 7047     		bx	lr
+ 433              		.cfi_endproc
+ 434              	.LFE29:
+ 436              		.text
+ 437              	.Letext0:
+ 438              		.file 2 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 439              		.file 3 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 440              		.file 4 "./Libraries/CMSIS/stm32f10x.h"
+ 441              		.file 5 "/home/hao/Documents/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.2.1/include/stdarg.h"
+ 442              		.file 6 "./Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_usart.h"
+ 443              		.file 7 "<built-in>"
+ARM GAS  /tmp/ccPKHTHc.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 common.c
+     /tmp/ccPKHTHc.s:16     .text.itoa:0000000000000000 $t
+     /tmp/ccPKHTHc.s:23     .text.itoa:0000000000000000 itoa
+     /tmp/ccPKHTHc.s:173    .text.itoa:000000000000006c $d
+     /tmp/ccPKHTHc.s:178    .text.USART_printf:0000000000000000 $t
+     /tmp/ccPKHTHc.s:185    .text.USART_printf:0000000000000000 USART_printf
+
+UNDEFINED SYMBOLS
+USART_SendData
+USART_GetFlagStatus

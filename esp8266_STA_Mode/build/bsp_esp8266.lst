@@ -1,0 +1,2955 @@
+ARM GAS  /tmp/cczVi7mz.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"bsp_esp8266.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.ESP8266_GPIO_Config,"ax",%progbits
+  16              		.align	1
+  17              		.arch armv7-m
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	ESP8266_GPIO_Config:
+  24              	.LFB33:
+  25              		.file 1 "./Hardware/ESP8266/bsp_esp8266.c"
+   1:./Hardware/ESP8266/bsp_esp8266.c **** #include "bsp_esp8266.h"
+   2:./Hardware/ESP8266/bsp_esp8266.c **** 
+   3:./Hardware/ESP8266/bsp_esp8266.c **** 
+   4:./Hardware/ESP8266/bsp_esp8266.c **** static void                   ESP8266_GPIO_Config                 ( void );
+   5:./Hardware/ESP8266/bsp_esp8266.c **** static void                   ESP8266_USART_Config                ( void );
+   6:./Hardware/ESP8266/bsp_esp8266.c **** static void                   ESP8266_USART_NVIC_Configuration    ( void );
+   7:./Hardware/ESP8266/bsp_esp8266.c **** 
+   8:./Hardware/ESP8266/bsp_esp8266.c **** 
+   9:./Hardware/ESP8266/bsp_esp8266.c **** 
+  10:./Hardware/ESP8266/bsp_esp8266.c **** struct  STRUCT_USARTx_Fram strEsp8266_Fram_Record = { 0 };
+  11:./Hardware/ESP8266/bsp_esp8266.c **** struct  STRUCT_USARTx_Fram strUSART_Fram_Record = { 0 };
+  12:./Hardware/ESP8266/bsp_esp8266.c **** 
+  13:./Hardware/ESP8266/bsp_esp8266.c **** 
+  14:./Hardware/ESP8266/bsp_esp8266.c **** /**
+  15:./Hardware/ESP8266/bsp_esp8266.c ****   * @brief  ESP8266初始化函数
+  16:./Hardware/ESP8266/bsp_esp8266.c ****   * @param  无
+  17:./Hardware/ESP8266/bsp_esp8266.c ****   * @retval 无
+  18:./Hardware/ESP8266/bsp_esp8266.c ****   */
+  19:./Hardware/ESP8266/bsp_esp8266.c **** void ESP8266_Init ( void )
+  20:./Hardware/ESP8266/bsp_esp8266.c **** {
+  21:./Hardware/ESP8266/bsp_esp8266.c **** 	ESP8266_GPIO_Config (); 
+  22:./Hardware/ESP8266/bsp_esp8266.c **** 	
+  23:./Hardware/ESP8266/bsp_esp8266.c **** 	ESP8266_USART_Config (); 
+  24:./Hardware/ESP8266/bsp_esp8266.c **** 	
+  25:./Hardware/ESP8266/bsp_esp8266.c **** 	
+  26:./Hardware/ESP8266/bsp_esp8266.c **** 	macESP8266_RST_HIGH_LEVEL();
+  27:./Hardware/ESP8266/bsp_esp8266.c **** 
+  28:./Hardware/ESP8266/bsp_esp8266.c **** 	macESP8266_CH_DISABLE();
+  29:./Hardware/ESP8266/bsp_esp8266.c **** 	
+  30:./Hardware/ESP8266/bsp_esp8266.c **** 	
+  31:./Hardware/ESP8266/bsp_esp8266.c **** }
+  32:./Hardware/ESP8266/bsp_esp8266.c **** 
+  33:./Hardware/ESP8266/bsp_esp8266.c **** 
+ARM GAS  /tmp/cczVi7mz.s 			page 2
+
+
+  34:./Hardware/ESP8266/bsp_esp8266.c **** /**
+  35:./Hardware/ESP8266/bsp_esp8266.c ****   * @brief  初始化ESP8266用到的GPIO引脚
+  36:./Hardware/ESP8266/bsp_esp8266.c ****   * @param  无
+  37:./Hardware/ESP8266/bsp_esp8266.c ****   * @retval 无
+  38:./Hardware/ESP8266/bsp_esp8266.c ****   */
+  39:./Hardware/ESP8266/bsp_esp8266.c **** static void ESP8266_GPIO_Config ( void )
+  40:./Hardware/ESP8266/bsp_esp8266.c **** {
+  26              		.loc 1 40 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 8
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30 0000 30B5     		push	{r4, r5, lr}
+  31              	.LCFI0:
+  32              		.cfi_def_cfa_offset 12
+  33              		.cfi_offset 4, -12
+  34              		.cfi_offset 5, -8
+  35              		.cfi_offset 14, -4
+  36 0002 83B0     		sub	sp, sp, #12
+  37              	.LCFI1:
+  38              		.cfi_def_cfa_offset 24
+  41:./Hardware/ESP8266/bsp_esp8266.c **** 	/*定义一个GPIO_InitTypeDef类型的结构体*/
+  42:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitTypeDef GPIO_InitStructure;
+  39              		.loc 1 42 2 view .LVU1
+  43:./Hardware/ESP8266/bsp_esp8266.c **** 
+  44:./Hardware/ESP8266/bsp_esp8266.c **** 
+  45:./Hardware/ESP8266/bsp_esp8266.c **** 	/* 配置 CH_PD 引脚*/
+  46:./Hardware/ESP8266/bsp_esp8266.c **** 	macESP8266_CH_PD_APBxClock_FUN ( macESP8266_CH_PD_CLK, ENABLE ); 
+  40              		.loc 1 46 2 view .LVU2
+  41 0004 0121     		movs	r1, #1
+  42 0006 0420     		movs	r0, #4
+  43 0008 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+  44              	.LVL0:
+  47:./Hardware/ESP8266/bsp_esp8266.c **** 											   
+  48:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Pin = macESP8266_CH_PD_PIN;	
+  45              		.loc 1 48 2 view .LVU3
+  46              		.loc 1 48 30 is_stmt 0 view .LVU4
+  47 000c 2023     		movs	r3, #32
+  48 000e ADF80430 		strh	r3, [sp, #4]	@ movhi
+  49:./Hardware/ESP8266/bsp_esp8266.c **** 
+  50:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;   
+  49              		.loc 1 50 2 is_stmt 1 view .LVU5
+  50              		.loc 1 50 31 is_stmt 0 view .LVU6
+  51 0012 1025     		movs	r5, #16
+  52 0014 8DF80750 		strb	r5, [sp, #7]
+  51:./Hardware/ESP8266/bsp_esp8266.c ****    
+  52:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
+  53              		.loc 1 52 2 is_stmt 1 view .LVU7
+  54              		.loc 1 52 32 is_stmt 0 view .LVU8
+  55 0018 0323     		movs	r3, #3
+  56 001a 8DF80630 		strb	r3, [sp, #6]
+  53:./Hardware/ESP8266/bsp_esp8266.c **** 
+  54:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_Init ( macESP8266_CH_PD_PORT, & GPIO_InitStructure );	 
+  57              		.loc 1 54 2 is_stmt 1 view .LVU9
+  58 001e 084C     		ldr	r4, .L3
+  59 0020 01A9     		add	r1, sp, #4
+  60 0022 2046     		mov	r0, r4
+  61 0024 FFF7FEFF 		bl	GPIO_Init
+ARM GAS  /tmp/cczVi7mz.s 			page 3
+
+
+  62              	.LVL1:
+  55:./Hardware/ESP8266/bsp_esp8266.c **** 
+  56:./Hardware/ESP8266/bsp_esp8266.c **** 	
+  57:./Hardware/ESP8266/bsp_esp8266.c **** 	/* 配置 RST 引脚*/
+  58:./Hardware/ESP8266/bsp_esp8266.c **** 	macESP8266_RST_APBxClock_FUN ( macESP8266_RST_CLK, ENABLE ); 
+  63              		.loc 1 58 2 view .LVU10
+  64 0028 0121     		movs	r1, #1
+  65 002a 0420     		movs	r0, #4
+  66 002c FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+  67              	.LVL2:
+  59:./Hardware/ESP8266/bsp_esp8266.c **** 											   
+  60:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Pin = macESP8266_RST_PIN;	
+  68              		.loc 1 60 2 view .LVU11
+  69              		.loc 1 60 30 is_stmt 0 view .LVU12
+  70 0030 ADF80450 		strh	r5, [sp, #4]	@ movhi
+  61:./Hardware/ESP8266/bsp_esp8266.c **** 
+  62:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_Init ( macESP8266_RST_PORT, & GPIO_InitStructure );	 
+  71              		.loc 1 62 2 is_stmt 1 view .LVU13
+  72 0034 01A9     		add	r1, sp, #4
+  73 0036 2046     		mov	r0, r4
+  74 0038 FFF7FEFF 		bl	GPIO_Init
+  75              	.LVL3:
+  63:./Hardware/ESP8266/bsp_esp8266.c **** 
+  64:./Hardware/ESP8266/bsp_esp8266.c **** 
+  65:./Hardware/ESP8266/bsp_esp8266.c **** }
+  76              		.loc 1 65 1 is_stmt 0 view .LVU14
+  77 003c 03B0     		add	sp, sp, #12
+  78              	.LCFI2:
+  79              		.cfi_def_cfa_offset 12
+  80              		@ sp needed
+  81 003e 30BD     		pop	{r4, r5, pc}
+  82              	.L4:
+  83              		.align	2
+  84              	.L3:
+  85 0040 00080140 		.word	1073809408
+  86              		.cfi_endproc
+  87              	.LFE33:
+  89              		.section	.text.ESP8266_USART_NVIC_Configuration,"ax",%progbits
+  90              		.align	1
+  91              		.syntax unified
+  92              		.thumb
+  93              		.thumb_func
+  94              		.fpu softvfp
+  96              	ESP8266_USART_NVIC_Configuration:
+  97              	.LFB35:
+  66:./Hardware/ESP8266/bsp_esp8266.c **** 
+  67:./Hardware/ESP8266/bsp_esp8266.c **** 
+  68:./Hardware/ESP8266/bsp_esp8266.c **** /**
+  69:./Hardware/ESP8266/bsp_esp8266.c ****   * @brief  初始化ESP8266用到的 USART
+  70:./Hardware/ESP8266/bsp_esp8266.c ****   * @param  无
+  71:./Hardware/ESP8266/bsp_esp8266.c ****   * @retval 无
+  72:./Hardware/ESP8266/bsp_esp8266.c ****   */
+  73:./Hardware/ESP8266/bsp_esp8266.c **** static void ESP8266_USART_Config ( void )
+  74:./Hardware/ESP8266/bsp_esp8266.c **** {
+  75:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitTypeDef GPIO_InitStructure;
+  76:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitTypeDef USART_InitStructure;
+  77:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ARM GAS  /tmp/cczVi7mz.s 			page 4
+
+
+  78:./Hardware/ESP8266/bsp_esp8266.c **** 	
+  79:./Hardware/ESP8266/bsp_esp8266.c **** 	/* config USART clock */
+  80:./Hardware/ESP8266/bsp_esp8266.c **** 	macESP8266_USART_APBxClock_FUN ( macESP8266_USART_CLK, ENABLE );
+  81:./Hardware/ESP8266/bsp_esp8266.c **** 	macESP8266_USART_GPIO_APBxClock_FUN ( macESP8266_USART_GPIO_CLK, ENABLE );
+  82:./Hardware/ESP8266/bsp_esp8266.c **** 	
+  83:./Hardware/ESP8266/bsp_esp8266.c **** 	/* USART GPIO config */
+  84:./Hardware/ESP8266/bsp_esp8266.c **** 	/* Configure USART Tx as alternate function push-pull */
+  85:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Pin =  macESP8266_USART_TX_PIN;
+  86:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  87:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  88:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_Init(macESP8266_USART_TX_PORT, &GPIO_InitStructure);  
+  89:./Hardware/ESP8266/bsp_esp8266.c ****   
+  90:./Hardware/ESP8266/bsp_esp8266.c **** 	/* Configure USART Rx as input floating */
+  91:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Pin = macESP8266_USART_RX_PIN;
+  92:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  93:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_Init(macESP8266_USART_RX_PORT, &GPIO_InitStructure);
+  94:./Hardware/ESP8266/bsp_esp8266.c **** 	
+  95:./Hardware/ESP8266/bsp_esp8266.c **** 	/* USART1 mode config */
+  96:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_BaudRate = macESP8266_USART_BAUD_RATE;
+  97:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+  98:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+  99:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_Parity = USART_Parity_No ;
+ 100:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+ 101:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+ 102:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_Init(macESP8266_USARTx, &USART_InitStructure);
+ 103:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 104:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 105:./Hardware/ESP8266/bsp_esp8266.c **** 	/* 中断配置 */
+ 106:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_ITConfig ( macESP8266_USARTx, USART_IT_RXNE, ENABLE ); //使能串口接收中断 
+ 107:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_ITConfig ( macESP8266_USARTx, USART_IT_IDLE, ENABLE ); //使能串口总线空闲中断 	
+ 108:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 109:./Hardware/ESP8266/bsp_esp8266.c **** 	ESP8266_USART_NVIC_Configuration ();
+ 110:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 111:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 112:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_Cmd(macESP8266_USARTx, ENABLE);
+ 113:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 114:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 115:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 116:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 117:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 118:./Hardware/ESP8266/bsp_esp8266.c **** /**
+ 119:./Hardware/ESP8266/bsp_esp8266.c ****   * @brief  配置 ESP8266 USART 的 NVIC 中断
+ 120:./Hardware/ESP8266/bsp_esp8266.c ****   * @param  无
+ 121:./Hardware/ESP8266/bsp_esp8266.c ****   * @retval 无
+ 122:./Hardware/ESP8266/bsp_esp8266.c ****   */
+ 123:./Hardware/ESP8266/bsp_esp8266.c **** static void ESP8266_USART_NVIC_Configuration ( void )
+ 124:./Hardware/ESP8266/bsp_esp8266.c **** {
+  98              		.loc 1 124 1 is_stmt 1 view -0
+  99              		.cfi_startproc
+ 100              		@ args = 0, pretend = 0, frame = 8
+ 101              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102 0000 00B5     		push	{lr}
+ 103              	.LCFI3:
+ 104              		.cfi_def_cfa_offset 4
+ 105              		.cfi_offset 14, -4
+ 106 0002 83B0     		sub	sp, sp, #12
+ 107              	.LCFI4:
+ARM GAS  /tmp/cczVi7mz.s 			page 5
+
+
+ 108              		.cfi_def_cfa_offset 16
+ 125:./Hardware/ESP8266/bsp_esp8266.c **** 	NVIC_InitTypeDef NVIC_InitStructure; 
+ 109              		.loc 1 125 2 view .LVU16
+ 126:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 127:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 128:./Hardware/ESP8266/bsp_esp8266.c **** 	/* Configure the NVIC Preemption Priority Bits */  
+ 129:./Hardware/ESP8266/bsp_esp8266.c **** 	NVIC_PriorityGroupConfig ( macNVIC_PriorityGroup_x );
+ 110              		.loc 1 129 2 view .LVU17
+ 111 0004 4FF4A060 		mov	r0, #1280
+ 112 0008 FFF7FEFF 		bl	NVIC_PriorityGroupConfig
+ 113              	.LVL4:
+ 130:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 131:./Hardware/ESP8266/bsp_esp8266.c **** 	/* Enable the USART2 Interrupt */
+ 132:./Hardware/ESP8266/bsp_esp8266.c **** 	NVIC_InitStructure.NVIC_IRQChannel = macESP8266_USART_IRQ;	 
+ 114              		.loc 1 132 2 view .LVU18
+ 115              		.loc 1 132 37 is_stmt 0 view .LVU19
+ 116 000c 2623     		movs	r3, #38
+ 117 000e 8DF80430 		strb	r3, [sp, #4]
+ 133:./Hardware/ESP8266/bsp_esp8266.c **** 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ 118              		.loc 1 133 2 is_stmt 1 view .LVU20
+ 119              		.loc 1 133 55 is_stmt 0 view .LVU21
+ 120 0012 0023     		movs	r3, #0
+ 121 0014 8DF80530 		strb	r3, [sp, #5]
+ 134:./Hardware/ESP8266/bsp_esp8266.c **** 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 122              		.loc 1 134 2 is_stmt 1 view .LVU22
+ 123              		.loc 1 134 48 is_stmt 0 view .LVU23
+ 124 0018 8DF80630 		strb	r3, [sp, #6]
+ 135:./Hardware/ESP8266/bsp_esp8266.c **** 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 125              		.loc 1 135 2 is_stmt 1 view .LVU24
+ 126              		.loc 1 135 40 is_stmt 0 view .LVU25
+ 127 001c 0123     		movs	r3, #1
+ 128 001e 8DF80730 		strb	r3, [sp, #7]
+ 136:./Hardware/ESP8266/bsp_esp8266.c **** 	NVIC_Init(&NVIC_InitStructure);
+ 129              		.loc 1 136 2 is_stmt 1 view .LVU26
+ 130 0022 01A8     		add	r0, sp, #4
+ 131 0024 FFF7FEFF 		bl	NVIC_Init
+ 132              	.LVL5:
+ 137:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 138:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 133              		.loc 1 138 1 is_stmt 0 view .LVU27
+ 134 0028 03B0     		add	sp, sp, #12
+ 135              	.LCFI5:
+ 136              		.cfi_def_cfa_offset 4
+ 137              		@ sp needed
+ 138 002a 5DF804FB 		ldr	pc, [sp], #4
+ 139              		.cfi_endproc
+ 140              	.LFE35:
+ 142              		.section	.text.ESP8266_USART_Config,"ax",%progbits
+ 143              		.align	1
+ 144              		.syntax unified
+ 145              		.thumb
+ 146              		.thumb_func
+ 147              		.fpu softvfp
+ 149              	ESP8266_USART_Config:
+ 150              	.LFB34:
+  74:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitTypeDef GPIO_InitStructure;
+ 151              		.loc 1 74 1 is_stmt 1 view -0
+ARM GAS  /tmp/cczVi7mz.s 			page 6
+
+
+ 152              		.cfi_startproc
+ 153              		@ args = 0, pretend = 0, frame = 24
+ 154              		@ frame_needed = 0, uses_anonymous_args = 0
+ 155 0000 30B5     		push	{r4, r5, lr}
+ 156              	.LCFI6:
+ 157              		.cfi_def_cfa_offset 12
+ 158              		.cfi_offset 4, -12
+ 159              		.cfi_offset 5, -8
+ 160              		.cfi_offset 14, -4
+ 161 0002 87B0     		sub	sp, sp, #28
+ 162              	.LCFI7:
+ 163              		.cfi_def_cfa_offset 40
+  75:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitTypeDef USART_InitStructure;
+ 164              		.loc 1 75 2 view .LVU29
+  76:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 165              		.loc 1 76 2 view .LVU30
+  80:./Hardware/ESP8266/bsp_esp8266.c **** 	macESP8266_USART_GPIO_APBxClock_FUN ( macESP8266_USART_GPIO_CLK, ENABLE );
+ 166              		.loc 1 80 2 view .LVU31
+ 167 0004 0121     		movs	r1, #1
+ 168 0006 4FF40030 		mov	r0, #131072
+ 169 000a FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 170              	.LVL6:
+  81:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 171              		.loc 1 81 2 view .LVU32
+ 172 000e 0121     		movs	r1, #1
+ 173 0010 0420     		movs	r0, #4
+ 174 0012 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 175              	.LVL7:
+  85:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+ 176              		.loc 1 85 2 view .LVU33
+  85:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+ 177              		.loc 1 85 30 is_stmt 0 view .LVU34
+ 178 0016 0425     		movs	r5, #4
+ 179 0018 ADF81450 		strh	r5, [sp, #20]	@ movhi
+  86:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 180              		.loc 1 86 2 is_stmt 1 view .LVU35
+  86:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 181              		.loc 1 86 31 is_stmt 0 view .LVU36
+ 182 001c 1823     		movs	r3, #24
+ 183 001e 8DF81730 		strb	r3, [sp, #23]
+  87:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_Init(macESP8266_USART_TX_PORT, &GPIO_InitStructure);  
+ 184              		.loc 1 87 2 is_stmt 1 view .LVU37
+  87:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_Init(macESP8266_USART_TX_PORT, &GPIO_InitStructure);  
+ 185              		.loc 1 87 32 is_stmt 0 view .LVU38
+ 186 0022 0323     		movs	r3, #3
+ 187 0024 8DF81630 		strb	r3, [sp, #22]
+  88:./Hardware/ESP8266/bsp_esp8266.c ****   
+ 188              		.loc 1 88 2 is_stmt 1 view .LVU39
+ 189 0028 1B4C     		ldr	r4, .L9
+ 190 002a 05A9     		add	r1, sp, #20
+ 191 002c 2046     		mov	r0, r4
+ 192 002e FFF7FEFF 		bl	GPIO_Init
+ 193              	.LVL8:
+  91:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+ 194              		.loc 1 91 2 view .LVU40
+  91:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+ 195              		.loc 1 91 30 is_stmt 0 view .LVU41
+ARM GAS  /tmp/cczVi7mz.s 			page 7
+
+
+ 196 0032 0823     		movs	r3, #8
+ 197 0034 ADF81430 		strh	r3, [sp, #20]	@ movhi
+  92:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_Init(macESP8266_USART_RX_PORT, &GPIO_InitStructure);
+ 198              		.loc 1 92 2 is_stmt 1 view .LVU42
+  92:./Hardware/ESP8266/bsp_esp8266.c **** 	GPIO_Init(macESP8266_USART_RX_PORT, &GPIO_InitStructure);
+ 199              		.loc 1 92 31 is_stmt 0 view .LVU43
+ 200 0038 8DF81750 		strb	r5, [sp, #23]
+  93:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 201              		.loc 1 93 2 is_stmt 1 view .LVU44
+ 202 003c 05A9     		add	r1, sp, #20
+ 203 003e 2046     		mov	r0, r4
+ 204 0040 FFF7FEFF 		bl	GPIO_Init
+ 205              	.LVL9:
+  96:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+ 206              		.loc 1 96 2 view .LVU45
+  96:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+ 207              		.loc 1 96 37 is_stmt 0 view .LVU46
+ 208 0044 4FF4E133 		mov	r3, #115200
+ 209 0048 0193     		str	r3, [sp, #4]
+  97:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+ 210              		.loc 1 97 2 is_stmt 1 view .LVU47
+  97:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+ 211              		.loc 1 97 39 is_stmt 0 view .LVU48
+ 212 004a 0023     		movs	r3, #0
+ 213 004c ADF80830 		strh	r3, [sp, #8]	@ movhi
+  98:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_Parity = USART_Parity_No ;
+ 214              		.loc 1 98 2 is_stmt 1 view .LVU49
+  98:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_Parity = USART_Parity_No ;
+ 215              		.loc 1 98 37 is_stmt 0 view .LVU50
+ 216 0050 ADF80A30 		strh	r3, [sp, #10]	@ movhi
+  99:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+ 217              		.loc 1 99 2 is_stmt 1 view .LVU51
+  99:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+ 218              		.loc 1 99 35 is_stmt 0 view .LVU52
+ 219 0054 ADF80C30 		strh	r3, [sp, #12]	@ movhi
+ 100:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+ 220              		.loc 1 100 2 is_stmt 1 view .LVU53
+ 100:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+ 221              		.loc 1 100 48 is_stmt 0 view .LVU54
+ 222 0058 ADF81030 		strh	r3, [sp, #16]	@ movhi
+ 101:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_Init(macESP8266_USARTx, &USART_InitStructure);
+ 223              		.loc 1 101 2 is_stmt 1 view .LVU55
+ 101:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_Init(macESP8266_USARTx, &USART_InitStructure);
+ 224              		.loc 1 101 33 is_stmt 0 view .LVU56
+ 225 005c 0C23     		movs	r3, #12
+ 226 005e ADF80E30 		strh	r3, [sp, #14]	@ movhi
+ 102:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 227              		.loc 1 102 2 is_stmt 1 view .LVU57
+ 228 0062 A4F54444 		sub	r4, r4, #50176
+ 229 0066 0DEB0501 		add	r1, sp, r5
+ 230 006a 2046     		mov	r0, r4
+ 231 006c FFF7FEFF 		bl	USART_Init
+ 232              	.LVL10:
+ 106:./Hardware/ESP8266/bsp_esp8266.c **** 	USART_ITConfig ( macESP8266_USARTx, USART_IT_IDLE, ENABLE ); //使能串口总线空闲中断 	
+ 233              		.loc 1 106 2 view .LVU58
+ 234 0070 0122     		movs	r2, #1
+ 235 0072 40F22551 		movw	r1, #1317
+ARM GAS  /tmp/cczVi7mz.s 			page 8
+
+
+ 236 0076 2046     		mov	r0, r4
+ 237 0078 FFF7FEFF 		bl	USART_ITConfig
+ 238              	.LVL11:
+ 107:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 239              		.loc 1 107 2 view .LVU59
+ 240 007c 0122     		movs	r2, #1
+ 241 007e 40F22441 		movw	r1, #1060
+ 242 0082 2046     		mov	r0, r4
+ 243 0084 FFF7FEFF 		bl	USART_ITConfig
+ 244              	.LVL12:
+ 109:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 245              		.loc 1 109 2 view .LVU60
+ 246 0088 FFF7FEFF 		bl	ESP8266_USART_NVIC_Configuration
+ 247              	.LVL13:
+ 112:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 248              		.loc 1 112 2 view .LVU61
+ 249 008c 0121     		movs	r1, #1
+ 250 008e 2046     		mov	r0, r4
+ 251 0090 FFF7FEFF 		bl	USART_Cmd
+ 252              	.LVL14:
+ 115:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 253              		.loc 1 115 1 is_stmt 0 view .LVU62
+ 254 0094 07B0     		add	sp, sp, #28
+ 255              	.LCFI8:
+ 256              		.cfi_def_cfa_offset 12
+ 257              		@ sp needed
+ 258 0096 30BD     		pop	{r4, r5, pc}
+ 259              	.L10:
+ 260              		.align	2
+ 261              	.L9:
+ 262 0098 00080140 		.word	1073809408
+ 263              		.cfi_endproc
+ 264              	.LFE34:
+ 266              		.section	.text.ESP8266_Init,"ax",%progbits
+ 267              		.align	1
+ 268              		.global	ESP8266_Init
+ 269              		.syntax unified
+ 270              		.thumb
+ 271              		.thumb_func
+ 272              		.fpu softvfp
+ 274              	ESP8266_Init:
+ 275              	.LFB32:
+  20:./Hardware/ESP8266/bsp_esp8266.c **** 	ESP8266_GPIO_Config (); 
+ 276              		.loc 1 20 1 is_stmt 1 view -0
+ 277              		.cfi_startproc
+ 278              		@ args = 0, pretend = 0, frame = 0
+ 279              		@ frame_needed = 0, uses_anonymous_args = 0
+ 280 0000 10B5     		push	{r4, lr}
+ 281              	.LCFI9:
+ 282              		.cfi_def_cfa_offset 8
+ 283              		.cfi_offset 4, -8
+ 284              		.cfi_offset 14, -4
+  21:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 285              		.loc 1 21 2 view .LVU64
+ 286 0002 FFF7FEFF 		bl	ESP8266_GPIO_Config
+ 287              	.LVL15:
+  23:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ARM GAS  /tmp/cczVi7mz.s 			page 9
+
+
+ 288              		.loc 1 23 2 view .LVU65
+ 289 0006 FFF7FEFF 		bl	ESP8266_USART_Config
+ 290              	.LVL16:
+  26:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 291              		.loc 1 26 2 view .LVU66
+ 292 000a 054C     		ldr	r4, .L13
+ 293 000c 1021     		movs	r1, #16
+ 294 000e 2046     		mov	r0, r4
+ 295 0010 FFF7FEFF 		bl	GPIO_SetBits
+ 296              	.LVL17:
+  28:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 297              		.loc 1 28 2 view .LVU67
+ 298 0014 2021     		movs	r1, #32
+ 299 0016 2046     		mov	r0, r4
+ 300 0018 FFF7FEFF 		bl	GPIO_ResetBits
+ 301              	.LVL18:
+  31:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 302              		.loc 1 31 1 is_stmt 0 view .LVU68
+ 303 001c 10BD     		pop	{r4, pc}
+ 304              	.L14:
+ 305 001e 00BF     		.align	2
+ 306              	.L13:
+ 307 0020 00080140 		.word	1073809408
+ 308              		.cfi_endproc
+ 309              	.LFE32:
+ 311              		.section	.text.ESP8266_Rst,"ax",%progbits
+ 312              		.align	1
+ 313              		.global	ESP8266_Rst
+ 314              		.syntax unified
+ 315              		.thumb
+ 316              		.thumb_func
+ 317              		.fpu softvfp
+ 319              	ESP8266_Rst:
+ 320              	.LFB36:
+ 139:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 140:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 141:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 142:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_Rst
+ 143:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：重启WF-ESP8266模块
+ 144:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：无
+ 145:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 无
+ 146:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被 ESP8266_AT_Test 调用
+ 147:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 148:./Hardware/ESP8266/bsp_esp8266.c **** void ESP8266_Rst ( void )
+ 149:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 321              		.loc 1 149 1 is_stmt 1 view -0
+ 322              		.cfi_startproc
+ 323              		@ args = 0, pretend = 0, frame = 0
+ 324              		@ frame_needed = 0, uses_anonymous_args = 0
+ 325 0000 10B5     		push	{r4, lr}
+ 326              	.LCFI10:
+ 327              		.cfi_def_cfa_offset 8
+ 328              		.cfi_offset 4, -8
+ 329              		.cfi_offset 14, -4
+ 150:./Hardware/ESP8266/bsp_esp8266.c **** 	#if 0
+ 151:./Hardware/ESP8266/bsp_esp8266.c **** 	 ESP8266_Cmd ( "AT+RST", "OK", "ready", 2500 );   	
+ 152:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ARM GAS  /tmp/cczVi7mz.s 			page 10
+
+
+ 153:./Hardware/ESP8266/bsp_esp8266.c **** 	#else
+ 154:./Hardware/ESP8266/bsp_esp8266.c **** 	 macESP8266_RST_LOW_LEVEL();
+ 330              		.loc 1 154 3 view .LVU70
+ 331 0002 064C     		ldr	r4, .L17
+ 332 0004 1021     		movs	r1, #16
+ 333 0006 2046     		mov	r0, r4
+ 334 0008 FFF7FEFF 		bl	GPIO_ResetBits
+ 335              	.LVL19:
+ 155:./Hardware/ESP8266/bsp_esp8266.c **** 	 Delay_ms ( 500 ); 
+ 336              		.loc 1 155 3 view .LVU71
+ 337 000c 0448     		ldr	r0, .L17+4
+ 338 000e FFF7FEFF 		bl	CPU_TS_Tmr_Delay_US
+ 339              	.LVL20:
+ 156:./Hardware/ESP8266/bsp_esp8266.c **** 	 macESP8266_RST_HIGH_LEVEL();
+ 340              		.loc 1 156 3 view .LVU72
+ 341 0012 1021     		movs	r1, #16
+ 342 0014 2046     		mov	r0, r4
+ 343 0016 FFF7FEFF 		bl	GPIO_SetBits
+ 344              	.LVL21:
+ 157:./Hardware/ESP8266/bsp_esp8266.c **** 	#endif
+ 158:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 159:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 345              		.loc 1 159 1 is_stmt 0 view .LVU73
+ 346 001a 10BD     		pop	{r4, pc}
+ 347              	.L18:
+ 348              		.align	2
+ 349              	.L17:
+ 350 001c 00080140 		.word	1073809408
+ 351 0020 20A10700 		.word	500000
+ 352              		.cfi_endproc
+ 353              	.LFE36:
+ 355              		.section	.rodata.ESP8266_Cmd.str1.4,"aMS",%progbits,1
+ 356              		.align	2
+ 357              	.LC0:
+ 358 0000 25730D0A 		.ascii	"%s\015\012\000"
+ 358      00
+ 359 0005 000000   		.align	2
+ 360              	.LC1:
+ 361 0008 257300   		.ascii	"%s\000"
+ 362              		.section	.text.ESP8266_Cmd,"ax",%progbits
+ 363              		.align	1
+ 364              		.global	ESP8266_Cmd
+ 365              		.syntax unified
+ 366              		.thumb
+ 367              		.thumb_func
+ 368              		.fpu softvfp
+ 370              	ESP8266_Cmd:
+ 371              	.LVL22:
+ 372              	.LFB37:
+ 160:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 161:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 162:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 163:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_Cmd
+ 164:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：对WF-ESP8266模块发送AT指令
+ 165:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：cmd，待发送的指令
+ 166:./Hardware/ESP8266/bsp_esp8266.c ****  *         reply1，reply2，期待的响应，为NULL表不需响应，两者为或逻辑关系
+ 167:./Hardware/ESP8266/bsp_esp8266.c ****  *         waittime，等待响应的时间
+ARM GAS  /tmp/cczVi7mz.s 			page 11
+
+
+ 168:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 1，指令发送成功
+ 169:./Hardware/ESP8266/bsp_esp8266.c ****  *         0，指令发送失败
+ 170:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 171:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 172:./Hardware/ESP8266/bsp_esp8266.c **** bool ESP8266_Cmd ( char * cmd, char * reply1, char * reply2, u32 waittime )
+ 173:./Hardware/ESP8266/bsp_esp8266.c **** {    
+ 373              		.loc 1 173 1 is_stmt 1 view -0
+ 374              		.cfi_startproc
+ 375              		@ args = 0, pretend = 0, frame = 0
+ 376              		@ frame_needed = 0, uses_anonymous_args = 0
+ 377              		.loc 1 173 1 is_stmt 0 view .LVU75
+ 378 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 379              	.LCFI11:
+ 380              		.cfi_def_cfa_offset 24
+ 381              		.cfi_offset 3, -24
+ 382              		.cfi_offset 4, -20
+ 383              		.cfi_offset 5, -16
+ 384              		.cfi_offset 6, -12
+ 385              		.cfi_offset 7, -8
+ 386              		.cfi_offset 14, -4
+ 387 0002 0D46     		mov	r5, r1
+ 388 0004 1646     		mov	r6, r2
+ 389 0006 1C46     		mov	r4, r3
+ 174:./Hardware/ESP8266/bsp_esp8266.c **** 	strEsp8266_Fram_Record .InfBit .FramLength = 0;               //从新开始接收新的数据包
+ 390              		.loc 1 174 2 is_stmt 1 view .LVU76
+ 391              		.loc 1 174 45 is_stmt 0 view .LVU77
+ 392 0008 284B     		ldr	r3, .L31
+ 393              	.LVL23:
+ 394              		.loc 1 174 45 view .LVU78
+ 395 000a B3F80024 		ldrh	r2, [r3, #1024]
+ 396              	.LVL24:
+ 397              		.loc 1 174 45 view .LVU79
+ 398 000e 6FF30E02 		bfc	r2, #0, #15
+ 399 0012 A3F80024 		strh	r2, [r3, #1024]	@ movhi
+ 175:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 176:./Hardware/ESP8266/bsp_esp8266.c **** 	macESP8266_Usart ( "%s\r\n", cmd );
+ 400              		.loc 1 176 2 is_stmt 1 view .LVU80
+ 401 0016 0246     		mov	r2, r0
+ 402 0018 2549     		ldr	r1, .L31+4
+ 403              	.LVL25:
+ 404              		.loc 1 176 2 is_stmt 0 view .LVU81
+ 405 001a 2648     		ldr	r0, .L31+8
+ 406              	.LVL26:
+ 407              		.loc 1 176 2 view .LVU82
+ 408 001c FFF7FEFF 		bl	USART_printf
+ 409              	.LVL27:
+ 177:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 178:./Hardware/ESP8266/bsp_esp8266.c **** 	if ( ( reply1 == 0 ) && ( reply2 == 0 ) )                      //不需要接收数据
+ 410              		.loc 1 178 2 is_stmt 1 view .LVU83
+ 411              		.loc 1 178 5 is_stmt 0 view .LVU84
+ 412 0020 2DB3     		cbz	r5, .L29
+ 413              	.L20:
+ 179:./Hardware/ESP8266/bsp_esp8266.c **** 		return true;
+ 180:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 181:./Hardware/ESP8266/bsp_esp8266.c **** 	Delay_ms ( waittime );                 //延时
+ 414              		.loc 1 181 2 is_stmt 1 view .LVU85
+ 415 0022 4FF47A70 		mov	r0, #1000
+ARM GAS  /tmp/cczVi7mz.s 			page 12
+
+
+ 416 0026 04FB00F0 		mul	r0, r4, r0
+ 417 002a FFF7FEFF 		bl	CPU_TS_Tmr_Delay_US
+ 418              	.LVL28:
+ 182:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 183:./Hardware/ESP8266/bsp_esp8266.c **** 	strEsp8266_Fram_Record .Data_RX_BUF [ strEsp8266_Fram_Record .InfBit .FramLength ]  = '\0';
+ 419              		.loc 1 183 2 view .LVU86
+ 420              		.loc 1 183 71 is_stmt 0 view .LVU87
+ 421 002e 1F4C     		ldr	r4, .L31
+ 422              	.LVL29:
+ 423              		.loc 1 183 71 view .LVU88
+ 424 0030 B4F80034 		ldrh	r3, [r4, #1024]
+ 425 0034 C3F30E03 		ubfx	r3, r3, #0, #15
+ 426              		.loc 1 183 86 view .LVU89
+ 427 0038 0027     		movs	r7, #0
+ 428 003a E754     		strb	r7, [r4, r3]
+ 184:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 185:./Hardware/ESP8266/bsp_esp8266.c **** 	macPC_Usart ( "%s", strEsp8266_Fram_Record .Data_RX_BUF );
+ 429              		.loc 1 185 2 is_stmt 1 view .LVU90
+ 430 003c 2146     		mov	r1, r4
+ 431 003e 1E48     		ldr	r0, .L31+12
+ 432 0040 FFF7FEFF 		bl	printf
+ 433              	.LVL30:
+ 186:./Hardware/ESP8266/bsp_esp8266.c ****   strEsp8266_Fram_Record .InfBit .FramLength = 0;                             //清除接收标志
+ 434              		.loc 1 186 3 view .LVU91
+ 435              		.loc 1 186 46 is_stmt 0 view .LVU92
+ 436 0044 B4F80034 		ldrh	r3, [r4, #1024]
+ 437 0048 67F30E03 		bfi	r3, r7, #0, #15
+ 438 004c A4F80034 		strh	r3, [r4, #1024]	@ movhi
+ 187:./Hardware/ESP8266/bsp_esp8266.c **** 	strEsp8266_Fram_Record.InfBit.FramFinishFlag = 0;                             
+ 439              		.loc 1 187 2 is_stmt 1 view .LVU93
+ 440              		.loc 1 187 47 is_stmt 0 view .LVU94
+ 441 0050 B4F80034 		ldrh	r3, [r4, #1024]
+ 442 0054 67F3CF33 		bfi	r3, r7, #15, #1
+ 443 0058 A4F80034 		strh	r3, [r4, #1024]	@ movhi
+ 188:./Hardware/ESP8266/bsp_esp8266.c **** 	if ( ( reply1 != 0 ) && ( reply2 != 0 ) )
+ 444              		.loc 1 188 2 is_stmt 1 view .LVU95
+ 445              		.loc 1 188 5 is_stmt 0 view .LVU96
+ 446 005c A5B1     		cbz	r5, .L22
+ 447              		.loc 1 188 23 discriminator 1 view .LVU97
+ 448 005e 9EB1     		cbz	r6, .L22
+ 189:./Hardware/ESP8266/bsp_esp8266.c **** 		return ( ( bool ) strstr ( strEsp8266_Fram_Record .Data_RX_BUF, reply1 ) || 
+ 449              		.loc 1 189 3 is_stmt 1 view .LVU98
+ 450              		.loc 1 189 21 is_stmt 0 view .LVU99
+ 451 0060 2946     		mov	r1, r5
+ 452 0062 2046     		mov	r0, r4
+ 453 0064 FFF7FEFF 		bl	strstr
+ 454              	.LVL31:
+ 455              		.loc 1 189 76 view .LVU100
+ 456 0068 28B1     		cbz	r0, .L30
+ 457 006a 0120     		movs	r0, #1
+ 458 006c 14E0     		b	.L21
+ 459              	.LVL32:
+ 460              	.L29:
+ 178:./Hardware/ESP8266/bsp_esp8266.c **** 		return true;
+ 461              		.loc 1 178 23 discriminator 1 view .LVU101
+ 462 006e 002E     		cmp	r6, #0
+ 463 0070 D7D1     		bne	.L20
+ARM GAS  /tmp/cczVi7mz.s 			page 13
+
+
+ 179:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 464              		.loc 1 179 10 view .LVU102
+ 465 0072 0120     		movs	r0, #1
+ 466 0074 10E0     		b	.L21
+ 467              	.LVL33:
+ 468              	.L30:
+ 190:./Hardware/ESP8266/bsp_esp8266.c **** 						 ( bool ) strstr ( strEsp8266_Fram_Record .Data_RX_BUF, reply2 ) ); 
+ 469              		.loc 1 190 17 discriminator 2 view .LVU103
+ 470 0076 3146     		mov	r1, r6
+ 471 0078 2046     		mov	r0, r4
+ 472 007a FFF7FEFF 		bl	strstr
+ 473              	.LVL34:
+ 189:./Hardware/ESP8266/bsp_esp8266.c **** 						 ( bool ) strstr ( strEsp8266_Fram_Record .Data_RX_BUF, reply2 ) ); 
+ 474              		.loc 1 189 76 discriminator 2 view .LVU104
+ 475 007e 08B1     		cbz	r0, .L27
+ 189:./Hardware/ESP8266/bsp_esp8266.c **** 						 ( bool ) strstr ( strEsp8266_Fram_Record .Data_RX_BUF, reply2 ) ); 
+ 476              		.loc 1 189 76 view .LVU105
+ 477 0080 0120     		movs	r0, #1
+ 478 0082 09E0     		b	.L21
+ 479              	.L27:
+ 480 0084 0020     		movs	r0, #0
+ 481 0086 07E0     		b	.L21
+ 482              	.L22:
+ 191:./Hardware/ESP8266/bsp_esp8266.c ****  	
+ 192:./Hardware/ESP8266/bsp_esp8266.c **** 	else if ( reply1 != 0 )
+ 483              		.loc 1 192 7 is_stmt 1 view .LVU106
+ 484              		.loc 1 192 10 is_stmt 0 view .LVU107
+ 485 0088 3DB1     		cbz	r5, .L24
+ 193:./Hardware/ESP8266/bsp_esp8266.c **** 		return ( ( bool ) strstr ( strEsp8266_Fram_Record .Data_RX_BUF, reply1 ) );
+ 486              		.loc 1 193 3 is_stmt 1 view .LVU108
+ 487              		.loc 1 193 21 is_stmt 0 view .LVU109
+ 488 008a 2946     		mov	r1, r5
+ 489 008c 0748     		ldr	r0, .L31
+ 490 008e FFF7FEFF 		bl	strstr
+ 491              	.LVL35:
+ 492              		.loc 1 193 12 view .LVU110
+ 493 0092 0038     		subs	r0, r0, #0
+ 494 0094 18BF     		it	ne
+ 495 0096 0120     		movne	r0, #1
+ 496              	.L21:
+ 194:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 195:./Hardware/ESP8266/bsp_esp8266.c **** 	else
+ 196:./Hardware/ESP8266/bsp_esp8266.c **** 		return ( ( bool ) strstr ( strEsp8266_Fram_Record .Data_RX_BUF, reply2 ) );
+ 197:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 198:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 497              		.loc 1 198 1 view .LVU111
+ 498 0098 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 499              	.LVL36:
+ 500              	.L24:
+ 196:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 501              		.loc 1 196 3 is_stmt 1 view .LVU112
+ 196:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 502              		.loc 1 196 21 is_stmt 0 view .LVU113
+ 503 009a 3146     		mov	r1, r6
+ 504 009c 0348     		ldr	r0, .L31
+ 505 009e FFF7FEFF 		bl	strstr
+ 506              	.LVL37:
+ARM GAS  /tmp/cczVi7mz.s 			page 14
+
+
+ 196:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 507              		.loc 1 196 12 view .LVU114
+ 508 00a2 0038     		subs	r0, r0, #0
+ 509 00a4 18BF     		it	ne
+ 510 00a6 0120     		movne	r0, #1
+ 511 00a8 F6E7     		b	.L21
+ 512              	.L32:
+ 513 00aa 00BF     		.align	2
+ 514              	.L31:
+ 515 00ac 00000000 		.word	.LANCHOR0
+ 516 00b0 00000000 		.word	.LC0
+ 517 00b4 00440040 		.word	1073759232
+ 518 00b8 08000000 		.word	.LC1
+ 519              		.cfi_endproc
+ 520              	.LFE37:
+ 522              		.section	.rodata.ESP8266_AT_Test.str1.4,"aMS",%progbits,1
+ 523              		.align	2
+ 524              	.LC2:
+ 525 0000 0D0A4154 		.ascii	"\015\012AT test.....\015\000"
+ 525      20746573 
+ 525      742E2E2E 
+ 525      2E2E0D00 
+ 526              		.align	2
+ 527              	.LC3:
+ 528 0010 0D0A4154 		.ascii	"\015\012AT Testing frequency: %d......\015\012\000"
+ 528      20546573 
+ 528      74696E67 
+ 528      20667265 
+ 528      7175656E 
+ 529 0033 00       		.align	2
+ 530              	.LC4:
+ 531 0034 4F4B00   		.ascii	"OK\000"
+ 532 0037 00       		.align	2
+ 533              	.LC5:
+ 534 0038 415400   		.ascii	"AT\000"
+ 535 003b 00       		.align	2
+ 536              	.LC6:
+ 537 003c 0D0A4154 		.ascii	"\015\012AT Test started successfully: %d......\015\012"
+ 537      20546573 
+ 537      74207374 
+ 537      61727465 
+ 537      64207375 
+ 538 0066 00       		.ascii	"\000"
+ 539              		.section	.text.ESP8266_AT_Test,"ax",%progbits
+ 540              		.align	1
+ 541              		.global	ESP8266_AT_Test
+ 542              		.syntax unified
+ 543              		.thumb
+ 544              		.thumb_func
+ 545              		.fpu softvfp
+ 547              	ESP8266_AT_Test:
+ 548              	.LFB38:
+ 199:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 200:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 201:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 202:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_AT_Test
+ 203:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：对WF-ESP8266模块进行AT测试启动
+ARM GAS  /tmp/cczVi7mz.s 			page 15
+
+
+ 204:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：无
+ 205:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 无
+ 206:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 207:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 208:./Hardware/ESP8266/bsp_esp8266.c **** //void ESP8266_AT_Test ( void )
+ 209:./Hardware/ESP8266/bsp_esp8266.c **** //{
+ 210:./Hardware/ESP8266/bsp_esp8266.c **** //	macESP8266_RST_HIGH_LEVEL();
+ 211:./Hardware/ESP8266/bsp_esp8266.c **** //	
+ 212:./Hardware/ESP8266/bsp_esp8266.c **** //	Delay_ms ( 1000 ); 
+ 213:./Hardware/ESP8266/bsp_esp8266.c **** //	
+ 214:./Hardware/ESP8266/bsp_esp8266.c **** //	while ( ! ESP8266_Cmd ( "AT", "OK", NULL, 500 ) ) ESP8266_Rst ();  	
+ 215:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 216:./Hardware/ESP8266/bsp_esp8266.c **** //}
+ 217:./Hardware/ESP8266/bsp_esp8266.c **** bool ESP8266_AT_Test ( void )
+ 218:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 549              		.loc 1 218 1 is_stmt 1 view -0
+ 550              		.cfi_startproc
+ 551              		@ args = 0, pretend = 0, frame = 0
+ 552              		@ frame_needed = 0, uses_anonymous_args = 0
+ 553 0000 70B5     		push	{r4, r5, r6, lr}
+ 554              	.LCFI12:
+ 555              		.cfi_def_cfa_offset 16
+ 556              		.cfi_offset 4, -16
+ 557              		.cfi_offset 5, -12
+ 558              		.cfi_offset 6, -8
+ 559              		.cfi_offset 14, -4
+ 219:./Hardware/ESP8266/bsp_esp8266.c **** 	char count=0;
+ 560              		.loc 1 219 2 view .LVU116
+ 561              	.LVL38:
+ 220:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 221:./Hardware/ESP8266/bsp_esp8266.c **** 	macESP8266_RST_HIGH_LEVEL();	
+ 562              		.loc 1 221 2 view .LVU117
+ 563 0002 1021     		movs	r1, #16
+ 564 0004 1248     		ldr	r0, .L41
+ 565 0006 FFF7FEFF 		bl	GPIO_SetBits
+ 566              	.LVL39:
+ 222:./Hardware/ESP8266/bsp_esp8266.c ****   printf("\r\nAT test.....\r\n");
+ 567              		.loc 1 222 3 view .LVU118
+ 568 000a 1248     		ldr	r0, .L41+4
+ 569 000c FFF7FEFF 		bl	puts
+ 570              	.LVL40:
+ 223:./Hardware/ESP8266/bsp_esp8266.c **** 	Delay_ms ( 2000 );
+ 571              		.loc 1 223 2 view .LVU119
+ 572 0010 1148     		ldr	r0, .L41+8
+ 573 0012 FFF7FEFF 		bl	CPU_TS_Tmr_Delay_US
+ 574              	.LVL41:
+ 224:./Hardware/ESP8266/bsp_esp8266.c **** 	while ( count < 10 )
+ 575              		.loc 1 224 2 view .LVU120
+ 219:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 576              		.loc 1 219 7 is_stmt 0 view .LVU121
+ 577 0016 0024     		movs	r4, #0
+ 578              	.LVL42:
+ 579              	.L34:
+ 580              		.loc 1 224 8 is_stmt 1 view .LVU122
+ 581 0018 092C     		cmp	r4, #9
+ 582 001a 16D8     		bhi	.L39
+ 225:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ARM GAS  /tmp/cczVi7mz.s 			page 16
+
+
+ 226:./Hardware/ESP8266/bsp_esp8266.c ****     printf("\r\nAT Testing frequency: %d......\r\n", count);
+ 583              		.loc 1 226 5 view .LVU123
+ 584 001c 2146     		mov	r1, r4
+ 585 001e 0F48     		ldr	r0, .L41+12
+ 586 0020 FFF7FEFF 		bl	printf
+ 587              	.LVL43:
+ 227:./Hardware/ESP8266/bsp_esp8266.c **** 		if( ESP8266_Cmd ( "AT", "OK", NULL, 500 ) )
+ 588              		.loc 1 227 3 view .LVU124
+ 589              		.loc 1 227 7 is_stmt 0 view .LVU125
+ 590 0024 4FF4FA73 		mov	r3, #500
+ 591 0028 0022     		movs	r2, #0
+ 592 002a 0D49     		ldr	r1, .L41+16
+ 593 002c 0D48     		ldr	r0, .L41+20
+ 594 002e FFF7FEFF 		bl	ESP8266_Cmd
+ 595              	.LVL44:
+ 596              		.loc 1 227 5 view .LVU126
+ 597 0032 0546     		mov	r5, r0
+ 598 0034 20B9     		cbnz	r0, .L40
+ 228:./Hardware/ESP8266/bsp_esp8266.c ****     {
+ 229:./Hardware/ESP8266/bsp_esp8266.c ****       printf("\r\nAT Test started successfully: %d......\r\n", count);
+ 230:./Hardware/ESP8266/bsp_esp8266.c ****       return 1;
+ 231:./Hardware/ESP8266/bsp_esp8266.c ****     }
+ 232:./Hardware/ESP8266/bsp_esp8266.c **** 		ESP8266_Rst();
+ 599              		.loc 1 232 3 is_stmt 1 view .LVU127
+ 600 0036 FFF7FEFF 		bl	ESP8266_Rst
+ 601              	.LVL45:
+ 233:./Hardware/ESP8266/bsp_esp8266.c **** 		++ count;
+ 602              		.loc 1 233 3 view .LVU128
+ 603 003a 0134     		adds	r4, r4, #1
+ 604              	.LVL46:
+ 605              		.loc 1 233 3 is_stmt 0 view .LVU129
+ 606 003c E4B2     		uxtb	r4, r4
+ 607              	.LVL47:
+ 608              		.loc 1 233 3 view .LVU130
+ 609 003e EBE7     		b	.L34
+ 610              	.L40:
+ 229:./Hardware/ESP8266/bsp_esp8266.c ****       return 1;
+ 611              		.loc 1 229 7 is_stmt 1 view .LVU131
+ 612 0040 2146     		mov	r1, r4
+ 613 0042 0948     		ldr	r0, .L41+24
+ 614 0044 FFF7FEFF 		bl	printf
+ 615              	.LVL48:
+ 230:./Hardware/ESP8266/bsp_esp8266.c ****     }
+ 616              		.loc 1 230 7 view .LVU132
+ 230:./Hardware/ESP8266/bsp_esp8266.c ****     }
+ 617              		.loc 1 230 14 is_stmt 0 view .LVU133
+ 618 0048 00E0     		b	.L36
+ 619              	.L39:
+ 234:./Hardware/ESP8266/bsp_esp8266.c **** 	}
+ 235:./Hardware/ESP8266/bsp_esp8266.c ****   return 0;
+ 620              		.loc 1 235 10 view .LVU134
+ 621 004a 0025     		movs	r5, #0
+ 622              	.L36:
+ 236:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 623              		.loc 1 236 1 view .LVU135
+ 624 004c 2846     		mov	r0, r5
+ 625 004e 70BD     		pop	{r4, r5, r6, pc}
+ARM GAS  /tmp/cczVi7mz.s 			page 17
+
+
+ 626              	.LVL49:
+ 627              	.L42:
+ 628              		.loc 1 236 1 view .LVU136
+ 629              		.align	2
+ 630              	.L41:
+ 631 0050 00080140 		.word	1073809408
+ 632 0054 00000000 		.word	.LC2
+ 633 0058 80841E00 		.word	2000000
+ 634 005c 10000000 		.word	.LC3
+ 635 0060 34000000 		.word	.LC4
+ 636 0064 38000000 		.word	.LC5
+ 637 0068 3C000000 		.word	.LC6
+ 638              		.cfi_endproc
+ 639              	.LFE38:
+ 641              		.section	.rodata.ESP8266_Net_Mode_Choose.str1.4,"aMS",%progbits,1
+ 642              		.align	2
+ 643              	.LC7:
+ 644 0000 6E6F2063 		.ascii	"no change\000"
+ 644      68616E67 
+ 644      6500
+ 645 000a 0000     		.align	2
+ 646              	.LC8:
+ 647 000c 41542B43 		.ascii	"AT+CWMODE=1\000"
+ 647      574D4F44 
+ 647      453D3100 
+ 648              		.align	2
+ 649              	.LC9:
+ 650 0018 41542B43 		.ascii	"AT+CWMODE=2\000"
+ 650      574D4F44 
+ 650      453D3200 
+ 651              		.align	2
+ 652              	.LC10:
+ 653 0024 41542B43 		.ascii	"AT+CWMODE=3\000"
+ 653      574D4F44 
+ 653      453D3300 
+ 654              		.section	.text.ESP8266_Net_Mode_Choose,"ax",%progbits
+ 655              		.align	1
+ 656              		.global	ESP8266_Net_Mode_Choose
+ 657              		.syntax unified
+ 658              		.thumb
+ 659              		.thumb_func
+ 660              		.fpu softvfp
+ 662              	ESP8266_Net_Mode_Choose:
+ 663              	.LVL50:
+ 664              	.LFB39:
+ 237:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 238:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 239:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 240:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_Net_Mode_Choose
+ 241:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：选择WF-ESP8266模块的工作模式
+ 242:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：enumMode，工作模式
+ 243:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 1，选择成功
+ 244:./Hardware/ESP8266/bsp_esp8266.c ****  *         0，选择失败
+ 245:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 246:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 247:./Hardware/ESP8266/bsp_esp8266.c **** bool ESP8266_Net_Mode_Choose ( ENUM_Net_ModeTypeDef enumMode )
+ 248:./Hardware/ESP8266/bsp_esp8266.c **** {
+ARM GAS  /tmp/cczVi7mz.s 			page 18
+
+
+ 665              		.loc 1 248 1 is_stmt 1 view -0
+ 666              		.cfi_startproc
+ 667              		@ args = 0, pretend = 0, frame = 0
+ 668              		@ frame_needed = 0, uses_anonymous_args = 0
+ 669              		.loc 1 248 1 is_stmt 0 view .LVU138
+ 670 0000 08B5     		push	{r3, lr}
+ 671              	.LCFI13:
+ 672              		.cfi_def_cfa_offset 8
+ 673              		.cfi_offset 3, -8
+ 674              		.cfi_offset 14, -4
+ 249:./Hardware/ESP8266/bsp_esp8266.c **** 	switch ( enumMode )
+ 675              		.loc 1 249 2 is_stmt 1 view .LVU139
+ 676 0002 0128     		cmp	r0, #1
+ 677 0004 0CD0     		beq	.L44
+ 678 0006 0228     		cmp	r0, #2
+ 679 0008 12D0     		beq	.L45
+ 680 000a 08B1     		cbz	r0, .L49
+ 681 000c 0020     		movs	r0, #0
+ 682              	.LVL51:
+ 683              	.L46:
+ 250:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 251:./Hardware/ESP8266/bsp_esp8266.c **** 		case STA:
+ 252:./Hardware/ESP8266/bsp_esp8266.c **** 			return ESP8266_Cmd ( "AT+CWMODE=1", "OK", "no change", 2500 ); 
+ 253:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 254:./Hardware/ESP8266/bsp_esp8266.c **** 	  case AP:
+ 255:./Hardware/ESP8266/bsp_esp8266.c **** 		  return ESP8266_Cmd ( "AT+CWMODE=2", "OK", "no change", 2500 ); 
+ 256:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 257:./Hardware/ESP8266/bsp_esp8266.c **** 		case STA_AP:
+ 258:./Hardware/ESP8266/bsp_esp8266.c **** 		  return ESP8266_Cmd ( "AT+CWMODE=3", "OK", "no change", 2500 ); 
+ 259:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 260:./Hardware/ESP8266/bsp_esp8266.c **** 	  default:
+ 261:./Hardware/ESP8266/bsp_esp8266.c **** 		  return false;
+ 262:./Hardware/ESP8266/bsp_esp8266.c ****   }
+ 263:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 264:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 684              		.loc 1 264 1 is_stmt 0 view .LVU140
+ 685 000e 08BD     		pop	{r3, pc}
+ 686              	.LVL52:
+ 687              	.L49:
+ 252:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 688              		.loc 1 252 4 is_stmt 1 view .LVU141
+ 252:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 689              		.loc 1 252 11 is_stmt 0 view .LVU142
+ 690 0010 40F6C413 		movw	r3, #2500
+ 691 0014 0A4A     		ldr	r2, .L50
+ 692 0016 0B49     		ldr	r1, .L50+4
+ 693 0018 0B48     		ldr	r0, .L50+8
+ 694              	.LVL53:
+ 252:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 695              		.loc 1 252 11 view .LVU143
+ 696 001a FFF7FEFF 		bl	ESP8266_Cmd
+ 697              	.LVL54:
+ 698 001e F6E7     		b	.L46
+ 699              	.LVL55:
+ 700              	.L44:
+ 255:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 701              		.loc 1 255 5 is_stmt 1 view .LVU144
+ARM GAS  /tmp/cczVi7mz.s 			page 19
+
+
+ 255:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 702              		.loc 1 255 12 is_stmt 0 view .LVU145
+ 703 0020 40F6C413 		movw	r3, #2500
+ 704 0024 064A     		ldr	r2, .L50
+ 705 0026 0749     		ldr	r1, .L50+4
+ 706 0028 0848     		ldr	r0, .L50+12
+ 707              	.LVL56:
+ 255:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 708              		.loc 1 255 12 view .LVU146
+ 709 002a FFF7FEFF 		bl	ESP8266_Cmd
+ 710              	.LVL57:
+ 711 002e EEE7     		b	.L46
+ 712              	.LVL58:
+ 713              	.L45:
+ 258:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 714              		.loc 1 258 5 is_stmt 1 view .LVU147
+ 258:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 715              		.loc 1 258 12 is_stmt 0 view .LVU148
+ 716 0030 40F6C413 		movw	r3, #2500
+ 717 0034 024A     		ldr	r2, .L50
+ 718 0036 0349     		ldr	r1, .L50+4
+ 719 0038 0548     		ldr	r0, .L50+16
+ 720              	.LVL59:
+ 258:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 721              		.loc 1 258 12 view .LVU149
+ 722 003a FFF7FEFF 		bl	ESP8266_Cmd
+ 723              	.LVL60:
+ 724 003e E6E7     		b	.L46
+ 725              	.L51:
+ 726              		.align	2
+ 727              	.L50:
+ 728 0040 00000000 		.word	.LC7
+ 729 0044 34000000 		.word	.LC4
+ 730 0048 0C000000 		.word	.LC8
+ 731 004c 18000000 		.word	.LC9
+ 732 0050 24000000 		.word	.LC10
+ 733              		.cfi_endproc
+ 734              	.LFE39:
+ 736              		.section	.rodata.ESP8266_JoinAP.str1.4,"aMS",%progbits,1
+ 737              		.align	2
+ 738              	.LC11:
+ 739 0000 41542B43 		.ascii	"AT+CWJAP=\"%s\",\"%s\"\000"
+ 739      574A4150 
+ 739      3D222573 
+ 739      222C2225 
+ 739      732200
+ 740              		.section	.text.ESP8266_JoinAP,"ax",%progbits
+ 741              		.align	1
+ 742              		.global	ESP8266_JoinAP
+ 743              		.syntax unified
+ 744              		.thumb
+ 745              		.thumb_func
+ 746              		.fpu softvfp
+ 748              	ESP8266_JoinAP:
+ 749              	.LVL61:
+ 750              	.LFB40:
+ 265:./Hardware/ESP8266/bsp_esp8266.c **** 
+ARM GAS  /tmp/cczVi7mz.s 			page 20
+
+
+ 266:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 267:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 268:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_JoinAP
+ 269:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：WF-ESP8266模块连接外部WiFi
+ 270:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：pSSID，WiFi名称字符串
+ 271:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：pPassWord，WiFi密码字符串
+ 272:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 1，连接成功
+ 273:./Hardware/ESP8266/bsp_esp8266.c ****  *         0，连接失败
+ 274:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 275:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 276:./Hardware/ESP8266/bsp_esp8266.c **** bool ESP8266_JoinAP ( char * pSSID, char * pPassWord )
+ 277:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 751              		.loc 1 277 1 is_stmt 1 view -0
+ 752              		.cfi_startproc
+ 753              		@ args = 0, pretend = 0, frame = 120
+ 754              		@ frame_needed = 0, uses_anonymous_args = 0
+ 755              		.loc 1 277 1 is_stmt 0 view .LVU151
+ 756 0000 00B5     		push	{lr}
+ 757              	.LCFI14:
+ 758              		.cfi_def_cfa_offset 4
+ 759              		.cfi_offset 14, -4
+ 760 0002 9FB0     		sub	sp, sp, #124
+ 761              	.LCFI15:
+ 762              		.cfi_def_cfa_offset 128
+ 763 0004 0246     		mov	r2, r0
+ 764 0006 0B46     		mov	r3, r1
+ 278:./Hardware/ESP8266/bsp_esp8266.c **** 	char cCmd [120];
+ 765              		.loc 1 278 2 is_stmt 1 view .LVU152
+ 279:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 280:./Hardware/ESP8266/bsp_esp8266.c **** 	sprintf ( cCmd, "AT+CWJAP=\"%s\",\"%s\"", pSSID, pPassWord );
+ 766              		.loc 1 280 2 view .LVU153
+ 767 0008 0649     		ldr	r1, .L54
+ 768              	.LVL62:
+ 769              		.loc 1 280 2 is_stmt 0 view .LVU154
+ 770 000a 6846     		mov	r0, sp
+ 771              	.LVL63:
+ 772              		.loc 1 280 2 view .LVU155
+ 773 000c FFF7FEFF 		bl	sprintf
+ 774              	.LVL64:
+ 281:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 282:./Hardware/ESP8266/bsp_esp8266.c **** 	return ESP8266_Cmd ( cCmd, "OK", NULL, 5000 );
+ 775              		.loc 1 282 2 is_stmt 1 view .LVU156
+ 776              		.loc 1 282 9 is_stmt 0 view .LVU157
+ 777 0010 41F28833 		movw	r3, #5000
+ 778 0014 0022     		movs	r2, #0
+ 779 0016 0449     		ldr	r1, .L54+4
+ 780 0018 6846     		mov	r0, sp
+ 781 001a FFF7FEFF 		bl	ESP8266_Cmd
+ 782              	.LVL65:
+ 283:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 284:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 783              		.loc 1 284 1 view .LVU158
+ 784 001e 1FB0     		add	sp, sp, #124
+ 785              	.LCFI16:
+ 786              		.cfi_def_cfa_offset 4
+ 787              		@ sp needed
+ 788 0020 5DF804FB 		ldr	pc, [sp], #4
+ARM GAS  /tmp/cczVi7mz.s 			page 21
+
+
+ 789              	.L55:
+ 790              		.align	2
+ 791              	.L54:
+ 792 0024 00000000 		.word	.LC11
+ 793 0028 34000000 		.word	.LC4
+ 794              		.cfi_endproc
+ 795              	.LFE40:
+ 797              		.section	.rodata.ESP8266_BuildAP.str1.4,"aMS",%progbits,1
+ 798              		.align	2
+ 799              	.LC12:
+ 800 0000 41542B43 		.ascii	"AT+CWSAP=\"%s\",\"%s\",1,%d\000"
+ 800      57534150 
+ 800      3D222573 
+ 800      222C2225 
+ 800      73222C31 
+ 801              		.section	.text.ESP8266_BuildAP,"ax",%progbits
+ 802              		.align	1
+ 803              		.global	ESP8266_BuildAP
+ 804              		.syntax unified
+ 805              		.thumb
+ 806              		.thumb_func
+ 807              		.fpu softvfp
+ 809              	ESP8266_BuildAP:
+ 810              	.LVL66:
+ 811              	.LFB41:
+ 285:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 286:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 287:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 288:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_BuildAP
+ 289:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：WF-ESP8266模块创建WiFi热点
+ 290:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：pSSID，WiFi名称字符串
+ 291:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：pPassWord，WiFi密码字符串
+ 292:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：enunPsdMode，WiFi加密方式代号字符串
+ 293:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 1，创建成功
+ 294:./Hardware/ESP8266/bsp_esp8266.c ****  *         0，创建失败
+ 295:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 296:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 297:./Hardware/ESP8266/bsp_esp8266.c **** bool ESP8266_BuildAP ( char * pSSID, char * pPassWord, ENUM_AP_PsdMode_TypeDef enunPsdMode )
+ 298:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 812              		.loc 1 298 1 is_stmt 1 view -0
+ 813              		.cfi_startproc
+ 814              		@ args = 0, pretend = 0, frame = 120
+ 815              		@ frame_needed = 0, uses_anonymous_args = 0
+ 816              		.loc 1 298 1 is_stmt 0 view .LVU160
+ 817 0000 00B5     		push	{lr}
+ 818              	.LCFI17:
+ 819              		.cfi_def_cfa_offset 4
+ 820              		.cfi_offset 14, -4
+ 821 0002 A1B0     		sub	sp, sp, #132
+ 822              	.LCFI18:
+ 823              		.cfi_def_cfa_offset 136
+ 824 0004 0B46     		mov	r3, r1
+ 299:./Hardware/ESP8266/bsp_esp8266.c **** 	char cCmd [120];
+ 825              		.loc 1 299 2 is_stmt 1 view .LVU161
+ 300:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 301:./Hardware/ESP8266/bsp_esp8266.c **** 	sprintf ( cCmd, "AT+CWSAP=\"%s\",\"%s\",1,%d", pSSID, pPassWord, enunPsdMode );
+ 826              		.loc 1 301 2 view .LVU162
+ARM GAS  /tmp/cczVi7mz.s 			page 22
+
+
+ 827 0006 0092     		str	r2, [sp]
+ 828 0008 0246     		mov	r2, r0
+ 829              	.LVL67:
+ 830              		.loc 1 301 2 is_stmt 0 view .LVU163
+ 831 000a 0749     		ldr	r1, .L58
+ 832              	.LVL68:
+ 833              		.loc 1 301 2 view .LVU164
+ 834 000c 02A8     		add	r0, sp, #8
+ 835              	.LVL69:
+ 836              		.loc 1 301 2 view .LVU165
+ 837 000e FFF7FEFF 		bl	sprintf
+ 838              	.LVL70:
+ 302:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 303:./Hardware/ESP8266/bsp_esp8266.c **** 	return ESP8266_Cmd ( cCmd, "OK", 0, 1000 );
+ 839              		.loc 1 303 2 is_stmt 1 view .LVU166
+ 840              		.loc 1 303 9 is_stmt 0 view .LVU167
+ 841 0012 4FF47A73 		mov	r3, #1000
+ 842 0016 0022     		movs	r2, #0
+ 843 0018 0449     		ldr	r1, .L58+4
+ 844 001a 02A8     		add	r0, sp, #8
+ 845 001c FFF7FEFF 		bl	ESP8266_Cmd
+ 846              	.LVL71:
+ 304:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 305:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 847              		.loc 1 305 1 view .LVU168
+ 848 0020 21B0     		add	sp, sp, #132
+ 849              	.LCFI19:
+ 850              		.cfi_def_cfa_offset 4
+ 851              		@ sp needed
+ 852 0022 5DF804FB 		ldr	pc, [sp], #4
+ 853              	.L59:
+ 854 0026 00BF     		.align	2
+ 855              	.L58:
+ 856 0028 00000000 		.word	.LC12
+ 857 002c 34000000 		.word	.LC4
+ 858              		.cfi_endproc
+ 859              	.LFE41:
+ 861              		.section	.rodata.ESP8266_Enable_MultipleId.str1.4,"aMS",%progbits,1
+ 862              		.align	2
+ 863              	.LC13:
+ 864 0000 41542B43 		.ascii	"AT+CIPMUX=%d\000"
+ 864      49504D55 
+ 864      583D2564 
+ 864      00
+ 865              		.section	.text.ESP8266_Enable_MultipleId,"ax",%progbits
+ 866              		.align	1
+ 867              		.global	ESP8266_Enable_MultipleId
+ 868              		.syntax unified
+ 869              		.thumb
+ 870              		.thumb_func
+ 871              		.fpu softvfp
+ 873              	ESP8266_Enable_MultipleId:
+ 874              	.LVL72:
+ 875              	.LFB42:
+ 306:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 307:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 308:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ARM GAS  /tmp/cczVi7mz.s 			page 23
+
+
+ 309:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_Enable_MultipleId
+ 310:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：WF-ESP8266模块启动多连接
+ 311:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：enumEnUnvarnishTx，配置是否多连接
+ 312:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 1，配置成功
+ 313:./Hardware/ESP8266/bsp_esp8266.c ****  *         0，配置失败
+ 314:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 315:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 316:./Hardware/ESP8266/bsp_esp8266.c **** bool ESP8266_Enable_MultipleId ( FunctionalState enumEnUnvarnishTx )
+ 317:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 876              		.loc 1 317 1 is_stmt 1 view -0
+ 877              		.cfi_startproc
+ 878              		@ args = 0, pretend = 0, frame = 24
+ 879              		@ frame_needed = 0, uses_anonymous_args = 0
+ 880              		.loc 1 317 1 is_stmt 0 view .LVU170
+ 881 0000 00B5     		push	{lr}
+ 882              	.LCFI20:
+ 883              		.cfi_def_cfa_offset 4
+ 884              		.cfi_offset 14, -4
+ 885 0002 87B0     		sub	sp, sp, #28
+ 886              	.LCFI21:
+ 887              		.cfi_def_cfa_offset 32
+ 318:./Hardware/ESP8266/bsp_esp8266.c **** 	char cStr [20];
+ 888              		.loc 1 318 2 is_stmt 1 view .LVU171
+ 319:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 320:./Hardware/ESP8266/bsp_esp8266.c **** 	sprintf ( cStr, "AT+CIPMUX=%d", ( enumEnUnvarnishTx ? 1 : 0 ) );
+ 889              		.loc 1 320 2 view .LVU172
+ 890 0004 021E     		subs	r2, r0, #0
+ 891 0006 18BF     		it	ne
+ 892 0008 0122     		movne	r2, #1
+ 893 000a 0749     		ldr	r1, .L62
+ 894 000c 01A8     		add	r0, sp, #4
+ 895              	.LVL73:
+ 896              		.loc 1 320 2 is_stmt 0 view .LVU173
+ 897 000e FFF7FEFF 		bl	sprintf
+ 898              	.LVL74:
+ 321:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 322:./Hardware/ESP8266/bsp_esp8266.c **** 	return ESP8266_Cmd ( cStr, "OK", 0, 500 );
+ 899              		.loc 1 322 2 is_stmt 1 view .LVU174
+ 900              		.loc 1 322 9 is_stmt 0 view .LVU175
+ 901 0012 4FF4FA73 		mov	r3, #500
+ 902 0016 0022     		movs	r2, #0
+ 903 0018 0449     		ldr	r1, .L62+4
+ 904 001a 01A8     		add	r0, sp, #4
+ 905 001c FFF7FEFF 		bl	ESP8266_Cmd
+ 906              	.LVL75:
+ 323:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 324:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 907              		.loc 1 324 1 view .LVU176
+ 908 0020 07B0     		add	sp, sp, #28
+ 909              	.LCFI22:
+ 910              		.cfi_def_cfa_offset 4
+ 911              		@ sp needed
+ 912 0022 5DF804FB 		ldr	pc, [sp], #4
+ 913              	.L63:
+ 914 0026 00BF     		.align	2
+ 915              	.L62:
+ 916 0028 00000000 		.word	.LC13
+ARM GAS  /tmp/cczVi7mz.s 			page 24
+
+
+ 917 002c 34000000 		.word	.LC4
+ 918              		.cfi_endproc
+ 919              	.LFE42:
+ 921              		.section	.rodata.ESP8266_Link_Server.str1.4,"aMS",%progbits,1
+ 922              		.align	2
+ 923              	.LC14:
+ 924 0000 54435000 		.ascii	"TCP\000"
+ 925              		.align	2
+ 926              	.LC15:
+ 927 0004 22257322 		.ascii	"\"%s\",\"%s\",%s\000"
+ 927      2C222573 
+ 927      222C2573 
+ 927      00
+ 928 0011 000000   		.align	2
+ 929              	.LC16:
+ 930 0014 55445000 		.ascii	"UDP\000"
+ 931              		.align	2
+ 932              	.LC17:
+ 933 0018 41542B43 		.ascii	"AT+CIPSTART=%d,%s\000"
+ 933      49505354 
+ 933      4152543D 
+ 933      25642C25 
+ 933      7300
+ 934 002a 0000     		.align	2
+ 935              	.LC18:
+ 936 002c 41542B43 		.ascii	"AT+CIPSTART=%s\000"
+ 936      49505354 
+ 936      4152543D 
+ 936      257300
+ 937 003b 00       		.align	2
+ 938              	.LC19:
+ 939 003c 414C5245 		.ascii	"ALREAY CONNECT\000"
+ 939      41592043 
+ 939      4F4E4E45 
+ 939      435400
+ 940              		.section	.text.ESP8266_Link_Server,"ax",%progbits
+ 941              		.align	1
+ 942              		.global	ESP8266_Link_Server
+ 943              		.syntax unified
+ 944              		.thumb
+ 945              		.thumb_func
+ 946              		.fpu softvfp
+ 948              	ESP8266_Link_Server:
+ 949              	.LVL76:
+ 950              	.LFB43:
+ 325:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 326:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 327:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 328:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_Link_Server
+ 329:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：WF-ESP8266模块连接外部服务器
+ 330:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：enumE，网络协议
+ 331:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：ip，服务器IP字符串
+ 332:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：ComNum，服务器端口字符串
+ 333:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：id，模块连接服务器的ID
+ 334:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 1，连接成功
+ 335:./Hardware/ESP8266/bsp_esp8266.c ****  *         0，连接失败
+ 336:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ARM GAS  /tmp/cczVi7mz.s 			page 25
+
+
+ 337:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 338:./Hardware/ESP8266/bsp_esp8266.c **** bool ESP8266_Link_Server ( ENUM_NetPro_TypeDef enumE, char * ip, char * ComNum, ENUM_ID_NO_TypeDef 
+ 339:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 951              		.loc 1 339 1 is_stmt 1 view -0
+ 952              		.cfi_startproc
+ 953              		@ args = 0, pretend = 0, frame = 224
+ 954              		@ frame_needed = 0, uses_anonymous_args = 0
+ 955              		.loc 1 339 1 is_stmt 0 view .LVU178
+ 956 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 957              	.LCFI23:
+ 958              		.cfi_def_cfa_offset 20
+ 959              		.cfi_offset 4, -20
+ 960              		.cfi_offset 5, -16
+ 961              		.cfi_offset 6, -12
+ 962              		.cfi_offset 7, -8
+ 963              		.cfi_offset 14, -4
+ 964 0002 BBB0     		sub	sp, sp, #236
+ 965              	.LCFI24:
+ 966              		.cfi_def_cfa_offset 256
+ 967 0004 0446     		mov	r4, r0
+ 968 0006 0E46     		mov	r6, r1
+ 969 0008 1746     		mov	r7, r2
+ 970 000a 1D46     		mov	r5, r3
+ 340:./Hardware/ESP8266/bsp_esp8266.c **** 	char cStr [100] = { 0 }, cCmd [120];
+ 971              		.loc 1 340 2 is_stmt 1 view .LVU179
+ 972              		.loc 1 340 7 is_stmt 0 view .LVU180
+ 973 000c 0021     		movs	r1, #0
+ 974              	.LVL77:
+ 975              		.loc 1 340 7 view .LVU181
+ 976 000e 2191     		str	r1, [sp, #132]
+ 977 0010 6022     		movs	r2, #96
+ 978              	.LVL78:
+ 979              		.loc 1 340 7 view .LVU182
+ 980 0012 22A8     		add	r0, sp, #136
+ 981              	.LVL79:
+ 982              		.loc 1 340 7 view .LVU183
+ 983 0014 FFF7FEFF 		bl	memset
+ 984              	.LVL80:
+ 341:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 342:./Hardware/ESP8266/bsp_esp8266.c ****   switch (  enumE )
+ 985              		.loc 1 342 3 is_stmt 1 view .LVU184
+ 986 0018 94B1     		cbz	r4, .L65
+ 987 001a 012C     		cmp	r4, #1
+ 988 001c 18D0     		beq	.L66
+ 989              	.L67:
+ 343:./Hardware/ESP8266/bsp_esp8266.c ****   {
+ 344:./Hardware/ESP8266/bsp_esp8266.c **** 		case enumTCP:
+ 345:./Hardware/ESP8266/bsp_esp8266.c **** 		  sprintf ( cStr, "\"%s\",\"%s\",%s", "TCP", ip, ComNum );
+ 346:./Hardware/ESP8266/bsp_esp8266.c **** 		  break;
+ 347:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 348:./Hardware/ESP8266/bsp_esp8266.c **** 		case enumUDP:
+ 349:./Hardware/ESP8266/bsp_esp8266.c **** 		  sprintf ( cStr, "\"%s\",\"%s\",%s", "UDP", ip, ComNum );
+ 350:./Hardware/ESP8266/bsp_esp8266.c **** 		  break;
+ 351:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 352:./Hardware/ESP8266/bsp_esp8266.c **** 		default:
+ 353:./Hardware/ESP8266/bsp_esp8266.c **** 			break;
+ 354:./Hardware/ESP8266/bsp_esp8266.c ****   }
+ARM GAS  /tmp/cczVi7mz.s 			page 26
+
+
+ 355:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 356:./Hardware/ESP8266/bsp_esp8266.c ****   if ( id < 5 )
+ 990              		.loc 1 356 3 view .LVU185
+ 991              		.loc 1 356 6 is_stmt 0 view .LVU186
+ 992 001e 042D     		cmp	r5, #4
+ 993 0020 1ED8     		bhi	.L68
+ 357:./Hardware/ESP8266/bsp_esp8266.c ****     sprintf ( cCmd, "AT+CIPSTART=%d,%s", id, cStr);
+ 994              		.loc 1 357 5 is_stmt 1 view .LVU187
+ 995 0022 21AB     		add	r3, sp, #132
+ 996 0024 2A46     		mov	r2, r5
+ 997 0026 1149     		ldr	r1, .L71
+ 998 0028 03A8     		add	r0, sp, #12
+ 999 002a FFF7FEFF 		bl	sprintf
+ 1000              	.LVL81:
+ 1001              	.L69:
+ 358:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 359:./Hardware/ESP8266/bsp_esp8266.c ****   else
+ 360:./Hardware/ESP8266/bsp_esp8266.c **** 	  sprintf ( cCmd, "AT+CIPSTART=%s", cStr );
+ 361:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 362:./Hardware/ESP8266/bsp_esp8266.c **** 	return ESP8266_Cmd ( cCmd, "OK", "ALREAY CONNECT", 4000 );
+ 1002              		.loc 1 362 2 view .LVU188
+ 1003              		.loc 1 362 9 is_stmt 0 view .LVU189
+ 1004 002e 4FF47A63 		mov	r3, #4000
+ 1005 0032 0F4A     		ldr	r2, .L71+4
+ 1006 0034 0F49     		ldr	r1, .L71+8
+ 1007 0036 03A8     		add	r0, sp, #12
+ 1008 0038 FFF7FEFF 		bl	ESP8266_Cmd
+ 1009              	.LVL82:
+ 363:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 364:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 1010              		.loc 1 364 1 view .LVU190
+ 1011 003c 3BB0     		add	sp, sp, #236
+ 1012              	.LCFI25:
+ 1013              		.cfi_remember_state
+ 1014              		.cfi_def_cfa_offset 20
+ 1015              		@ sp needed
+ 1016 003e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1017              	.LVL83:
+ 1018              	.L65:
+ 1019              	.LCFI26:
+ 1020              		.cfi_restore_state
+ 345:./Hardware/ESP8266/bsp_esp8266.c **** 		  break;
+ 1021              		.loc 1 345 5 is_stmt 1 view .LVU191
+ 1022 0040 0097     		str	r7, [sp]
+ 1023 0042 3346     		mov	r3, r6
+ 1024 0044 0C4A     		ldr	r2, .L71+12
+ 1025 0046 0D49     		ldr	r1, .L71+16
+ 1026 0048 21A8     		add	r0, sp, #132
+ 1027 004a FFF7FEFF 		bl	sprintf
+ 1028              	.LVL84:
+ 346:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1029              		.loc 1 346 5 view .LVU192
+ 1030 004e E6E7     		b	.L67
+ 1031              	.L66:
+ 349:./Hardware/ESP8266/bsp_esp8266.c **** 		  break;
+ 1032              		.loc 1 349 5 view .LVU193
+ 1033 0050 0097     		str	r7, [sp]
+ARM GAS  /tmp/cczVi7mz.s 			page 27
+
+
+ 1034 0052 3346     		mov	r3, r6
+ 1035 0054 0A4A     		ldr	r2, .L71+20
+ 1036 0056 0949     		ldr	r1, .L71+16
+ 1037 0058 21A8     		add	r0, sp, #132
+ 1038 005a FFF7FEFF 		bl	sprintf
+ 1039              	.LVL85:
+ 350:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1040              		.loc 1 350 5 view .LVU194
+ 1041 005e DEE7     		b	.L67
+ 1042              	.L68:
+ 360:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 1043              		.loc 1 360 4 view .LVU195
+ 1044 0060 21AA     		add	r2, sp, #132
+ 1045 0062 0849     		ldr	r1, .L71+24
+ 1046 0064 03A8     		add	r0, sp, #12
+ 1047 0066 FFF7FEFF 		bl	sprintf
+ 1048              	.LVL86:
+ 1049 006a E0E7     		b	.L69
+ 1050              	.L72:
+ 1051              		.align	2
+ 1052              	.L71:
+ 1053 006c 18000000 		.word	.LC17
+ 1054 0070 3C000000 		.word	.LC19
+ 1055 0074 34000000 		.word	.LC4
+ 1056 0078 00000000 		.word	.LC14
+ 1057 007c 04000000 		.word	.LC15
+ 1058 0080 14000000 		.word	.LC16
+ 1059 0084 2C000000 		.word	.LC18
+ 1060              		.cfi_endproc
+ 1061              	.LFE43:
+ 1063              		.section	.rodata.ESP8266_StartOrShutServer.str1.4,"aMS",%progbits,1
+ 1064              		.align	2
+ 1065              	.LC20:
+ 1066 0000 41542B43 		.ascii	"AT+CIPSERVER=%d,%s\000"
+ 1066      49505345 
+ 1066      52564552 
+ 1066      3D25642C 
+ 1066      257300
+ 1067 0013 00       		.align	2
+ 1068              	.LC21:
+ 1069 0014 41542B43 		.ascii	"AT+CIPSTO=%s\000"
+ 1069      49505354 
+ 1069      4F3D2573 
+ 1069      00
+ 1070              		.section	.text.ESP8266_StartOrShutServer,"ax",%progbits
+ 1071              		.align	1
+ 1072              		.global	ESP8266_StartOrShutServer
+ 1073              		.syntax unified
+ 1074              		.thumb
+ 1075              		.thumb_func
+ 1076              		.fpu softvfp
+ 1078              	ESP8266_StartOrShutServer:
+ 1079              	.LVL87:
+ 1080              	.LFB44:
+ 365:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 366:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 367:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ARM GAS  /tmp/cczVi7mz.s 			page 28
+
+
+ 368:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_StartOrShutServer
+ 369:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：WF-ESP8266模块开启或关闭服务器模式
+ 370:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：enumMode，开启/关闭
+ 371:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：pPortNum，服务器端口号字符串
+ 372:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：pTimeOver，服务器超时时间字符串，单位：秒
+ 373:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 1，操作成功
+ 374:./Hardware/ESP8266/bsp_esp8266.c ****  *         0，操作失败
+ 375:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 376:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 377:./Hardware/ESP8266/bsp_esp8266.c **** bool ESP8266_StartOrShutServer ( FunctionalState enumMode, char * pPortNum, char * pTimeOver )
+ 378:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 1081              		.loc 1 378 1 view -0
+ 1082              		.cfi_startproc
+ 1083              		@ args = 0, pretend = 0, frame = 240
+ 1084              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1085              		.loc 1 378 1 is_stmt 0 view .LVU197
+ 1086 0000 10B5     		push	{r4, lr}
+ 1087              	.LCFI27:
+ 1088              		.cfi_def_cfa_offset 8
+ 1089              		.cfi_offset 4, -8
+ 1090              		.cfi_offset 14, -4
+ 1091 0002 BCB0     		sub	sp, sp, #240
+ 1092              	.LCFI28:
+ 1093              		.cfi_def_cfa_offset 248
+ 1094 0004 0B46     		mov	r3, r1
+ 379:./Hardware/ESP8266/bsp_esp8266.c **** 	char cCmd1 [120], cCmd2 [120];
+ 1095              		.loc 1 379 2 is_stmt 1 view .LVU198
+ 380:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 381:./Hardware/ESP8266/bsp_esp8266.c **** 	if ( enumMode )
+ 1096              		.loc 1 381 2 view .LVU199
+ 1097              		.loc 1 381 5 is_stmt 0 view .LVU200
+ 1098 0006 00B3     		cbz	r0, .L74
+ 1099 0008 1446     		mov	r4, r2
+ 382:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 383:./Hardware/ESP8266/bsp_esp8266.c **** 		sprintf ( cCmd1, "AT+CIPSERVER=%d,%s", 1, pPortNum );
+ 1100              		.loc 1 383 3 is_stmt 1 view .LVU201
+ 1101 000a 0122     		movs	r2, #1
+ 1102              	.LVL88:
+ 1103              		.loc 1 383 3 is_stmt 0 view .LVU202
+ 1104 000c 1649     		ldr	r1, .L81
+ 1105              	.LVL89:
+ 1106              		.loc 1 383 3 view .LVU203
+ 1107 000e 1EA8     		add	r0, sp, #120
+ 1108              	.LVL90:
+ 1109              		.loc 1 383 3 view .LVU204
+ 1110 0010 FFF7FEFF 		bl	sprintf
+ 1111              	.LVL91:
+ 384:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 385:./Hardware/ESP8266/bsp_esp8266.c **** 		sprintf ( cCmd2, "AT+CIPSTO=%s", pTimeOver );
+ 1112              		.loc 1 385 3 is_stmt 1 view .LVU205
+ 1113 0014 2246     		mov	r2, r4
+ 1114 0016 1549     		ldr	r1, .L81+4
+ 1115 0018 6846     		mov	r0, sp
+ 1116 001a FFF7FEFF 		bl	sprintf
+ 1117              	.LVL92:
+ 386:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 387:./Hardware/ESP8266/bsp_esp8266.c **** 		return ( ESP8266_Cmd ( cCmd1, "OK", 0, 500 ) &&
+ARM GAS  /tmp/cczVi7mz.s 			page 29
+
+
+ 1118              		.loc 1 387 3 view .LVU206
+ 1119              		.loc 1 387 12 is_stmt 0 view .LVU207
+ 1120 001e 4FF4FA73 		mov	r3, #500
+ 1121 0022 0022     		movs	r2, #0
+ 1122 0024 1249     		ldr	r1, .L81+8
+ 1123 0026 1EA8     		add	r0, sp, #120
+ 1124 0028 FFF7FEFF 		bl	ESP8266_Cmd
+ 1125              	.LVL93:
+ 1126              		.loc 1 387 48 view .LVU208
+ 1127 002c 08B9     		cbnz	r0, .L80
+ 1128 002e 0020     		movs	r0, #0
+ 1129 0030 17E0     		b	.L76
+ 1130              	.L80:
+ 388:./Hardware/ESP8266/bsp_esp8266.c **** 						 ESP8266_Cmd ( cCmd2, "OK", 0, 500 ) );
+ 1131              		.loc 1 388 8 discriminator 1 view .LVU209
+ 1132 0032 4FF4FA73 		mov	r3, #500
+ 1133 0036 0022     		movs	r2, #0
+ 1134 0038 0D49     		ldr	r1, .L81+8
+ 1135 003a 6846     		mov	r0, sp
+ 1136 003c FFF7FEFF 		bl	ESP8266_Cmd
+ 1137              	.LVL94:
+ 387:./Hardware/ESP8266/bsp_esp8266.c **** 						 ESP8266_Cmd ( cCmd2, "OK", 0, 500 ) );
+ 1138              		.loc 1 387 48 discriminator 1 view .LVU210
+ 1139 0040 08B1     		cbz	r0, .L78
+ 387:./Hardware/ESP8266/bsp_esp8266.c **** 						 ESP8266_Cmd ( cCmd2, "OK", 0, 500 ) );
+ 1140              		.loc 1 387 48 view .LVU211
+ 1141 0042 0120     		movs	r0, #1
+ 1142 0044 0DE0     		b	.L76
+ 1143              	.L78:
+ 1144 0046 0020     		movs	r0, #0
+ 1145 0048 0BE0     		b	.L76
+ 1146              	.LVL95:
+ 1147              	.L74:
+ 389:./Hardware/ESP8266/bsp_esp8266.c **** 	}
+ 390:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 391:./Hardware/ESP8266/bsp_esp8266.c **** 	else
+ 392:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 393:./Hardware/ESP8266/bsp_esp8266.c **** 		sprintf ( cCmd1, "AT+CIPSERVER=%d,%s", 0, pPortNum );
+ 1148              		.loc 1 393 3 is_stmt 1 view .LVU212
+ 1149 004a 0022     		movs	r2, #0
+ 1150              	.LVL96:
+ 1151              		.loc 1 393 3 is_stmt 0 view .LVU213
+ 1152 004c 0649     		ldr	r1, .L81
+ 1153              	.LVL97:
+ 1154              		.loc 1 393 3 view .LVU214
+ 1155 004e 1EA8     		add	r0, sp, #120
+ 1156              	.LVL98:
+ 1157              		.loc 1 393 3 view .LVU215
+ 1158 0050 FFF7FEFF 		bl	sprintf
+ 1159              	.LVL99:
+ 394:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 395:./Hardware/ESP8266/bsp_esp8266.c **** 		return ESP8266_Cmd ( cCmd1, "OK", 0, 500 );
+ 1160              		.loc 1 395 3 is_stmt 1 view .LVU216
+ 1161              		.loc 1 395 10 is_stmt 0 view .LVU217
+ 1162 0054 4FF4FA73 		mov	r3, #500
+ 1163 0058 0022     		movs	r2, #0
+ 1164 005a 0549     		ldr	r1, .L81+8
+ARM GAS  /tmp/cczVi7mz.s 			page 30
+
+
+ 1165 005c 1EA8     		add	r0, sp, #120
+ 1166 005e FFF7FEFF 		bl	ESP8266_Cmd
+ 1167              	.LVL100:
+ 1168              	.L76:
+ 396:./Hardware/ESP8266/bsp_esp8266.c **** 	}
+ 397:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 398:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 1169              		.loc 1 398 1 view .LVU218
+ 1170 0062 3CB0     		add	sp, sp, #240
+ 1171              	.LCFI29:
+ 1172              		.cfi_def_cfa_offset 8
+ 1173              		@ sp needed
+ 1174 0064 10BD     		pop	{r4, pc}
+ 1175              	.L82:
+ 1176 0066 00BF     		.align	2
+ 1177              	.L81:
+ 1178 0068 00000000 		.word	.LC20
+ 1179 006c 14000000 		.word	.LC21
+ 1180 0070 34000000 		.word	.LC4
+ 1181              		.cfi_endproc
+ 1182              	.LFE44:
+ 1184              		.section	.rodata.ESP8266_Get_LinkStatus.str1.4,"aMS",%progbits,1
+ 1185              		.align	2
+ 1186              	.LC22:
+ 1187 0000 41542B43 		.ascii	"AT+CIPSTATUS\000"
+ 1187      49505354 
+ 1187      41545553 
+ 1187      00
+ 1188 000d 000000   		.align	2
+ 1189              	.LC23:
+ 1190 0010 53544154 		.ascii	"STATUS:2\015\012\000"
+ 1190      55533A32 
+ 1190      0D0A00
+ 1191 001b 00       		.align	2
+ 1192              	.LC24:
+ 1193 001c 53544154 		.ascii	"STATUS:3\015\012\000"
+ 1193      55533A33 
+ 1193      0D0A00
+ 1194 0027 00       		.align	2
+ 1195              	.LC25:
+ 1196 0028 53544154 		.ascii	"STATUS:4\015\012\000"
+ 1196      55533A34 
+ 1196      0D0A00
+ 1197              		.section	.text.ESP8266_Get_LinkStatus,"ax",%progbits
+ 1198              		.align	1
+ 1199              		.global	ESP8266_Get_LinkStatus
+ 1200              		.syntax unified
+ 1201              		.thumb
+ 1202              		.thumb_func
+ 1203              		.fpu softvfp
+ 1205              	ESP8266_Get_LinkStatus:
+ 1206              	.LFB45:
+ 399:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 400:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 401:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 402:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_Get_LinkStatus
+ 403:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：获取 WF-ESP8266 的连接状态，较适合单端口时使用
+ARM GAS  /tmp/cczVi7mz.s 			page 31
+
+
+ 404:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：无
+ 405:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 2，获得ip
+ 406:./Hardware/ESP8266/bsp_esp8266.c ****  *         3，建立连接
+ 407:./Hardware/ESP8266/bsp_esp8266.c ****  *         3，失去连接
+ 408:./Hardware/ESP8266/bsp_esp8266.c ****  *         0，获取状态失败
+ 409:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 410:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 411:./Hardware/ESP8266/bsp_esp8266.c **** uint8_t ESP8266_Get_LinkStatus ( void )
+ 412:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 1207              		.loc 1 412 1 is_stmt 1 view -0
+ 1208              		.cfi_startproc
+ 1209              		@ args = 0, pretend = 0, frame = 0
+ 1210              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1211 0000 08B5     		push	{r3, lr}
+ 1212              	.LCFI30:
+ 1213              		.cfi_def_cfa_offset 8
+ 1214              		.cfi_offset 3, -8
+ 1215              		.cfi_offset 14, -4
+ 413:./Hardware/ESP8266/bsp_esp8266.c **** 	if ( ESP8266_Cmd ( "AT+CIPSTATUS", "OK", 0, 500 ) )
+ 1216              		.loc 1 413 2 view .LVU220
+ 1217              		.loc 1 413 7 is_stmt 0 view .LVU221
+ 1218 0002 4FF4FA73 		mov	r3, #500
+ 1219 0006 0022     		movs	r2, #0
+ 1220 0008 0D49     		ldr	r1, .L90
+ 1221 000a 0E48     		ldr	r0, .L90+4
+ 1222 000c FFF7FEFF 		bl	ESP8266_Cmd
+ 1223              	.LVL101:
+ 1224              		.loc 1 413 5 view .LVU222
+ 1225 0010 80B1     		cbz	r0, .L85
+ 414:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 415:./Hardware/ESP8266/bsp_esp8266.c **** 		if ( strstr ( strEsp8266_Fram_Record .Data_RX_BUF, "STATUS:2\r\n" ) )
+ 1226              		.loc 1 415 3 is_stmt 1 view .LVU223
+ 1227              		.loc 1 415 8 is_stmt 0 view .LVU224
+ 1228 0012 0D49     		ldr	r1, .L90+8
+ 1229 0014 0D48     		ldr	r0, .L90+12
+ 1230 0016 FFF7FEFF 		bl	strstr
+ 1231              	.LVL102:
+ 1232              		.loc 1 415 6 view .LVU225
+ 1233 001a 68B9     		cbnz	r0, .L86
+ 416:./Hardware/ESP8266/bsp_esp8266.c **** 			return 2;
+ 417:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 418:./Hardware/ESP8266/bsp_esp8266.c **** 		else if ( strstr ( strEsp8266_Fram_Record .Data_RX_BUF, "STATUS:3\r\n" ) )
+ 1234              		.loc 1 418 8 is_stmt 1 view .LVU226
+ 1235              		.loc 1 418 13 is_stmt 0 view .LVU227
+ 1236 001c 0C49     		ldr	r1, .L90+16
+ 1237 001e 0B48     		ldr	r0, .L90+12
+ 1238 0020 FFF7FEFF 		bl	strstr
+ 1239              	.LVL103:
+ 1240              		.loc 1 418 11 view .LVU228
+ 1241 0024 50B9     		cbnz	r0, .L87
+ 419:./Hardware/ESP8266/bsp_esp8266.c **** 			return 3;
+ 420:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 421:./Hardware/ESP8266/bsp_esp8266.c **** 		else if ( strstr ( strEsp8266_Fram_Record .Data_RX_BUF, "STATUS:4\r\n" ) )
+ 1242              		.loc 1 421 8 is_stmt 1 view .LVU229
+ 1243              		.loc 1 421 13 is_stmt 0 view .LVU230
+ 1244 0026 0B49     		ldr	r1, .L90+20
+ 1245 0028 0848     		ldr	r0, .L90+12
+ARM GAS  /tmp/cczVi7mz.s 			page 32
+
+
+ 1246 002a FFF7FEFF 		bl	strstr
+ 1247              	.LVL104:
+ 1248              		.loc 1 421 11 view .LVU231
+ 1249 002e 10B1     		cbz	r0, .L84
+ 422:./Hardware/ESP8266/bsp_esp8266.c **** 			return 4;		
+ 1250              		.loc 1 422 11 view .LVU232
+ 1251 0030 0420     		movs	r0, #4
+ 1252 0032 00E0     		b	.L84
+ 1253              	.L85:
+ 423:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 424:./Hardware/ESP8266/bsp_esp8266.c **** 	}
+ 425:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 426:./Hardware/ESP8266/bsp_esp8266.c **** 	return 0;
+ 1254              		.loc 1 426 9 view .LVU233
+ 1255 0034 0020     		movs	r0, #0
+ 1256              	.L84:
+ 427:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 428:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 1257              		.loc 1 428 1 view .LVU234
+ 1258 0036 08BD     		pop	{r3, pc}
+ 1259              	.L86:
+ 416:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1260              		.loc 1 416 11 view .LVU235
+ 1261 0038 0220     		movs	r0, #2
+ 1262 003a FCE7     		b	.L84
+ 1263              	.L87:
+ 419:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1264              		.loc 1 419 11 view .LVU236
+ 1265 003c 0320     		movs	r0, #3
+ 1266 003e FAE7     		b	.L84
+ 1267              	.L91:
+ 1268              		.align	2
+ 1269              	.L90:
+ 1270 0040 34000000 		.word	.LC4
+ 1271 0044 00000000 		.word	.LC22
+ 1272 0048 10000000 		.word	.LC23
+ 1273 004c 00000000 		.word	.LANCHOR0
+ 1274 0050 1C000000 		.word	.LC24
+ 1275 0054 28000000 		.word	.LC25
+ 1276              		.cfi_endproc
+ 1277              	.LFE45:
+ 1279              		.section	.rodata.ESP8266_Get_IdLinkStatus.str1.4,"aMS",%progbits,1
+ 1280              		.align	2
+ 1281              	.LC26:
+ 1282 0000 2B434950 		.ascii	"+CIPSTATUS:0,\000"
+ 1282      53544154 
+ 1282      55533A30 
+ 1282      2C00
+ 1283 000e 0000     		.align	2
+ 1284              	.LC27:
+ 1285 0010 2B434950 		.ascii	"+CIPSTATUS:1,\000"
+ 1285      53544154 
+ 1285      55533A31 
+ 1285      2C00
+ 1286 001e 0000     		.align	2
+ 1287              	.LC28:
+ 1288 0020 2B434950 		.ascii	"+CIPSTATUS:2,\000"
+ARM GAS  /tmp/cczVi7mz.s 			page 33
+
+
+ 1288      53544154 
+ 1288      55533A32 
+ 1288      2C00
+ 1289 002e 0000     		.align	2
+ 1290              	.LC29:
+ 1291 0030 2B434950 		.ascii	"+CIPSTATUS:3,\000"
+ 1291      53544154 
+ 1291      55533A33 
+ 1291      2C00
+ 1292 003e 0000     		.align	2
+ 1293              	.LC30:
+ 1294 0040 2B434950 		.ascii	"+CIPSTATUS:4,\000"
+ 1294      53544154 
+ 1294      55533A34 
+ 1294      2C00
+ 1295              		.section	.text.ESP8266_Get_IdLinkStatus,"ax",%progbits
+ 1296              		.align	1
+ 1297              		.global	ESP8266_Get_IdLinkStatus
+ 1298              		.syntax unified
+ 1299              		.thumb
+ 1300              		.thumb_func
+ 1301              		.fpu softvfp
+ 1303              	ESP8266_Get_IdLinkStatus:
+ 1304              	.LFB46:
+ 429:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 430:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 431:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 432:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_Get_IdLinkStatus
+ 433:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：获取 WF-ESP8266 的端口（Id）连接状态，较适合多端口时使用
+ 434:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：无
+ 435:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 端口（Id）的连接状态，低5位为有效位，分别对应Id5~0，某位若置1表该Id建立了连接，若被清0表
+ 436:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 437:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 438:./Hardware/ESP8266/bsp_esp8266.c **** uint8_t ESP8266_Get_IdLinkStatus ( void )
+ 439:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 1305              		.loc 1 439 1 is_stmt 1 view -0
+ 1306              		.cfi_startproc
+ 1307              		@ args = 0, pretend = 0, frame = 0
+ 1308              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1309 0000 10B5     		push	{r4, lr}
+ 1310              	.LCFI31:
+ 1311              		.cfi_def_cfa_offset 8
+ 1312              		.cfi_offset 4, -8
+ 1313              		.cfi_offset 14, -4
+ 440:./Hardware/ESP8266/bsp_esp8266.c **** 	uint8_t ucIdLinkStatus = 0x00;
+ 1314              		.loc 1 440 2 view .LVU238
+ 1315              	.LVL105:
+ 441:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 442:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 443:./Hardware/ESP8266/bsp_esp8266.c **** 	if ( ESP8266_Cmd ( "AT+CIPSTATUS", "OK", 0, 500 ) )
+ 1316              		.loc 1 443 2 view .LVU239
+ 1317              		.loc 1 443 7 is_stmt 0 view .LVU240
+ 1318 0002 4FF4FA73 		mov	r3, #500
+ 1319 0006 0022     		movs	r2, #0
+ 1320 0008 1A49     		ldr	r1, .L105
+ 1321 000a 1B48     		ldr	r0, .L105+4
+ 1322 000c FFF7FEFF 		bl	ESP8266_Cmd
+ARM GAS  /tmp/cczVi7mz.s 			page 34
+
+
+ 1323              	.LVL106:
+ 1324              		.loc 1 443 5 view .LVU241
+ 1325 0010 68B3     		cbz	r0, .L102
+ 444:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 445:./Hardware/ESP8266/bsp_esp8266.c **** 		if ( strstr ( strEsp8266_Fram_Record .Data_RX_BUF, "+CIPSTATUS:0," ) )
+ 1326              		.loc 1 445 3 is_stmt 1 view .LVU242
+ 1327              		.loc 1 445 8 is_stmt 0 view .LVU243
+ 1328 0012 1A49     		ldr	r1, .L105+8
+ 1329 0014 1A48     		ldr	r0, .L105+12
+ 1330 0016 FFF7FEFF 		bl	strstr
+ 1331              	.LVL107:
+ 1332              		.loc 1 445 6 view .LVU244
+ 1333 001a E8B1     		cbz	r0, .L103
+ 446:./Hardware/ESP8266/bsp_esp8266.c **** 			ucIdLinkStatus |= 0x01;
+ 1334              		.loc 1 446 19 view .LVU245
+ 1335 001c 0124     		movs	r4, #1
+ 1336              	.L94:
+ 1337              	.LVL108:
+ 447:./Hardware/ESP8266/bsp_esp8266.c **** 		else 
+ 448:./Hardware/ESP8266/bsp_esp8266.c **** 			ucIdLinkStatus &= ~ 0x01;
+ 449:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 450:./Hardware/ESP8266/bsp_esp8266.c **** 		if ( strstr ( strEsp8266_Fram_Record .Data_RX_BUF, "+CIPSTATUS:1," ) )
+ 1338              		.loc 1 450 3 is_stmt 1 view .LVU246
+ 1339              		.loc 1 450 8 is_stmt 0 view .LVU247
+ 1340 001e 1949     		ldr	r1, .L105+16
+ 1341 0020 1748     		ldr	r0, .L105+12
+ 1342 0022 FFF7FEFF 		bl	strstr
+ 1343              	.LVL109:
+ 1344              		.loc 1 450 6 view .LVU248
+ 1345 0026 08B1     		cbz	r0, .L96
+ 451:./Hardware/ESP8266/bsp_esp8266.c **** 			ucIdLinkStatus |= 0x02;
+ 1346              		.loc 1 451 4 is_stmt 1 view .LVU249
+ 1347              		.loc 1 451 19 is_stmt 0 view .LVU250
+ 1348 0028 44F00204 		orr	r4, r4, #2
+ 1349              	.LVL110:
+ 1350              	.L96:
+ 452:./Hardware/ESP8266/bsp_esp8266.c **** 		else 
+ 453:./Hardware/ESP8266/bsp_esp8266.c **** 			ucIdLinkStatus &= ~ 0x02;
+ 454:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 455:./Hardware/ESP8266/bsp_esp8266.c **** 		if ( strstr ( strEsp8266_Fram_Record .Data_RX_BUF, "+CIPSTATUS:2," ) )
+ 1351              		.loc 1 455 3 is_stmt 1 view .LVU251
+ 1352              		.loc 1 455 8 is_stmt 0 view .LVU252
+ 1353 002c 1649     		ldr	r1, .L105+20
+ 1354 002e 1448     		ldr	r0, .L105+12
+ 1355 0030 FFF7FEFF 		bl	strstr
+ 1356              	.LVL111:
+ 1357              		.loc 1 455 6 view .LVU253
+ 1358 0034 90B1     		cbz	r0, .L97
+ 456:./Hardware/ESP8266/bsp_esp8266.c **** 			ucIdLinkStatus |= 0x04;
+ 1359              		.loc 1 456 4 is_stmt 1 view .LVU254
+ 1360              		.loc 1 456 19 is_stmt 0 view .LVU255
+ 1361 0036 44F00404 		orr	r4, r4, #4
+ 1362              	.LVL112:
+ 1363              	.L98:
+ 457:./Hardware/ESP8266/bsp_esp8266.c **** 		else 
+ 458:./Hardware/ESP8266/bsp_esp8266.c **** 			ucIdLinkStatus &= ~ 0x04;
+ 459:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ARM GAS  /tmp/cczVi7mz.s 			page 35
+
+
+ 460:./Hardware/ESP8266/bsp_esp8266.c **** 		if ( strstr ( strEsp8266_Fram_Record .Data_RX_BUF, "+CIPSTATUS:3," ) )
+ 1364              		.loc 1 460 3 is_stmt 1 view .LVU256
+ 1365              		.loc 1 460 8 is_stmt 0 view .LVU257
+ 1366 003a 1449     		ldr	r1, .L105+24
+ 1367 003c 1048     		ldr	r0, .L105+12
+ 1368 003e FFF7FEFF 		bl	strstr
+ 1369              	.LVL113:
+ 1370              		.loc 1 460 6 view .LVU258
+ 1371 0042 70B1     		cbz	r0, .L99
+ 461:./Hardware/ESP8266/bsp_esp8266.c **** 			ucIdLinkStatus |= 0x08;
+ 1372              		.loc 1 461 4 is_stmt 1 view .LVU259
+ 1373              		.loc 1 461 19 is_stmt 0 view .LVU260
+ 1374 0044 44F00804 		orr	r4, r4, #8
+ 1375              	.LVL114:
+ 1376              	.L100:
+ 462:./Hardware/ESP8266/bsp_esp8266.c **** 		else 
+ 463:./Hardware/ESP8266/bsp_esp8266.c **** 			ucIdLinkStatus &= ~ 0x08;
+ 464:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 465:./Hardware/ESP8266/bsp_esp8266.c **** 		if ( strstr ( strEsp8266_Fram_Record .Data_RX_BUF, "+CIPSTATUS:4," ) )
+ 1377              		.loc 1 465 3 is_stmt 1 view .LVU261
+ 1378              		.loc 1 465 8 is_stmt 0 view .LVU262
+ 1379 0048 1149     		ldr	r1, .L105+28
+ 1380 004a 0D48     		ldr	r0, .L105+12
+ 1381 004c FFF7FEFF 		bl	strstr
+ 1382              	.LVL115:
+ 1383              		.loc 1 465 6 view .LVU263
+ 1384 0050 50B1     		cbz	r0, .L101
+ 466:./Hardware/ESP8266/bsp_esp8266.c **** 			ucIdLinkStatus |= 0x10;
+ 1385              		.loc 1 466 4 is_stmt 1 view .LVU264
+ 1386              		.loc 1 466 19 is_stmt 0 view .LVU265
+ 1387 0052 44F01000 		orr	r0, r4, #16
+ 1388              	.LVL116:
+ 1389              		.loc 1 466 19 view .LVU266
+ 1390 0056 0BE0     		b	.L93
+ 1391              	.LVL117:
+ 1392              	.L103:
+ 448:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1393              		.loc 1 448 19 view .LVU267
+ 1394 0058 0024     		movs	r4, #0
+ 1395 005a E0E7     		b	.L94
+ 1396              	.LVL118:
+ 1397              	.L97:
+ 458:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1398              		.loc 1 458 4 is_stmt 1 view .LVU268
+ 458:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1399              		.loc 1 458 19 is_stmt 0 view .LVU269
+ 1400 005c 04F0FB04 		and	r4, r4, #251
+ 1401              	.LVL119:
+ 458:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1402              		.loc 1 458 19 view .LVU270
+ 1403 0060 EBE7     		b	.L98
+ 1404              	.L99:
+ 463:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1405              		.loc 1 463 4 is_stmt 1 view .LVU271
+ 463:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1406              		.loc 1 463 19 is_stmt 0 view .LVU272
+ 1407 0062 04F0F704 		and	r4, r4, #247
+ARM GAS  /tmp/cczVi7mz.s 			page 36
+
+
+ 1408              	.LVL120:
+ 463:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1409              		.loc 1 463 19 view .LVU273
+ 1410 0066 EFE7     		b	.L100
+ 1411              	.L101:
+ 467:./Hardware/ESP8266/bsp_esp8266.c **** 		else 
+ 468:./Hardware/ESP8266/bsp_esp8266.c **** 			ucIdLinkStatus &= ~ 0x10;	
+ 1412              		.loc 1 468 4 is_stmt 1 view .LVU274
+ 1413              		.loc 1 468 19 is_stmt 0 view .LVU275
+ 1414 0068 04F0EF00 		and	r0, r4, #239
+ 1415              	.LVL121:
+ 1416              		.loc 1 468 19 view .LVU276
+ 1417 006c 00E0     		b	.L93
+ 1418              	.LVL122:
+ 1419              	.L102:
+ 440:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 1420              		.loc 1 440 10 view .LVU277
+ 1421 006e 0020     		movs	r0, #0
+ 1422              	.LVL123:
+ 1423              	.L93:
+ 469:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 470:./Hardware/ESP8266/bsp_esp8266.c **** 	}
+ 471:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 472:./Hardware/ESP8266/bsp_esp8266.c **** 	return ucIdLinkStatus;
+ 1424              		.loc 1 472 2 is_stmt 1 view .LVU278
+ 473:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 474:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 1425              		.loc 1 474 1 is_stmt 0 view .LVU279
+ 1426 0070 10BD     		pop	{r4, pc}
+ 1427              	.L106:
+ 1428 0072 00BF     		.align	2
+ 1429              	.L105:
+ 1430 0074 34000000 		.word	.LC4
+ 1431 0078 00000000 		.word	.LC22
+ 1432 007c 00000000 		.word	.LC26
+ 1433 0080 00000000 		.word	.LANCHOR0
+ 1434 0084 10000000 		.word	.LC27
+ 1435 0088 20000000 		.word	.LC28
+ 1436 008c 30000000 		.word	.LC29
+ 1437 0090 40000000 		.word	.LC30
+ 1438              		.cfi_endproc
+ 1439              	.LFE46:
+ 1441              		.section	.rodata.ESP8266_Inquire_ApIp.str1.4,"aMS",%progbits,1
+ 1442              		.align	2
+ 1443              	.LC31:
+ 1444 0000 41542B43 		.ascii	"AT+CIFSR\000"
+ 1444      49465352 
+ 1444      00
+ 1445 0009 000000   		.align	2
+ 1446              	.LC32:
+ 1447 000c 41504950 		.ascii	"APIP,\"\000"
+ 1447      2C2200
+ 1448              		.section	.text.ESP8266_Inquire_ApIp,"ax",%progbits
+ 1449              		.align	1
+ 1450              		.global	ESP8266_Inquire_ApIp
+ 1451              		.syntax unified
+ 1452              		.thumb
+ARM GAS  /tmp/cczVi7mz.s 			page 37
+
+
+ 1453              		.thumb_func
+ 1454              		.fpu softvfp
+ 1456              	ESP8266_Inquire_ApIp:
+ 1457              	.LVL124:
+ 1458              	.LFB47:
+ 475:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 476:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 477:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 478:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_Inquire_ApIp
+ 479:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：获取 F-ESP8266 的 AP IP
+ 480:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：pApIp，存放 AP IP 的数组的首地址
+ 481:./Hardware/ESP8266/bsp_esp8266.c ****  *         ucArrayLength，存放 AP IP 的数组的长度
+ 482:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 0，获取失败
+ 483:./Hardware/ESP8266/bsp_esp8266.c ****  *         1，获取成功
+ 484:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 485:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 486:./Hardware/ESP8266/bsp_esp8266.c **** uint8_t ESP8266_Inquire_ApIp ( char * pApIp, uint8_t ucArrayLength )
+ 487:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 1459              		.loc 1 487 1 is_stmt 1 view -0
+ 1460              		.cfi_startproc
+ 1461              		@ args = 0, pretend = 0, frame = 0
+ 1462              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1463              		.loc 1 487 1 is_stmt 0 view .LVU281
+ 1464 0000 38B5     		push	{r3, r4, r5, lr}
+ 1465              	.LCFI32:
+ 1466              		.cfi_def_cfa_offset 16
+ 1467              		.cfi_offset 3, -16
+ 1468              		.cfi_offset 4, -12
+ 1469              		.cfi_offset 5, -8
+ 1470              		.cfi_offset 14, -4
+ 1471 0002 0446     		mov	r4, r0
+ 1472 0004 0D46     		mov	r5, r1
+ 488:./Hardware/ESP8266/bsp_esp8266.c **** 	char uc;
+ 1473              		.loc 1 488 2 is_stmt 1 view .LVU282
+ 489:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 490:./Hardware/ESP8266/bsp_esp8266.c **** 	char * pCh;
+ 1474              		.loc 1 490 2 view .LVU283
+ 491:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 492:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 493:./Hardware/ESP8266/bsp_esp8266.c ****   ESP8266_Cmd ( "AT+CIFSR", "OK", 0, 500 );
+ 1475              		.loc 1 493 3 view .LVU284
+ 1476 0006 4FF4FA73 		mov	r3, #500
+ 1477 000a 0022     		movs	r2, #0
+ 1478 000c 0D49     		ldr	r1, .L116
+ 1479              	.LVL125:
+ 1480              		.loc 1 493 3 is_stmt 0 view .LVU285
+ 1481 000e 0E48     		ldr	r0, .L116+4
+ 1482              	.LVL126:
+ 1483              		.loc 1 493 3 view .LVU286
+ 1484 0010 FFF7FEFF 		bl	ESP8266_Cmd
+ 1485              	.LVL127:
+ 494:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 495:./Hardware/ESP8266/bsp_esp8266.c **** 	pCh = strstr ( strEsp8266_Fram_Record .Data_RX_BUF, "APIP,\"" );
+ 1486              		.loc 1 495 2 is_stmt 1 view .LVU287
+ 1487              		.loc 1 495 8 is_stmt 0 view .LVU288
+ 1488 0014 0D49     		ldr	r1, .L116+8
+ 1489 0016 0E48     		ldr	r0, .L116+12
+ARM GAS  /tmp/cczVi7mz.s 			page 38
+
+
+ 1490 0018 FFF7FEFF 		bl	strstr
+ 1491              	.LVL128:
+ 496:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 497:./Hardware/ESP8266/bsp_esp8266.c **** 	if ( pCh )
+ 1492              		.loc 1 497 2 is_stmt 1 view .LVU289
+ 1493              		.loc 1 497 5 is_stmt 0 view .LVU290
+ 1494 001c 88B1     		cbz	r0, .L109
+ 1495 001e 0146     		mov	r1, r0
+ 498:./Hardware/ESP8266/bsp_esp8266.c **** 		pCh += 6;
+ 499:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 500:./Hardware/ESP8266/bsp_esp8266.c **** 	else
+ 501:./Hardware/ESP8266/bsp_esp8266.c **** 		return 0;
+ 502:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 503:./Hardware/ESP8266/bsp_esp8266.c **** 	for ( uc = 0; uc < ucArrayLength; uc ++ )
+ 1496              		.loc 1 503 11 view .LVU291
+ 1497 0020 0023     		movs	r3, #0
+ 1498              	.LVL129:
+ 1499              	.L108:
+ 1500              		.loc 1 503 16 is_stmt 1 discriminator 1 view .LVU292
+ 1501              		.loc 1 503 2 is_stmt 0 discriminator 1 view .LVU293
+ 1502 0022 AB42     		cmp	r3, r5
+ 1503 0024 0CD2     		bcs	.L114
+ 504:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 505:./Hardware/ESP8266/bsp_esp8266.c **** 		pApIp [ uc ] = * ( pCh + uc);
+ 1504              		.loc 1 505 3 is_stmt 1 view .LVU294
+ 1505              		.loc 1 505 26 is_stmt 0 view .LVU295
+ 1506 0026 9A1D     		adds	r2, r3, #6
+ 1507              		.loc 1 505 9 view .LVU296
+ 1508 0028 E018     		adds	r0, r4, r3
+ 1509              		.loc 1 505 18 view .LVU297
+ 1510 002a 8A5C     		ldrb	r2, [r1, r2]	@ zero_extendqisi2
+ 1511              		.loc 1 505 16 view .LVU298
+ 1512 002c E254     		strb	r2, [r4, r3]
+ 506:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 507:./Hardware/ESP8266/bsp_esp8266.c **** 		if ( pApIp [ uc ] == '\"' )
+ 1513              		.loc 1 507 3 is_stmt 1 view .LVU299
+ 1514              		.loc 1 507 6 is_stmt 0 view .LVU300
+ 1515 002e 222A     		cmp	r2, #34
+ 1516 0030 02D0     		beq	.L115
+ 503:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 1517              		.loc 1 503 36 is_stmt 1 discriminator 2 view .LVU301
+ 503:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 1518              		.loc 1 503 39 is_stmt 0 discriminator 2 view .LVU302
+ 1519 0032 0133     		adds	r3, r3, #1
+ 1520              	.LVL130:
+ 503:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 1521              		.loc 1 503 39 discriminator 2 view .LVU303
+ 1522 0034 DBB2     		uxtb	r3, r3
+ 1523              	.LVL131:
+ 503:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 1524              		.loc 1 503 39 discriminator 2 view .LVU304
+ 1525 0036 F4E7     		b	.L108
+ 1526              	.L115:
+ 508:./Hardware/ESP8266/bsp_esp8266.c **** 		{
+ 509:./Hardware/ESP8266/bsp_esp8266.c **** 			pApIp [ uc ] = '\0';
+ 1527              		.loc 1 509 4 is_stmt 1 view .LVU305
+ 1528              		.loc 1 509 17 is_stmt 0 view .LVU306
+ARM GAS  /tmp/cczVi7mz.s 			page 39
+
+
+ 1529 0038 0023     		movs	r3, #0
+ 1530              	.LVL132:
+ 1531              		.loc 1 509 17 view .LVU307
+ 1532 003a 0370     		strb	r3, [r0]
+ 510:./Hardware/ESP8266/bsp_esp8266.c **** 			break;
+ 1533              		.loc 1 510 4 is_stmt 1 view .LVU308
+ 511:./Hardware/ESP8266/bsp_esp8266.c **** 		}
+ 512:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 513:./Hardware/ESP8266/bsp_esp8266.c **** 	}
+ 514:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 515:./Hardware/ESP8266/bsp_esp8266.c **** 	return 1;
+ 1534              		.loc 1 515 9 is_stmt 0 view .LVU309
+ 1535 003c 0120     		movs	r0, #1
+ 510:./Hardware/ESP8266/bsp_esp8266.c **** 			break;
+ 1536              		.loc 1 510 4 view .LVU310
+ 1537 003e 00E0     		b	.L109
+ 1538              	.LVL133:
+ 1539              	.L114:
+ 1540              		.loc 1 515 9 view .LVU311
+ 1541 0040 0120     		movs	r0, #1
+ 1542              	.LVL134:
+ 1543              	.L109:
+ 516:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 517:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 1544              		.loc 1 517 1 view .LVU312
+ 1545 0042 38BD     		pop	{r3, r4, r5, pc}
+ 1546              	.LVL135:
+ 1547              	.L117:
+ 1548              		.loc 1 517 1 view .LVU313
+ 1549              		.align	2
+ 1550              	.L116:
+ 1551 0044 34000000 		.word	.LC4
+ 1552 0048 00000000 		.word	.LC31
+ 1553 004c 0C000000 		.word	.LC32
+ 1554 0050 00000000 		.word	.LANCHOR0
+ 1555              		.cfi_endproc
+ 1556              	.LFE47:
+ 1558              		.section	.rodata.ESP8266_UnvarnishSend.str1.4,"aMS",%progbits,1
+ 1559              		.align	2
+ 1560              	.LC33:
+ 1561 0000 41542B43 		.ascii	"AT+CIPMODE=1\000"
+ 1561      49504D4F 
+ 1561      44453D31 
+ 1561      00
+ 1562 000d 000000   		.align	2
+ 1563              	.LC34:
+ 1564 0010 3E00     		.ascii	">\000"
+ 1565 0012 0000     		.align	2
+ 1566              	.LC35:
+ 1567 0014 41542B43 		.ascii	"AT+CIPSEND\000"
+ 1567      49505345 
+ 1567      4E4400
+ 1568              		.section	.text.ESP8266_UnvarnishSend,"ax",%progbits
+ 1569              		.align	1
+ 1570              		.global	ESP8266_UnvarnishSend
+ 1571              		.syntax unified
+ 1572              		.thumb
+ARM GAS  /tmp/cczVi7mz.s 			page 40
+
+
+ 1573              		.thumb_func
+ 1574              		.fpu softvfp
+ 1576              	ESP8266_UnvarnishSend:
+ 1577              	.LFB48:
+ 518:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 519:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 520:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 521:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_UnvarnishSend
+ 522:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：配置WF-ESP8266模块进入透传发送
+ 523:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：无
+ 524:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 1，配置成功
+ 525:./Hardware/ESP8266/bsp_esp8266.c ****  *         0，配置失败
+ 526:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 527:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 528:./Hardware/ESP8266/bsp_esp8266.c **** bool ESP8266_UnvarnishSend ( void )
+ 529:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 1578              		.loc 1 529 1 is_stmt 1 view -0
+ 1579              		.cfi_startproc
+ 1580              		@ args = 0, pretend = 0, frame = 0
+ 1581              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1582 0000 08B5     		push	{r3, lr}
+ 1583              	.LCFI33:
+ 1584              		.cfi_def_cfa_offset 8
+ 1585              		.cfi_offset 3, -8
+ 1586              		.cfi_offset 14, -4
+ 530:./Hardware/ESP8266/bsp_esp8266.c **** 	if ( ! ESP8266_Cmd ( "AT+CIPMODE=1", "OK", 0, 500 ) )
+ 1587              		.loc 1 530 2 view .LVU315
+ 1588              		.loc 1 530 9 is_stmt 0 view .LVU316
+ 1589 0002 4FF4FA73 		mov	r3, #500
+ 1590 0006 0022     		movs	r2, #0
+ 1591 0008 0649     		ldr	r1, .L122
+ 1592 000a 0748     		ldr	r0, .L122+4
+ 1593 000c FFF7FEFF 		bl	ESP8266_Cmd
+ 1594              	.LVL136:
+ 1595              		.loc 1 530 5 view .LVU317
+ 1596 0010 00B9     		cbnz	r0, .L121
+ 1597              	.L119:
+ 531:./Hardware/ESP8266/bsp_esp8266.c **** 		return false;
+ 532:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 533:./Hardware/ESP8266/bsp_esp8266.c **** 	return 
+ 534:./Hardware/ESP8266/bsp_esp8266.c **** 	  ESP8266_Cmd ( "AT+CIPSEND", "OK", ">", 500 );
+ 535:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 536:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 1598              		.loc 1 536 1 view .LVU318
+ 1599 0012 08BD     		pop	{r3, pc}
+ 1600              	.L121:
+ 533:./Hardware/ESP8266/bsp_esp8266.c **** 	  ESP8266_Cmd ( "AT+CIPSEND", "OK", ">", 500 );
+ 1601              		.loc 1 533 2 is_stmt 1 view .LVU319
+ 534:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 1602              		.loc 1 534 4 is_stmt 0 view .LVU320
+ 1603 0014 4FF4FA73 		mov	r3, #500
+ 1604 0018 044A     		ldr	r2, .L122+8
+ 1605 001a 0249     		ldr	r1, .L122
+ 1606 001c 0448     		ldr	r0, .L122+12
+ 1607 001e FFF7FEFF 		bl	ESP8266_Cmd
+ 1608              	.LVL137:
+ 1609 0022 F6E7     		b	.L119
+ARM GAS  /tmp/cczVi7mz.s 			page 41
+
+
+ 1610              	.L123:
+ 1611              		.align	2
+ 1612              	.L122:
+ 1613 0024 34000000 		.word	.LC4
+ 1614 0028 00000000 		.word	.LC33
+ 1615 002c 10000000 		.word	.LC34
+ 1616 0030 14000000 		.word	.LC35
+ 1617              		.cfi_endproc
+ 1618              	.LFE48:
+ 1620              		.section	.rodata.ESP8266_ExitUnvarnishSend.str1.4,"aMS",%progbits,1
+ 1621              		.align	2
+ 1622              	.LC36:
+ 1623 0000 2B2B2B00 		.ascii	"+++\000"
+ 1624              		.section	.text.ESP8266_ExitUnvarnishSend,"ax",%progbits
+ 1625              		.align	1
+ 1626              		.global	ESP8266_ExitUnvarnishSend
+ 1627              		.syntax unified
+ 1628              		.thumb
+ 1629              		.thumb_func
+ 1630              		.fpu softvfp
+ 1632              	ESP8266_ExitUnvarnishSend:
+ 1633              	.LFB49:
+ 537:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 538:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 539:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 540:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_ExitUnvarnishSend
+ 541:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：配置WF-ESP8266模块退出透传模式
+ 542:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：无
+ 543:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 无
+ 544:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 545:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 546:./Hardware/ESP8266/bsp_esp8266.c **** void ESP8266_ExitUnvarnishSend ( void )
+ 547:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 1634              		.loc 1 547 1 is_stmt 1 view -0
+ 1635              		.cfi_startproc
+ 1636              		@ args = 0, pretend = 0, frame = 0
+ 1637              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1638 0000 08B5     		push	{r3, lr}
+ 1639              	.LCFI34:
+ 1640              		.cfi_def_cfa_offset 8
+ 1641              		.cfi_offset 3, -8
+ 1642              		.cfi_offset 14, -4
+ 548:./Hardware/ESP8266/bsp_esp8266.c **** 	Delay_ms ( 1000 );
+ 1643              		.loc 1 548 2 view .LVU322
+ 1644 0002 0548     		ldr	r0, .L126
+ 1645 0004 FFF7FEFF 		bl	CPU_TS_Tmr_Delay_US
+ 1646              	.LVL138:
+ 549:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 550:./Hardware/ESP8266/bsp_esp8266.c **** 	macESP8266_Usart ( "+++" );
+ 1647              		.loc 1 550 2 view .LVU323
+ 1648 0008 0449     		ldr	r1, .L126+4
+ 1649 000a 0548     		ldr	r0, .L126+8
+ 1650 000c FFF7FEFF 		bl	USART_printf
+ 1651              	.LVL139:
+ 551:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 552:./Hardware/ESP8266/bsp_esp8266.c **** 	Delay_ms ( 500 ); 
+ 1652              		.loc 1 552 2 view .LVU324
+ARM GAS  /tmp/cczVi7mz.s 			page 42
+
+
+ 1653 0010 0448     		ldr	r0, .L126+12
+ 1654 0012 FFF7FEFF 		bl	CPU_TS_Tmr_Delay_US
+ 1655              	.LVL140:
+ 553:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 554:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 1656              		.loc 1 554 1 is_stmt 0 view .LVU325
+ 1657 0016 08BD     		pop	{r3, pc}
+ 1658              	.L127:
+ 1659              		.align	2
+ 1660              	.L126:
+ 1661 0018 40420F00 		.word	1000000
+ 1662 001c 00000000 		.word	.LC36
+ 1663 0020 00440040 		.word	1073759232
+ 1664 0024 20A10700 		.word	500000
+ 1665              		.cfi_endproc
+ 1666              	.LFE49:
+ 1668              		.section	.rodata.ESP8266_SendString.str1.4,"aMS",%progbits,1
+ 1669              		.align	2
+ 1670              	.LC37:
+ 1671 0000 41542B43 		.ascii	"AT+CIPSEND=%d,%d\000"
+ 1671      49505345 
+ 1671      4E443D25 
+ 1671      642C2564 
+ 1671      00
+ 1672 0011 000000   		.align	2
+ 1673              	.LC38:
+ 1674 0014 41542B43 		.ascii	"AT+CIPSEND=%d\000"
+ 1674      49505345 
+ 1674      4E443D25 
+ 1674      6400
+ 1675 0022 0000     		.align	2
+ 1676              	.LC39:
+ 1677 0024 3E2000   		.ascii	"> \000"
+ 1678 0027 00       		.align	2
+ 1679              	.LC40:
+ 1680 0028 53454E44 		.ascii	"SEND OK\000"
+ 1680      204F4B00 
+ 1681              		.section	.text.ESP8266_SendString,"ax",%progbits
+ 1682              		.align	1
+ 1683              		.global	ESP8266_SendString
+ 1684              		.syntax unified
+ 1685              		.thumb
+ 1686              		.thumb_func
+ 1687              		.fpu softvfp
+ 1689              	ESP8266_SendString:
+ 1690              	.LVL141:
+ 1691              	.LFB50:
+ 555:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 556:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 557:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 558:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_SendString
+ 559:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：WF-ESP8266模块发送字符串
+ 560:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：enumEnUnvarnishTx，声明是否已使能了透传模式
+ 561:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：pStr，要发送的字符串
+ 562:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：ulStrLength，要发送的字符串的字节数
+ 563:./Hardware/ESP8266/bsp_esp8266.c ****  *       ：ucId，哪个ID发送的字符串
+ 564:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 1，发送成功
+ARM GAS  /tmp/cczVi7mz.s 			page 43
+
+
+ 565:./Hardware/ESP8266/bsp_esp8266.c ****  *         0，发送失败
+ 566:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 567:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 568:./Hardware/ESP8266/bsp_esp8266.c **** bool ESP8266_SendString ( FunctionalState enumEnUnvarnishTx, char * pStr, u32 ulStrLength, ENUM_ID_
+ 569:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 1692              		.loc 1 569 1 is_stmt 1 view -0
+ 1693              		.cfi_startproc
+ 1694              		@ args = 0, pretend = 0, frame = 24
+ 1695              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1696              		.loc 1 569 1 is_stmt 0 view .LVU327
+ 1697 0000 10B5     		push	{r4, lr}
+ 1698              	.LCFI35:
+ 1699              		.cfi_def_cfa_offset 8
+ 1700              		.cfi_offset 4, -8
+ 1701              		.cfi_offset 14, -4
+ 1702 0002 86B0     		sub	sp, sp, #24
+ 1703              	.LCFI36:
+ 1704              		.cfi_def_cfa_offset 32
+ 1705 0004 0C46     		mov	r4, r1
+ 570:./Hardware/ESP8266/bsp_esp8266.c **** 	char cStr [20];
+ 1706              		.loc 1 570 2 is_stmt 1 view .LVU328
+ 571:./Hardware/ESP8266/bsp_esp8266.c **** 	bool bRet = false;
+ 1707              		.loc 1 571 2 view .LVU329
+ 1708              	.LVL142:
+ 572:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 573:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 574:./Hardware/ESP8266/bsp_esp8266.c **** 	if ( enumEnUnvarnishTx )
+ 1709              		.loc 1 574 2 view .LVU330
+ 1710              		.loc 1 574 5 is_stmt 0 view .LVU331
+ 1711 0006 B8B9     		cbnz	r0, .L134
+ 1712 0008 1146     		mov	r1, r2
+ 1713              	.LVL143:
+ 1714              		.loc 1 574 5 view .LVU332
+ 1715 000a 1A46     		mov	r2, r3
+ 1716              	.LVL144:
+ 575:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 576:./Hardware/ESP8266/bsp_esp8266.c **** 		macESP8266_Usart ( "%s", pStr );
+ 577:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 578:./Hardware/ESP8266/bsp_esp8266.c **** 		bRet = true;
+ 579:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 580:./Hardware/ESP8266/bsp_esp8266.c **** 	}
+ 581:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 582:./Hardware/ESP8266/bsp_esp8266.c **** 	else
+ 583:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 584:./Hardware/ESP8266/bsp_esp8266.c **** 		if ( ucId < 5 )
+ 1717              		.loc 1 584 3 is_stmt 1 view .LVU333
+ 1718              		.loc 1 584 6 is_stmt 0 view .LVU334
+ 1719 000c 042B     		cmp	r3, #4
+ 1720 000e 1AD8     		bhi	.L131
+ 585:./Hardware/ESP8266/bsp_esp8266.c **** 			sprintf ( cStr, "AT+CIPSEND=%d,%d", ucId, ulStrLength + 2 );
+ 1721              		.loc 1 585 4 is_stmt 1 view .LVU335
+ 1722 0010 8B1C     		adds	r3, r1, #2
+ 1723              	.LVL145:
+ 1724              		.loc 1 585 4 is_stmt 0 view .LVU336
+ 1725 0012 1049     		ldr	r1, .L135
+ 1726              	.LVL146:
+ 1727              		.loc 1 585 4 view .LVU337
+ARM GAS  /tmp/cczVi7mz.s 			page 44
+
+
+ 1728 0014 01A8     		add	r0, sp, #4
+ 1729              	.LVL147:
+ 1730              		.loc 1 585 4 view .LVU338
+ 1731 0016 FFF7FEFF 		bl	sprintf
+ 1732              	.LVL148:
+ 1733              	.L132:
+ 586:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 587:./Hardware/ESP8266/bsp_esp8266.c **** 		else
+ 588:./Hardware/ESP8266/bsp_esp8266.c **** 			sprintf ( cStr, "AT+CIPSEND=%d", ulStrLength + 2 );
+ 589:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 590:./Hardware/ESP8266/bsp_esp8266.c **** 		ESP8266_Cmd ( cStr, "> ", 0, 100 );
+ 1734              		.loc 1 590 3 is_stmt 1 view .LVU339
+ 1735 001a 6423     		movs	r3, #100
+ 1736 001c 0022     		movs	r2, #0
+ 1737 001e 0E49     		ldr	r1, .L135+4
+ 1738 0020 01A8     		add	r0, sp, #4
+ 1739 0022 FFF7FEFF 		bl	ESP8266_Cmd
+ 1740              	.LVL149:
+ 591:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 592:./Hardware/ESP8266/bsp_esp8266.c **** 		bRet = ESP8266_Cmd ( pStr, "SEND OK", 0, 500 );
+ 1741              		.loc 1 592 3 view .LVU340
+ 1742              		.loc 1 592 10 is_stmt 0 view .LVU341
+ 1743 0026 4FF4FA73 		mov	r3, #500
+ 1744 002a 0022     		movs	r2, #0
+ 1745 002c 0B49     		ldr	r1, .L135+8
+ 1746 002e 2046     		mov	r0, r4
+ 1747 0030 FFF7FEFF 		bl	ESP8266_Cmd
+ 1748              	.LVL150:
+ 1749              	.L130:
+ 593:./Hardware/ESP8266/bsp_esp8266.c ****   }
+ 594:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 595:./Hardware/ESP8266/bsp_esp8266.c **** 	return bRet;
+ 1750              		.loc 1 595 2 is_stmt 1 view .LVU342
+ 596:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 597:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 1751              		.loc 1 597 1 is_stmt 0 view .LVU343
+ 1752 0034 06B0     		add	sp, sp, #24
+ 1753              	.LCFI37:
+ 1754              		.cfi_remember_state
+ 1755              		.cfi_def_cfa_offset 8
+ 1756              		@ sp needed
+ 1757 0036 10BD     		pop	{r4, pc}
+ 1758              	.LVL151:
+ 1759              	.L134:
+ 1760              	.LCFI38:
+ 1761              		.cfi_restore_state
+ 576:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1762              		.loc 1 576 3 is_stmt 1 view .LVU344
+ 1763 0038 0A46     		mov	r2, r1
+ 1764              	.LVL152:
+ 576:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1765              		.loc 1 576 3 is_stmt 0 view .LVU345
+ 1766 003a 0949     		ldr	r1, .L135+12
+ 1767              	.LVL153:
+ 576:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1768              		.loc 1 576 3 view .LVU346
+ 1769 003c 0948     		ldr	r0, .L135+16
+ARM GAS  /tmp/cczVi7mz.s 			page 45
+
+
+ 1770              	.LVL154:
+ 576:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1771              		.loc 1 576 3 view .LVU347
+ 1772 003e FFF7FEFF 		bl	USART_printf
+ 1773              	.LVL155:
+ 578:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1774              		.loc 1 578 3 is_stmt 1 view .LVU348
+ 578:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1775              		.loc 1 578 8 is_stmt 0 view .LVU349
+ 1776 0042 0120     		movs	r0, #1
+ 1777 0044 F6E7     		b	.L130
+ 1778              	.LVL156:
+ 1779              	.L131:
+ 588:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1780              		.loc 1 588 4 is_stmt 1 view .LVU350
+ 1781 0046 8A1C     		adds	r2, r1, #2
+ 1782 0048 0749     		ldr	r1, .L135+20
+ 1783              	.LVL157:
+ 588:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1784              		.loc 1 588 4 is_stmt 0 view .LVU351
+ 1785 004a 01A8     		add	r0, sp, #4
+ 1786              	.LVL158:
+ 588:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1787              		.loc 1 588 4 view .LVU352
+ 1788 004c FFF7FEFF 		bl	sprintf
+ 1789              	.LVL159:
+ 588:./Hardware/ESP8266/bsp_esp8266.c **** 		
+ 1790              		.loc 1 588 4 view .LVU353
+ 1791 0050 E3E7     		b	.L132
+ 1792              	.L136:
+ 1793 0052 00BF     		.align	2
+ 1794              	.L135:
+ 1795 0054 00000000 		.word	.LC37
+ 1796 0058 24000000 		.word	.LC39
+ 1797 005c 28000000 		.word	.LC40
+ 1798 0060 08000000 		.word	.LC1
+ 1799 0064 00440040 		.word	1073759232
+ 1800 0068 14000000 		.word	.LC38
+ 1801              		.cfi_endproc
+ 1802              	.LFE50:
+ 1804              		.section	.rodata.ESP8266_ReceiveString.str1.4,"aMS",%progbits,1
+ 1805              		.align	2
+ 1806              	.LC41:
+ 1807 0000 2B495044 		.ascii	"+IPD\000"
+ 1807      00
+ 1808              		.section	.text.ESP8266_ReceiveString,"ax",%progbits
+ 1809              		.align	1
+ 1810              		.global	ESP8266_ReceiveString
+ 1811              		.syntax unified
+ 1812              		.thumb
+ 1813              		.thumb_func
+ 1814              		.fpu softvfp
+ 1816              	ESP8266_ReceiveString:
+ 1817              	.LVL160:
+ 1818              	.LFB51:
+ 598:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 599:./Hardware/ESP8266/bsp_esp8266.c **** 
+ARM GAS  /tmp/cczVi7mz.s 			page 46
+
+
+ 600:./Hardware/ESP8266/bsp_esp8266.c **** /*
+ 601:./Hardware/ESP8266/bsp_esp8266.c ****  * 函数名：ESP8266_ReceiveString
+ 602:./Hardware/ESP8266/bsp_esp8266.c ****  * 描述  ：WF-ESP8266模块接收字符串
+ 603:./Hardware/ESP8266/bsp_esp8266.c ****  * 输入  ：enumEnUnvarnishTx，声明是否已使能了透传模式
+ 604:./Hardware/ESP8266/bsp_esp8266.c ****  * 返回  : 接收到的字符串首地址
+ 605:./Hardware/ESP8266/bsp_esp8266.c ****  * 调用  ：被外部调用
+ 606:./Hardware/ESP8266/bsp_esp8266.c ****  */
+ 607:./Hardware/ESP8266/bsp_esp8266.c **** char * ESP8266_ReceiveString ( FunctionalState enumEnUnvarnishTx )
+ 608:./Hardware/ESP8266/bsp_esp8266.c **** {
+ 1819              		.loc 1 608 1 is_stmt 1 view -0
+ 1820              		.cfi_startproc
+ 1821              		@ args = 0, pretend = 0, frame = 0
+ 1822              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1823              		.loc 1 608 1 is_stmt 0 view .LVU355
+ 1824 0000 08B5     		push	{r3, lr}
+ 1825              	.LCFI39:
+ 1826              		.cfi_def_cfa_offset 8
+ 1827              		.cfi_offset 3, -8
+ 1828              		.cfi_offset 14, -4
+ 609:./Hardware/ESP8266/bsp_esp8266.c **** 	char * pRecStr = 0;
+ 1829              		.loc 1 609 2 is_stmt 1 view .LVU356
+ 1830              	.LVL161:
+ 610:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 611:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 612:./Hardware/ESP8266/bsp_esp8266.c **** 	strEsp8266_Fram_Record .InfBit .FramLength = 0;
+ 1831              		.loc 1 612 2 view .LVU357
+ 1832              		.loc 1 612 45 is_stmt 0 view .LVU358
+ 1833 0002 124B     		ldr	r3, .L143
+ 1834 0004 B3F80024 		ldrh	r2, [r3, #1024]
+ 1835 0008 6FF30E02 		bfc	r2, #0, #15
+ 1836 000c A3F80024 		strh	r2, [r3, #1024]	@ movhi
+ 613:./Hardware/ESP8266/bsp_esp8266.c **** 	strEsp8266_Fram_Record .InfBit .FramFinishFlag = 0;
+ 1837              		.loc 1 613 2 is_stmt 1 view .LVU359
+ 1838              		.loc 1 613 49 is_stmt 0 view .LVU360
+ 1839 0010 B3F80024 		ldrh	r2, [r3, #1024]
+ 1840 0014 6FF3CF32 		bfc	r2, #15, #1
+ 1841 0018 A3F80024 		strh	r2, [r3, #1024]	@ movhi
+ 614:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 615:./Hardware/ESP8266/bsp_esp8266.c **** 	while ( ! strEsp8266_Fram_Record .InfBit .FramFinishFlag );
+ 1842              		.loc 1 615 2 is_stmt 1 view .LVU361
+ 1843              	.L138:
+ 1844              		.loc 1 615 60 discriminator 1 view .LVU362
+ 1845              		.loc 1 615 8 discriminator 1 view .LVU363
+ 1846              		.loc 1 615 43 is_stmt 0 discriminator 1 view .LVU364
+ 1847 001c 0B4B     		ldr	r3, .L143
+ 1848 001e B3F80034 		ldrh	r3, [r3, #1024]
+ 1849              		.loc 1 615 8 discriminator 1 view .LVU365
+ 1850 0022 13F4004F 		tst	r3, #32768
+ 1851 0026 F9D0     		beq	.L138
+ 616:./Hardware/ESP8266/bsp_esp8266.c **** 	strEsp8266_Fram_Record .Data_RX_BUF [ strEsp8266_Fram_Record .InfBit .FramLength ] = '\0';
+ 1852              		.loc 1 616 2 is_stmt 1 view .LVU366
+ 1853              		.loc 1 616 71 is_stmt 0 view .LVU367
+ 1854 0028 084A     		ldr	r2, .L143
+ 1855 002a B2F80034 		ldrh	r3, [r2, #1024]
+ 1856 002e C3F30E03 		ubfx	r3, r3, #0, #15
+ 1857              		.loc 1 616 85 view .LVU368
+ 1858 0032 0021     		movs	r1, #0
+ARM GAS  /tmp/cczVi7mz.s 			page 47
+
+
+ 1859 0034 D154     		strb	r1, [r2, r3]
+ 617:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 618:./Hardware/ESP8266/bsp_esp8266.c **** 	if ( enumEnUnvarnishTx )
+ 1860              		.loc 1 618 2 is_stmt 1 view .LVU369
+ 1861              		.loc 1 618 5 is_stmt 0 view .LVU370
+ 1862 0036 30B9     		cbnz	r0, .L140
+ 619:./Hardware/ESP8266/bsp_esp8266.c **** 		pRecStr = strEsp8266_Fram_Record .Data_RX_BUF;
+ 620:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 621:./Hardware/ESP8266/bsp_esp8266.c **** 	else 
+ 622:./Hardware/ESP8266/bsp_esp8266.c **** 	{
+ 623:./Hardware/ESP8266/bsp_esp8266.c **** 		if ( strstr ( strEsp8266_Fram_Record .Data_RX_BUF, "+IPD" ) )
+ 1863              		.loc 1 623 3 is_stmt 1 view .LVU371
+ 1864              		.loc 1 623 8 is_stmt 0 view .LVU372
+ 1865 0038 0549     		ldr	r1, .L143+4
+ 1866 003a 1046     		mov	r0, r2
+ 1867              	.LVL162:
+ 1868              		.loc 1 623 8 view .LVU373
+ 1869 003c FFF7FEFF 		bl	strstr
+ 1870              	.LVL163:
+ 1871              		.loc 1 623 6 view .LVU374
+ 1872 0040 10B1     		cbz	r0, .L137
+ 624:./Hardware/ESP8266/bsp_esp8266.c **** 			pRecStr = strEsp8266_Fram_Record .Data_RX_BUF;
+ 1873              		.loc 1 624 12 view .LVU375
+ 1874 0042 0248     		ldr	r0, .L143
+ 1875              	.LVL164:
+ 625:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 626:./Hardware/ESP8266/bsp_esp8266.c **** 	}
+ 627:./Hardware/ESP8266/bsp_esp8266.c **** 
+ 628:./Hardware/ESP8266/bsp_esp8266.c **** 	return pRecStr;
+ 1876              		.loc 1 628 2 is_stmt 1 view .LVU376
+ 1877              		.loc 1 628 9 is_stmt 0 view .LVU377
+ 1878 0044 00E0     		b	.L137
+ 1879              	.LVL165:
+ 1880              	.L140:
+ 619:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 1881              		.loc 1 619 11 view .LVU378
+ 1882 0046 0148     		ldr	r0, .L143
+ 1883              	.LVL166:
+ 1884              	.L137:
+ 629:./Hardware/ESP8266/bsp_esp8266.c **** 	
+ 630:./Hardware/ESP8266/bsp_esp8266.c **** }
+ 1885              		.loc 1 630 1 view .LVU379
+ 1886 0048 08BD     		pop	{r3, pc}
+ 1887              	.L144:
+ 1888 004a 00BF     		.align	2
+ 1889              	.L143:
+ 1890 004c 00000000 		.word	.LANCHOR0
+ 1891 0050 00000000 		.word	.LC41
+ 1892              		.cfi_endproc
+ 1893              	.LFE51:
+ 1895              		.global	strUSART_Fram_Record
+ 1896              		.global	strEsp8266_Fram_Record
+ 1897              		.section	.bss.strEsp8266_Fram_Record,"aw",%nobits
+ 1898              		.align	2
+ 1899              		.set	.LANCHOR0,. + 0
+ 1902              	strEsp8266_Fram_Record:
+ 1903 0000 00000000 		.space	1026
+ARM GAS  /tmp/cczVi7mz.s 			page 48
+
+
+ 1903      00000000 
+ 1903      00000000 
+ 1903      00000000 
+ 1903      00000000 
+ 1904              		.section	.bss.strUSART_Fram_Record,"aw",%nobits
+ 1905              		.align	2
+ 1908              	strUSART_Fram_Record:
+ 1909 0000 00000000 		.space	1026
+ 1909      00000000 
+ 1909      00000000 
+ 1909      00000000 
+ 1909      00000000 
+ 1910              		.text
+ 1911              	.Letext0:
+ 1912              		.file 2 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 1913              		.file 3 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 1914              		.file 4 "./Libraries/CMSIS/stm32f10x.h"
+ 1915              		.file 5 "./Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_gpio.h"
+ 1916              		.file 6 "./Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_usart.h"
+ 1917              		.file 7 "./Libraries/STM32F10x_StdPeriph_Driver/inc/misc.h"
+ 1918              		.file 8 "./Hardware/ESP8266/bsp_esp8266.h"
+ 1919              		.file 9 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/string.h"
+ 1920              		.file 10 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/stdio.h"
+ 1921              		.file 11 "./Hardware/Common/common.h"
+ 1922              		.file 12 "./Hardware/dwt_delay/core_delay.h"
+ 1923              		.file 13 "<built-in>"
+ 1924              		.file 14 "./Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_rcc.h"
+ARM GAS  /tmp/cczVi7mz.s 			page 49
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 bsp_esp8266.c
+     /tmp/cczVi7mz.s:16     .text.ESP8266_GPIO_Config:0000000000000000 $t
+     /tmp/cczVi7mz.s:23     .text.ESP8266_GPIO_Config:0000000000000000 ESP8266_GPIO_Config
+     /tmp/cczVi7mz.s:85     .text.ESP8266_GPIO_Config:0000000000000040 $d
+     /tmp/cczVi7mz.s:90     .text.ESP8266_USART_NVIC_Configuration:0000000000000000 $t
+     /tmp/cczVi7mz.s:96     .text.ESP8266_USART_NVIC_Configuration:0000000000000000 ESP8266_USART_NVIC_Configuration
+     /tmp/cczVi7mz.s:143    .text.ESP8266_USART_Config:0000000000000000 $t
+     /tmp/cczVi7mz.s:149    .text.ESP8266_USART_Config:0000000000000000 ESP8266_USART_Config
+     /tmp/cczVi7mz.s:262    .text.ESP8266_USART_Config:0000000000000098 $d
+     /tmp/cczVi7mz.s:267    .text.ESP8266_Init:0000000000000000 $t
+     /tmp/cczVi7mz.s:274    .text.ESP8266_Init:0000000000000000 ESP8266_Init
+     /tmp/cczVi7mz.s:307    .text.ESP8266_Init:0000000000000020 $d
+     /tmp/cczVi7mz.s:312    .text.ESP8266_Rst:0000000000000000 $t
+     /tmp/cczVi7mz.s:319    .text.ESP8266_Rst:0000000000000000 ESP8266_Rst
+     /tmp/cczVi7mz.s:350    .text.ESP8266_Rst:000000000000001c $d
+     /tmp/cczVi7mz.s:356    .rodata.ESP8266_Cmd.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:363    .text.ESP8266_Cmd:0000000000000000 $t
+     /tmp/cczVi7mz.s:370    .text.ESP8266_Cmd:0000000000000000 ESP8266_Cmd
+     /tmp/cczVi7mz.s:515    .text.ESP8266_Cmd:00000000000000ac $d
+     /tmp/cczVi7mz.s:523    .rodata.ESP8266_AT_Test.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:540    .text.ESP8266_AT_Test:0000000000000000 $t
+     /tmp/cczVi7mz.s:547    .text.ESP8266_AT_Test:0000000000000000 ESP8266_AT_Test
+     /tmp/cczVi7mz.s:631    .text.ESP8266_AT_Test:0000000000000050 $d
+     /tmp/cczVi7mz.s:642    .rodata.ESP8266_Net_Mode_Choose.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:655    .text.ESP8266_Net_Mode_Choose:0000000000000000 $t
+     /tmp/cczVi7mz.s:662    .text.ESP8266_Net_Mode_Choose:0000000000000000 ESP8266_Net_Mode_Choose
+     /tmp/cczVi7mz.s:728    .text.ESP8266_Net_Mode_Choose:0000000000000040 $d
+     /tmp/cczVi7mz.s:737    .rodata.ESP8266_JoinAP.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:741    .text.ESP8266_JoinAP:0000000000000000 $t
+     /tmp/cczVi7mz.s:748    .text.ESP8266_JoinAP:0000000000000000 ESP8266_JoinAP
+     /tmp/cczVi7mz.s:792    .text.ESP8266_JoinAP:0000000000000024 $d
+     /tmp/cczVi7mz.s:798    .rodata.ESP8266_BuildAP.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:802    .text.ESP8266_BuildAP:0000000000000000 $t
+     /tmp/cczVi7mz.s:809    .text.ESP8266_BuildAP:0000000000000000 ESP8266_BuildAP
+     /tmp/cczVi7mz.s:856    .text.ESP8266_BuildAP:0000000000000028 $d
+     /tmp/cczVi7mz.s:862    .rodata.ESP8266_Enable_MultipleId.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:866    .text.ESP8266_Enable_MultipleId:0000000000000000 $t
+     /tmp/cczVi7mz.s:873    .text.ESP8266_Enable_MultipleId:0000000000000000 ESP8266_Enable_MultipleId
+     /tmp/cczVi7mz.s:916    .text.ESP8266_Enable_MultipleId:0000000000000028 $d
+     /tmp/cczVi7mz.s:922    .rodata.ESP8266_Link_Server.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:941    .text.ESP8266_Link_Server:0000000000000000 $t
+     /tmp/cczVi7mz.s:948    .text.ESP8266_Link_Server:0000000000000000 ESP8266_Link_Server
+     /tmp/cczVi7mz.s:1053   .text.ESP8266_Link_Server:000000000000006c $d
+     /tmp/cczVi7mz.s:1064   .rodata.ESP8266_StartOrShutServer.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:1071   .text.ESP8266_StartOrShutServer:0000000000000000 $t
+     /tmp/cczVi7mz.s:1078   .text.ESP8266_StartOrShutServer:0000000000000000 ESP8266_StartOrShutServer
+     /tmp/cczVi7mz.s:1178   .text.ESP8266_StartOrShutServer:0000000000000068 $d
+     /tmp/cczVi7mz.s:1185   .rodata.ESP8266_Get_LinkStatus.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:1198   .text.ESP8266_Get_LinkStatus:0000000000000000 $t
+     /tmp/cczVi7mz.s:1205   .text.ESP8266_Get_LinkStatus:0000000000000000 ESP8266_Get_LinkStatus
+     /tmp/cczVi7mz.s:1270   .text.ESP8266_Get_LinkStatus:0000000000000040 $d
+     /tmp/cczVi7mz.s:1280   .rodata.ESP8266_Get_IdLinkStatus.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:1296   .text.ESP8266_Get_IdLinkStatus:0000000000000000 $t
+     /tmp/cczVi7mz.s:1303   .text.ESP8266_Get_IdLinkStatus:0000000000000000 ESP8266_Get_IdLinkStatus
+     /tmp/cczVi7mz.s:1430   .text.ESP8266_Get_IdLinkStatus:0000000000000074 $d
+     /tmp/cczVi7mz.s:1442   .rodata.ESP8266_Inquire_ApIp.str1.4:0000000000000000 $d
+ARM GAS  /tmp/cczVi7mz.s 			page 50
+
+
+     /tmp/cczVi7mz.s:1449   .text.ESP8266_Inquire_ApIp:0000000000000000 $t
+     /tmp/cczVi7mz.s:1456   .text.ESP8266_Inquire_ApIp:0000000000000000 ESP8266_Inquire_ApIp
+     /tmp/cczVi7mz.s:1551   .text.ESP8266_Inquire_ApIp:0000000000000044 $d
+     /tmp/cczVi7mz.s:1559   .rodata.ESP8266_UnvarnishSend.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:1569   .text.ESP8266_UnvarnishSend:0000000000000000 $t
+     /tmp/cczVi7mz.s:1576   .text.ESP8266_UnvarnishSend:0000000000000000 ESP8266_UnvarnishSend
+     /tmp/cczVi7mz.s:1613   .text.ESP8266_UnvarnishSend:0000000000000024 $d
+     /tmp/cczVi7mz.s:1621   .rodata.ESP8266_ExitUnvarnishSend.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:1625   .text.ESP8266_ExitUnvarnishSend:0000000000000000 $t
+     /tmp/cczVi7mz.s:1632   .text.ESP8266_ExitUnvarnishSend:0000000000000000 ESP8266_ExitUnvarnishSend
+     /tmp/cczVi7mz.s:1661   .text.ESP8266_ExitUnvarnishSend:0000000000000018 $d
+     /tmp/cczVi7mz.s:1669   .rodata.ESP8266_SendString.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:1682   .text.ESP8266_SendString:0000000000000000 $t
+     /tmp/cczVi7mz.s:1689   .text.ESP8266_SendString:0000000000000000 ESP8266_SendString
+     /tmp/cczVi7mz.s:1795   .text.ESP8266_SendString:0000000000000054 $d
+     /tmp/cczVi7mz.s:1805   .rodata.ESP8266_ReceiveString.str1.4:0000000000000000 $d
+     /tmp/cczVi7mz.s:1809   .text.ESP8266_ReceiveString:0000000000000000 $t
+     /tmp/cczVi7mz.s:1816   .text.ESP8266_ReceiveString:0000000000000000 ESP8266_ReceiveString
+     /tmp/cczVi7mz.s:1890   .text.ESP8266_ReceiveString:000000000000004c $d
+     /tmp/cczVi7mz.s:1908   .bss.strUSART_Fram_Record:0000000000000000 strUSART_Fram_Record
+     /tmp/cczVi7mz.s:1902   .bss.strEsp8266_Fram_Record:0000000000000000 strEsp8266_Fram_Record
+     /tmp/cczVi7mz.s:1898   .bss.strEsp8266_Fram_Record:0000000000000000 $d
+     /tmp/cczVi7mz.s:1905   .bss.strUSART_Fram_Record:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphClockCmd
+GPIO_Init
+NVIC_PriorityGroupConfig
+NVIC_Init
+RCC_APB1PeriphClockCmd
+USART_Init
+USART_ITConfig
+USART_Cmd
+GPIO_SetBits
+GPIO_ResetBits
+CPU_TS_Tmr_Delay_US
+USART_printf
+printf
+strstr
+puts
+sprintf
+memset

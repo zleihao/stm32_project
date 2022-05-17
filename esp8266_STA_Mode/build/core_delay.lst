@@ -1,0 +1,370 @@
+ARM GAS  /tmp/ccpTDPfz.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"core_delay.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.CPU_TS_TmrInit,"ax",%progbits
+  16              		.align	1
+  17              		.global	CPU_TS_TmrInit
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	CPU_TS_TmrInit:
+  25              	.LFB29:
+  26              		.file 1 "./Hardware/dwt_delay/core_delay.c"
+   1:./Hardware/dwt_delay/core_delay.c **** /************************************************************
+   2:./Hardware/dwt_delay/core_delay.c ****   * @brief   core_delay.c
+   3:./Hardware/dwt_delay/core_delay.c ****   * @author  jiejie
+   4:./Hardware/dwt_delay/core_delay.c ****   * @github  https://github.com/jiejieTop
+   5:./Hardware/dwt_delay/core_delay.c ****   * @date    2018-xx-xx
+   6:./Hardware/dwt_delay/core_delay.c ****   * @version v1.0
+   7:./Hardware/dwt_delay/core_delay.c ****   * @note    使用内核寄存器精确延时
+   8:./Hardware/dwt_delay/core_delay.c ****   ***********************************************************/
+   9:./Hardware/dwt_delay/core_delay.c ****   
+  10:./Hardware/dwt_delay/core_delay.c **** #include "core_delay.h"   
+  11:./Hardware/dwt_delay/core_delay.c **** 
+  12:./Hardware/dwt_delay/core_delay.c **** 
+  13:./Hardware/dwt_delay/core_delay.c **** /*
+  14:./Hardware/dwt_delay/core_delay.c **** **********************************************************************
+  15:./Hardware/dwt_delay/core_delay.c **** *         时间戳相关寄存器定义
+  16:./Hardware/dwt_delay/core_delay.c **** **********************************************************************
+  17:./Hardware/dwt_delay/core_delay.c **** */
+  18:./Hardware/dwt_delay/core_delay.c **** /*
+  19:./Hardware/dwt_delay/core_delay.c ****  在Cortex-M里面有一个外设叫DWT(Data Watchpoint and Trace)，
+  20:./Hardware/dwt_delay/core_delay.c ****  该外设有一个32位的寄存器叫CYCCNT，它是一个向上的计数器，
+  21:./Hardware/dwt_delay/core_delay.c ****  记录的是内核时钟运行的个数，最长能记录的时间为：
+  22:./Hardware/dwt_delay/core_delay.c ****  60s=2的32次方/72000000
+  23:./Hardware/dwt_delay/core_delay.c ****  (假设内核频率为72M，内核跳一次的时间大概为1/72M=13.8ns)
+  24:./Hardware/dwt_delay/core_delay.c ****  当CYCCNT溢出之后，会清0重新开始向上计数。
+  25:./Hardware/dwt_delay/core_delay.c ****  使能CYCCNT计数的操作步骤：
+  26:./Hardware/dwt_delay/core_delay.c ****  1、先使能DWT外设，这个由另外内核调试寄存器DEMCR的位24控制，写1使能
+  27:./Hardware/dwt_delay/core_delay.c ****  2、使能CYCCNT寄存器之前，先清0
+  28:./Hardware/dwt_delay/core_delay.c ****  3、使能CYCCNT寄存器，这个由DWT_CTRL(代码上宏定义为DWT_CR)的位0控制，写1使能
+  29:./Hardware/dwt_delay/core_delay.c ****  */
+  30:./Hardware/dwt_delay/core_delay.c ****  
+  31:./Hardware/dwt_delay/core_delay.c **** #if USE_DWT_DELAY
+  32:./Hardware/dwt_delay/core_delay.c **** 
+ARM GAS  /tmp/ccpTDPfz.s 			page 2
+
+
+  33:./Hardware/dwt_delay/core_delay.c **** 
+  34:./Hardware/dwt_delay/core_delay.c **** #define  DWT_CR      *(__IO uint32_t *)0xE0001000
+  35:./Hardware/dwt_delay/core_delay.c **** #define  DWT_CYCCNT  *(__IO uint32_t *)0xE0001004
+  36:./Hardware/dwt_delay/core_delay.c **** #define  DEM_CR      *(__IO uint32_t *)0xE000EDFC
+  37:./Hardware/dwt_delay/core_delay.c **** 
+  38:./Hardware/dwt_delay/core_delay.c **** 
+  39:./Hardware/dwt_delay/core_delay.c **** #define  DEM_CR_TRCENA                   (1 << 24)
+  40:./Hardware/dwt_delay/core_delay.c **** #define  DWT_CR_CYCCNTENA                (1 <<  0)
+  41:./Hardware/dwt_delay/core_delay.c **** 
+  42:./Hardware/dwt_delay/core_delay.c **** 
+  43:./Hardware/dwt_delay/core_delay.c **** /**
+  44:./Hardware/dwt_delay/core_delay.c ****   * @brief  初始化时间戳
+  45:./Hardware/dwt_delay/core_delay.c ****   * @param  无
+  46:./Hardware/dwt_delay/core_delay.c ****   * @retval 无
+  47:./Hardware/dwt_delay/core_delay.c ****   * @note   使用延时函数前，必须调用本函数
+  48:./Hardware/dwt_delay/core_delay.c ****   */
+  49:./Hardware/dwt_delay/core_delay.c **** void CPU_TS_TmrInit(void)
+  50:./Hardware/dwt_delay/core_delay.c **** {
+  27              		.loc 1 50 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  51:./Hardware/dwt_delay/core_delay.c ****     /* 使能DWT外设 */
+  52:./Hardware/dwt_delay/core_delay.c ****     DEM_CR |= (uint32_t)DEM_CR_TRCENA;                
+  32              		.loc 1 52 5 view .LVU1
+  33              		.loc 1 52 12 is_stmt 0 view .LVU2
+  34 0000 4FF0E022 		mov	r2, #-536813568
+  35 0004 D2F8FC3D 		ldr	r3, [r2, #3580]
+  36 0008 43F08073 		orr	r3, r3, #16777216
+  37 000c C2F8FC3D 		str	r3, [r2, #3580]
+  53:./Hardware/dwt_delay/core_delay.c **** 
+  54:./Hardware/dwt_delay/core_delay.c ****     /* DWT CYCCNT寄存器计数清0 */
+  55:./Hardware/dwt_delay/core_delay.c ****     DWT_CYCCNT = (uint32_t)0u;
+  38              		.loc 1 55 5 is_stmt 1 view .LVU3
+  39              		.loc 1 55 16 is_stmt 0 view .LVU4
+  40 0010 034B     		ldr	r3, .L2
+  41 0012 0022     		movs	r2, #0
+  42 0014 5A60     		str	r2, [r3, #4]
+  56:./Hardware/dwt_delay/core_delay.c **** 
+  57:./Hardware/dwt_delay/core_delay.c ****     /* 使能Cortex-M DWT CYCCNT寄存器 */
+  58:./Hardware/dwt_delay/core_delay.c ****     DWT_CR |= (uint32_t)DWT_CR_CYCCNTENA;
+  43              		.loc 1 58 5 is_stmt 1 view .LVU5
+  44              		.loc 1 58 12 is_stmt 0 view .LVU6
+  45 0016 1A68     		ldr	r2, [r3]
+  46 0018 42F00102 		orr	r2, r2, #1
+  47 001c 1A60     		str	r2, [r3]
+  59:./Hardware/dwt_delay/core_delay.c **** }
+  48              		.loc 1 59 1 view .LVU7
+  49 001e 7047     		bx	lr
+  50              	.L3:
+  51              		.align	2
+  52              	.L2:
+  53 0020 001000E0 		.word	-536866816
+  54              		.cfi_endproc
+  55              	.LFE29:
+  57              		.section	.text.CPU_TS_TmrRd,"ax",%progbits
+ARM GAS  /tmp/ccpTDPfz.s 			page 3
+
+
+  58              		.align	1
+  59              		.global	CPU_TS_TmrRd
+  60              		.syntax unified
+  61              		.thumb
+  62              		.thumb_func
+  63              		.fpu softvfp
+  65              	CPU_TS_TmrRd:
+  66              	.LFB30:
+  60:./Hardware/dwt_delay/core_delay.c **** 
+  61:./Hardware/dwt_delay/core_delay.c **** /**
+  62:./Hardware/dwt_delay/core_delay.c ****   * @brief  读取当前时间戳
+  63:./Hardware/dwt_delay/core_delay.c ****   * @param  无
+  64:./Hardware/dwt_delay/core_delay.c ****   * @retval 当前时间戳，即DWT_CYCCNT寄存器的值
+  65:./Hardware/dwt_delay/core_delay.c ****   */
+  66:./Hardware/dwt_delay/core_delay.c **** uint32_t CPU_TS_TmrRd(void)
+  67:./Hardware/dwt_delay/core_delay.c **** {        
+  67              		.loc 1 67 1 is_stmt 1 view -0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 0
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+  71              		@ link register save eliminated.
+  68:./Hardware/dwt_delay/core_delay.c ****   return ((uint32_t)DWT_CYCCNT);
+  72              		.loc 1 68 3 view .LVU9
+  73              		.loc 1 68 11 is_stmt 0 view .LVU10
+  74 0000 014B     		ldr	r3, .L5
+  75 0002 5868     		ldr	r0, [r3, #4]
+  69:./Hardware/dwt_delay/core_delay.c **** }
+  76              		.loc 1 69 1 view .LVU11
+  77 0004 7047     		bx	lr
+  78              	.L6:
+  79 0006 00BF     		.align	2
+  80              	.L5:
+  81 0008 001000E0 		.word	-536866816
+  82              		.cfi_endproc
+  83              	.LFE30:
+  85              		.section	.text.CPU_TS_Tmr_Delay_US,"ax",%progbits
+  86              		.align	1
+  87              		.global	CPU_TS_Tmr_Delay_US
+  88              		.syntax unified
+  89              		.thumb
+  90              		.thumb_func
+  91              		.fpu softvfp
+  93              	CPU_TS_Tmr_Delay_US:
+  94              	.LVL0:
+  95              	.LFB31:
+  70:./Hardware/dwt_delay/core_delay.c **** 
+  71:./Hardware/dwt_delay/core_delay.c **** ///**
+  72:./Hardware/dwt_delay/core_delay.c **** //  * @brief  读取当前时间戳
+  73:./Hardware/dwt_delay/core_delay.c **** //  * @param  无
+  74:./Hardware/dwt_delay/core_delay.c **** //  * @retval 当前时间戳，即DWT_CYCCNT寄存器的值
+  75:./Hardware/dwt_delay/core_delay.c **** //	* 				此处给HAL库替换HAL_GetTick函数，用于os
+  76:./Hardware/dwt_delay/core_delay.c **** //  */
+  77:./Hardware/dwt_delay/core_delay.c **** //uint32_t HAL_GetTick(void)
+  78:./Hardware/dwt_delay/core_delay.c **** //{        
+  79:./Hardware/dwt_delay/core_delay.c **** //  return ((uint32_t)DWT_CYCCNT*1000/SysClockFreq);
+  80:./Hardware/dwt_delay/core_delay.c **** //}
+  81:./Hardware/dwt_delay/core_delay.c **** 
+ARM GAS  /tmp/ccpTDPfz.s 			page 4
+
+
+  82:./Hardware/dwt_delay/core_delay.c **** /**
+  83:./Hardware/dwt_delay/core_delay.c ****   * @brief  采用CPU的内部计数实现精确延时，32位计数器
+  84:./Hardware/dwt_delay/core_delay.c ****   * @param  us : 延迟长度，单位1 us
+  85:./Hardware/dwt_delay/core_delay.c ****   * @retval 无
+  86:./Hardware/dwt_delay/core_delay.c ****   * @note   使用本函数前必须先调用CPU_TS_TmrInit函数使能计数器，
+  87:./Hardware/dwt_delay/core_delay.c ****             或使能宏CPU_TS_INIT_IN_DELAY_FUNCTION
+  88:./Hardware/dwt_delay/core_delay.c ****             最大延时值为8秒，即8*1000*1000
+  89:./Hardware/dwt_delay/core_delay.c ****   */
+  90:./Hardware/dwt_delay/core_delay.c **** void CPU_TS_Tmr_Delay_US(__IO uint32_t us)
+  91:./Hardware/dwt_delay/core_delay.c **** {
+  96              		.loc 1 91 1 is_stmt 1 view -0
+  97              		.cfi_startproc
+  98              		@ args = 0, pretend = 0, frame = 8
+  99              		@ frame_needed = 0, uses_anonymous_args = 0
+ 100              		.loc 1 91 1 is_stmt 0 view .LVU13
+ 101 0000 70B5     		push	{r4, r5, r6, lr}
+ 102              	.LCFI0:
+ 103              		.cfi_def_cfa_offset 16
+ 104              		.cfi_offset 4, -16
+ 105              		.cfi_offset 5, -12
+ 106              		.cfi_offset 6, -8
+ 107              		.cfi_offset 14, -4
+ 108 0002 82B0     		sub	sp, sp, #8
+ 109              	.LCFI1:
+ 110              		.cfi_def_cfa_offset 24
+ 111 0004 0190     		str	r0, [sp, #4]
+  92:./Hardware/dwt_delay/core_delay.c ****   uint32_t ticks;
+ 112              		.loc 1 92 3 is_stmt 1 view .LVU14
+  93:./Hardware/dwt_delay/core_delay.c ****   uint32_t told,tnow,tcnt=0;
+ 113              		.loc 1 93 3 view .LVU15
+ 114              	.LVL1:
+  94:./Hardware/dwt_delay/core_delay.c **** 
+  95:./Hardware/dwt_delay/core_delay.c ****   /* 在函数内部初始化时间戳寄存器， */  
+  96:./Hardware/dwt_delay/core_delay.c **** #if (CPU_TS_INIT_IN_DELAY_FUNCTION)  
+  97:./Hardware/dwt_delay/core_delay.c ****   /* 初始化时间戳并清零 */
+  98:./Hardware/dwt_delay/core_delay.c ****   CPU_TS_TmrInit();
+  99:./Hardware/dwt_delay/core_delay.c **** #endif
+ 100:./Hardware/dwt_delay/core_delay.c ****   
+ 101:./Hardware/dwt_delay/core_delay.c ****   ticks = us * (GET_CPU_ClkFreq() / 1000000);  /* 需要的节拍数 */      
+ 115              		.loc 1 101 3 view .LVU16
+ 116              		.loc 1 101 35 is_stmt 0 view .LVU17
+ 117 0006 0F4B     		ldr	r3, .L15
+ 118 0008 1E68     		ldr	r6, [r3]
+ 119 000a 0F4B     		ldr	r3, .L15+4
+ 120 000c A3FB0636 		umull	r3, r6, r3, r6
+ 121 0010 B60C     		lsrs	r6, r6, #18
+ 122              		.loc 1 101 14 view .LVU18
+ 123 0012 019B     		ldr	r3, [sp, #4]
+ 124              		.loc 1 101 9 view .LVU19
+ 125 0014 03FB06F6 		mul	r6, r3, r6
+ 126              	.LVL2:
+ 102:./Hardware/dwt_delay/core_delay.c ****   tcnt = 0;
+ 127              		.loc 1 102 3 is_stmt 1 view .LVU20
+ 103:./Hardware/dwt_delay/core_delay.c ****   told = (uint32_t)CPU_TS_TmrRd();         /* 刚进入时的计数器值 */
+ 128              		.loc 1 103 3 view .LVU21
+ 129              		.loc 1 103 20 is_stmt 0 view .LVU22
+ 130 0018 FFF7FEFF 		bl	CPU_TS_TmrRd
+ARM GAS  /tmp/ccpTDPfz.s 			page 5
+
+
+ 131              	.LVL3:
+ 132              		.loc 1 103 20 view .LVU23
+ 133 001c 0446     		mov	r4, r0
+ 134              	.LVL4:
+ 102:./Hardware/dwt_delay/core_delay.c ****   tcnt = 0;
+ 135              		.loc 1 102 8 view .LVU24
+ 136 001e 0025     		movs	r5, #0
+ 137 0020 05E0     		b	.L8
+ 138              	.LVL5:
+ 139              	.L10:
+ 104:./Hardware/dwt_delay/core_delay.c **** 
+ 105:./Hardware/dwt_delay/core_delay.c ****   while(1)
+ 106:./Hardware/dwt_delay/core_delay.c ****   {
+ 107:./Hardware/dwt_delay/core_delay.c ****     tnow = (uint32_t)CPU_TS_TmrRd();  
+ 108:./Hardware/dwt_delay/core_delay.c ****     if(tnow != told)
+ 109:./Hardware/dwt_delay/core_delay.c ****     { 
+ 110:./Hardware/dwt_delay/core_delay.c ****         /* 32位计数器是递增计数器 */    
+ 111:./Hardware/dwt_delay/core_delay.c ****       if(tnow > told)
+ 112:./Hardware/dwt_delay/core_delay.c ****       {
+ 113:./Hardware/dwt_delay/core_delay.c ****         tcnt += tnow - told;  
+ 114:./Hardware/dwt_delay/core_delay.c ****       }
+ 115:./Hardware/dwt_delay/core_delay.c ****       /* 重新装载 */
+ 116:./Hardware/dwt_delay/core_delay.c ****       else 
+ 117:./Hardware/dwt_delay/core_delay.c ****       {
+ 118:./Hardware/dwt_delay/core_delay.c ****         tcnt += UINT32_MAX - told + tnow; 
+ 140              		.loc 1 118 9 is_stmt 1 view .LVU25
+ 141              		.loc 1 118 35 is_stmt 0 view .LVU26
+ 142 0022 041B     		subs	r4, r0, r4
+ 143              	.LVL6:
+ 144              		.loc 1 118 14 view .LVU27
+ 145 0024 2C44     		add	r4, r4, r5
+ 146 0026 651E     		subs	r5, r4, #1
+ 147              	.LVL7:
+ 148              	.L11:
+ 119:./Hardware/dwt_delay/core_delay.c ****       } 
+ 120:./Hardware/dwt_delay/core_delay.c ****       
+ 121:./Hardware/dwt_delay/core_delay.c ****       told = tnow;
+ 149              		.loc 1 121 7 is_stmt 1 view .LVU28
+ 122:./Hardware/dwt_delay/core_delay.c **** 
+ 123:./Hardware/dwt_delay/core_delay.c ****       /*时间超过/等于要延迟的时间,则退出 */
+ 124:./Hardware/dwt_delay/core_delay.c ****       if(tcnt >= ticks)break;
+ 150              		.loc 1 124 7 view .LVU29
+ 151              		.loc 1 124 9 is_stmt 0 view .LVU30
+ 152 0028 B542     		cmp	r5, r6
+ 153 002a 08D2     		bcs	.L14
+ 121:./Hardware/dwt_delay/core_delay.c **** 
+ 154              		.loc 1 121 12 view .LVU31
+ 155 002c 0446     		mov	r4, r0
+ 156              	.LVL8:
+ 157              	.L8:
+ 105:./Hardware/dwt_delay/core_delay.c ****   {
+ 158              		.loc 1 105 3 is_stmt 1 view .LVU32
+ 107:./Hardware/dwt_delay/core_delay.c ****     if(tnow != told)
+ 159              		.loc 1 107 5 view .LVU33
+ 107:./Hardware/dwt_delay/core_delay.c ****     if(tnow != told)
+ 160              		.loc 1 107 22 is_stmt 0 view .LVU34
+ 161 002e FFF7FEFF 		bl	CPU_TS_TmrRd
+ARM GAS  /tmp/ccpTDPfz.s 			page 6
+
+
+ 162              	.LVL9:
+ 108:./Hardware/dwt_delay/core_delay.c ****     { 
+ 163              		.loc 1 108 5 is_stmt 1 view .LVU35
+ 108:./Hardware/dwt_delay/core_delay.c ****     { 
+ 164              		.loc 1 108 7 is_stmt 0 view .LVU36
+ 165 0032 8442     		cmp	r4, r0
+ 166 0034 FBD0     		beq	.L8
+ 111:./Hardware/dwt_delay/core_delay.c ****       {
+ 167              		.loc 1 111 7 is_stmt 1 view .LVU37
+ 111:./Hardware/dwt_delay/core_delay.c ****       {
+ 168              		.loc 1 111 9 is_stmt 0 view .LVU38
+ 169 0036 F4D2     		bcs	.L10
+ 113:./Hardware/dwt_delay/core_delay.c ****       }
+ 170              		.loc 1 113 9 is_stmt 1 view .LVU39
+ 113:./Hardware/dwt_delay/core_delay.c ****       }
+ 171              		.loc 1 113 22 is_stmt 0 view .LVU40
+ 172 0038 041B     		subs	r4, r0, r4
+ 173              	.LVL10:
+ 113:./Hardware/dwt_delay/core_delay.c ****       }
+ 174              		.loc 1 113 14 view .LVU41
+ 175 003a 2544     		add	r5, r5, r4
+ 176              	.LVL11:
+ 113:./Hardware/dwt_delay/core_delay.c ****       }
+ 177              		.loc 1 113 14 view .LVU42
+ 178 003c F4E7     		b	.L11
+ 179              	.LVL12:
+ 180              	.L14:
+ 125:./Hardware/dwt_delay/core_delay.c ****     }
+ 126:./Hardware/dwt_delay/core_delay.c ****   }
+ 127:./Hardware/dwt_delay/core_delay.c **** }
+ 181              		.loc 1 127 1 view .LVU43
+ 182 003e 02B0     		add	sp, sp, #8
+ 183              	.LCFI2:
+ 184              		.cfi_def_cfa_offset 16
+ 185              		@ sp needed
+ 186 0040 70BD     		pop	{r4, r5, r6, pc}
+ 187              	.LVL13:
+ 188              	.L16:
+ 189              		.loc 1 127 1 view .LVU44
+ 190 0042 00BF     		.align	2
+ 191              	.L15:
+ 192 0044 00000000 		.word	SystemCoreClock
+ 193 0048 83DE1B43 		.word	1125899907
+ 194              		.cfi_endproc
+ 195              	.LFE31:
+ 197              		.text
+ 198              	.Letext0:
+ 199              		.file 2 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 200              		.file 3 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 201              		.file 4 "./Libraries/CMSIS/system_stm32f10x.h"
+ARM GAS  /tmp/ccpTDPfz.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 core_delay.c
+     /tmp/ccpTDPfz.s:16     .text.CPU_TS_TmrInit:0000000000000000 $t
+     /tmp/ccpTDPfz.s:24     .text.CPU_TS_TmrInit:0000000000000000 CPU_TS_TmrInit
+     /tmp/ccpTDPfz.s:53     .text.CPU_TS_TmrInit:0000000000000020 $d
+     /tmp/ccpTDPfz.s:58     .text.CPU_TS_TmrRd:0000000000000000 $t
+     /tmp/ccpTDPfz.s:65     .text.CPU_TS_TmrRd:0000000000000000 CPU_TS_TmrRd
+     /tmp/ccpTDPfz.s:81     .text.CPU_TS_TmrRd:0000000000000008 $d
+     /tmp/ccpTDPfz.s:86     .text.CPU_TS_Tmr_Delay_US:0000000000000000 $t
+     /tmp/ccpTDPfz.s:93     .text.CPU_TS_Tmr_Delay_US:0000000000000000 CPU_TS_Tmr_Delay_US
+     /tmp/ccpTDPfz.s:192    .text.CPU_TS_Tmr_Delay_US:0000000000000044 $d
+
+UNDEFINED SYMBOLS
+SystemCoreClock

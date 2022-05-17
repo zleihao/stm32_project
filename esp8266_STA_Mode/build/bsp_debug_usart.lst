@@ -1,0 +1,333 @@
+ARM GAS  /tmp/cc5SJVt7.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"bsp_debug_usart.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.global	__aeabi_i2f
+  16              		.global	__aeabi_fdiv
+  17              		.global	__aeabi_f2uiz
+  18              		.global	__aeabi_fsub
+  19              		.global	__aeabi_fmul
+  20              		.section	.text.usart_init,"ax",%progbits
+  21              		.align	1
+  22              		.global	usart_init
+  23              		.arch armv7-m
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  27              		.fpu softvfp
+  29              	usart_init:
+  30              	.LVL0:
+  31              	.LFB32:
+  32              		.file 1 "./Hardware/usart/bsp_debug_usart.c"
+   1:./Hardware/usart/bsp_debug_usart.c **** #include "bsp_debug_usart.h"
+   2:./Hardware/usart/bsp_debug_usart.c **** 
+   3:./Hardware/usart/bsp_debug_usart.c **** /**
+   4:./Hardware/usart/bsp_debug_usart.c ****  * @brief  usart_init
+   5:./Hardware/usart/bsp_debug_usart.c ****  * @param  flck 时钟频率
+   6:./Hardware/usart/bsp_debug_usart.c ****  * 		   usart1频率为72M，其余串口为36M
+   7:./Hardware/usart/bsp_debug_usart.c ****  * @return 无
+   8:./Hardware/usart/bsp_debug_usart.c ****  * @note   初始化usart
+   9:./Hardware/usart/bsp_debug_usart.c ****  */
+  10:./Hardware/usart/bsp_debug_usart.c **** void usart_init(uint8_t flck) {
+  33              		.loc 1 10 31 view -0
+  34              		.cfi_startproc
+  35              		@ args = 0, pretend = 0, frame = 0
+  36              		@ frame_needed = 0, uses_anonymous_args = 0
+  37              		.loc 1 10 31 is_stmt 0 view .LVU1
+  38 0000 38B5     		push	{r3, r4, r5, lr}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 16
+  41              		.cfi_offset 3, -16
+  42              		.cfi_offset 4, -12
+  43              		.cfi_offset 5, -8
+  44              		.cfi_offset 14, -4
+  11:./Hardware/usart/bsp_debug_usart.c **** 	float temp;
+  45              		.loc 1 11 2 is_stmt 1 view .LVU2
+  12:./Hardware/usart/bsp_debug_usart.c **** 	uint16_t mantissa;  //波特率整数
+  46              		.loc 1 12 2 view .LVU3
+ARM GAS  /tmp/cc5SJVt7.s 			page 2
+
+
+  13:./Hardware/usart/bsp_debug_usart.c **** 	uint16_t fraction;  //波特率小数
+  47              		.loc 1 13 2 view .LVU4
+  14:./Hardware/usart/bsp_debug_usart.c **** 
+  15:./Hardware/usart/bsp_debug_usart.c **** 	temp = (float)(flck*1000000)/(115200*16);  //得到 USARTDIV
+  48              		.loc 1 15 2 view .LVU5
+  49              		.loc 1 15 9 is_stmt 0 view .LVU6
+  50 0002 244B     		ldr	r3, .L3
+  51 0004 03FB00F0 		mul	r0, r3, r0
+  52              	.LVL1:
+  53              		.loc 1 15 9 view .LVU7
+  54 0008 FFF7FEFF 		bl	__aeabi_i2f
+  55              	.LVL2:
+  56              		.loc 1 15 7 view .LVU8
+  57 000c 2249     		ldr	r1, .L3+4
+  58 000e FFF7FEFF 		bl	__aeabi_fdiv
+  59              	.LVL3:
+  60 0012 0546     		mov	r5, r0
+  61              	.LVL4:
+  16:./Hardware/usart/bsp_debug_usart.c **** 	mantissa = temp;                           //得到整数部分
+  62              		.loc 1 16 2 is_stmt 1 view .LVU9
+  63              		.loc 1 16 11 is_stmt 0 view .LVU10
+  64 0014 FFF7FEFF 		bl	__aeabi_f2uiz
+  65              	.LVL5:
+  66              		.loc 1 16 11 view .LVU11
+  67 0018 84B2     		uxth	r4, r0
+  68              	.LVL6:
+  17:./Hardware/usart/bsp_debug_usart.c **** 	fraction = (temp - mantissa)*16;           //得到小数部分
+  69              		.loc 1 17 2 is_stmt 1 view .LVU12
+  70              		.loc 1 17 19 is_stmt 0 view .LVU13
+  71 001a 2046     		mov	r0, r4
+  72 001c FFF7FEFF 		bl	__aeabi_i2f
+  73              	.LVL7:
+  74 0020 0146     		mov	r1, r0
+  75 0022 2846     		mov	r0, r5
+  76 0024 FFF7FEFF 		bl	__aeabi_fsub
+  77              	.LVL8:
+  78              		.loc 1 17 30 view .LVU14
+  79 0028 4FF08341 		mov	r1, #1098907648
+  80 002c FFF7FEFF 		bl	__aeabi_fmul
+  81              	.LVL9:
+  82              		.loc 1 17 11 view .LVU15
+  83 0030 FFF7FEFF 		bl	__aeabi_f2uiz
+  84              	.LVL10:
+  85 0034 80B2     		uxth	r0, r0
+  86              	.LVL11:
+  18:./Hardware/usart/bsp_debug_usart.c **** 	mantissa <<= 4;
+  87              		.loc 1 18 2 is_stmt 1 view .LVU16
+  88              		.loc 1 18 11 is_stmt 0 view .LVU17
+  89 0036 2401     		lsls	r4, r4, #4
+  90              	.LVL12:
+  91              		.loc 1 18 11 view .LVU18
+  92 0038 A4B2     		uxth	r4, r4
+  93              	.LVL13:
+  19:./Hardware/usart/bsp_debug_usart.c **** 	mantissa += fraction;                      //写入到BRR的最终值
+  94              		.loc 1 19 2 is_stmt 1 view .LVU19
+  95              		.loc 1 19 11 is_stmt 0 view .LVU20
+  96 003a 0444     		add	r4, r4, r0
+ARM GAS  /tmp/cc5SJVt7.s 			page 3
+
+
+  97              	.LVL14:
+  98              		.loc 1 19 11 view .LVU21
+  99 003c A4B2     		uxth	r4, r4
+ 100              	.LVL15:
+  20:./Hardware/usart/bsp_debug_usart.c **** 
+  21:./Hardware/usart/bsp_debug_usart.c **** 	//打开串口时钟
+  22:./Hardware/usart/bsp_debug_usart.c **** 	RCC->APB2ENR |= (1 << 14);
+ 101              		.loc 1 22 2 is_stmt 1 view .LVU22
+ 102              		.loc 1 22 15 is_stmt 0 view .LVU23
+ 103 003e 174B     		ldr	r3, .L3+8
+ 104 0040 9A69     		ldr	r2, [r3, #24]
+ 105 0042 42F48042 		orr	r2, r2, #16384
+ 106 0046 9A61     		str	r2, [r3, #24]
+  23:./Hardware/usart/bsp_debug_usart.c **** 	//打开GPIOA时钟
+  24:./Hardware/usart/bsp_debug_usart.c **** 	RCC->APB2ENR |= (1 << 2);
+ 107              		.loc 1 24 2 is_stmt 1 view .LVU24
+ 108              		.loc 1 24 15 is_stmt 0 view .LVU25
+ 109 0048 9A69     		ldr	r2, [r3, #24]
+ 110 004a 42F00402 		orr	r2, r2, #4
+ 111 004e 9A61     		str	r2, [r3, #24]
+  25:./Hardware/usart/bsp_debug_usart.c **** 	
+  26:./Hardware/usart/bsp_debug_usart.c **** 	//配置TX、RX引脚
+  27:./Hardware/usart/bsp_debug_usart.c **** 	GPIOA->CRH &= 0xFFFFF00F;  //清空 PIN10 PIN9
+ 112              		.loc 1 27 2 is_stmt 1 view .LVU26
+ 113              		.loc 1 27 13 is_stmt 0 view .LVU27
+ 114 0050 134A     		ldr	r2, .L3+12
+ 115 0052 5168     		ldr	r1, [r2, #4]
+ 116 0054 21F47F61 		bic	r1, r1, #4080
+ 117 0058 5160     		str	r1, [r2, #4]
+  28:./Hardware/usart/bsp_debug_usart.c **** 	// TX：复用推挽输出 RX：输入模式
+  29:./Hardware/usart/bsp_debug_usart.c **** 	GPIOA->CRH |= 0x000008B0;  
+ 118              		.loc 1 29 2 is_stmt 1 view .LVU28
+ 119              		.loc 1 29 13 is_stmt 0 view .LVU29
+ 120 005a 5168     		ldr	r1, [r2, #4]
+ 121 005c 41F40B61 		orr	r1, r1, #2224
+ 122 0060 5160     		str	r1, [r2, #4]
+  30:./Hardware/usart/bsp_debug_usart.c **** 
+  31:./Hardware/usart/bsp_debug_usart.c **** 	//复位串口
+  32:./Hardware/usart/bsp_debug_usart.c **** 	RCC->APB2RSTR |= (1 << 14);
+ 123              		.loc 1 32 2 is_stmt 1 view .LVU30
+ 124              		.loc 1 32 16 is_stmt 0 view .LVU31
+ 125 0062 DA68     		ldr	r2, [r3, #12]
+ 126 0064 42F48042 		orr	r2, r2, #16384
+ 127 0068 DA60     		str	r2, [r3, #12]
+  33:./Hardware/usart/bsp_debug_usart.c **** 	//停止复位
+  34:./Hardware/usart/bsp_debug_usart.c **** 	RCC->APB2RSTR &= ~(1 << 14);
+ 128              		.loc 1 34 2 is_stmt 1 view .LVU32
+ 129              		.loc 1 34 16 is_stmt 0 view .LVU33
+ 130 006a DA68     		ldr	r2, [r3, #12]
+ 131 006c 22F48042 		bic	r2, r2, #16384
+ 132 0070 DA60     		str	r2, [r3, #12]
+  35:./Hardware/usart/bsp_debug_usart.c **** 	//usart工作模式
+  36:./Hardware/usart/bsp_debug_usart.c **** 	USART1->BRR = mantissa; //波特率
+ 133              		.loc 1 36 2 is_stmt 1 view .LVU34
+ 134              		.loc 1 36 14 is_stmt 0 view .LVU35
+ 135 0072 0C4A     		ldr	r2, .L3+16
+ 136 0074 1481     		strh	r4, [r2, #8]	@ movhi
+ARM GAS  /tmp/cc5SJVt7.s 			page 4
+
+
+  37:./Hardware/usart/bsp_debug_usart.c **** 	USART1->CR1 |= 0x200C;  //使能usart1、无校验位
+ 137              		.loc 1 37 2 is_stmt 1 view .LVU36
+ 138              		.loc 1 37 14 is_stmt 0 view .LVU37
+ 139 0076 9389     		ldrh	r3, [r2, #12]
+ 140 0078 9BB2     		uxth	r3, r3
+ 141 007a 43F40053 		orr	r3, r3, #8192
+ 142 007e 43F00C03 		orr	r3, r3, #12
+ 143 0082 9381     		strh	r3, [r2, #12]	@ movhi
+  38:./Hardware/usart/bsp_debug_usart.c **** 	USART1->CR2 &= ~(3 << 12); //1个停止位
+ 144              		.loc 1 38 2 is_stmt 1 view .LVU38
+ 145              		.loc 1 38 14 is_stmt 0 view .LVU39
+ 146 0084 138A     		ldrh	r3, [r2, #16]
+ 147 0086 9BB2     		uxth	r3, r3
+ 148 0088 23F44053 		bic	r3, r3, #12288
+ 149 008c 9BB2     		uxth	r3, r3
+ 150 008e 1382     		strh	r3, [r2, #16]	@ movhi
+  39:./Hardware/usart/bsp_debug_usart.c **** }
+ 151              		.loc 1 39 1 view .LVU40
+ 152 0090 38BD     		pop	{r3, r4, r5, pc}
+ 153              	.LVL16:
+ 154              	.L4:
+ 155              		.loc 1 39 1 view .LVU41
+ 156 0092 00BF     		.align	2
+ 157              	.L3:
+ 158 0094 40420F00 		.word	1000000
+ 159 0098 0000E149 		.word	1239482368
+ 160 009c 00100240 		.word	1073876992
+ 161 00a0 00080140 		.word	1073809408
+ 162 00a4 00380140 		.word	1073821696
+ 163              		.cfi_endproc
+ 164              	.LFE32:
+ 166              		.section	.text._write,"ax",%progbits
+ 167              		.align	1
+ 168              		.global	_write
+ 169              		.syntax unified
+ 170              		.thumb
+ 171              		.thumb_func
+ 172              		.fpu softvfp
+ 174              	_write:
+ 175              	.LVL17:
+ 176              	.LFB33:
+  40:./Hardware/usart/bsp_debug_usart.c **** 
+  41:./Hardware/usart/bsp_debug_usart.c **** //重定向c库函数printf到串口，重定向后可使用printf函数
+  42:./Hardware/usart/bsp_debug_usart.c **** int _write (int fd, char *pBuffer, int size)
+  43:./Hardware/usart/bsp_debug_usart.c **** {
+ 177              		.loc 1 43 1 is_stmt 1 view -0
+ 178              		.cfi_startproc
+ 179              		@ args = 0, pretend = 0, frame = 0
+ 180              		@ frame_needed = 0, uses_anonymous_args = 0
+ 181              		.loc 1 43 1 is_stmt 0 view .LVU43
+ 182 0000 1046     		mov	r0, r2
+ 183              	.LVL18:
+  44:./Hardware/usart/bsp_debug_usart.c ****     for (int i = 0; i < size; i++)
+ 184              		.loc 1 44 5 is_stmt 1 view .LVU44
+ 185              	.LBB2:
+ 186              		.loc 1 44 10 view .LVU45
+ 187              		.loc 1 44 14 is_stmt 0 view .LVU46
+ARM GAS  /tmp/cc5SJVt7.s 			page 5
+
+
+ 188 0002 4FF0000C 		mov	ip, #0
+ 189              	.LVL19:
+ 190              		.loc 1 44 21 is_stmt 1 view .LVU47
+ 191              		.loc 1 44 5 is_stmt 0 view .LVU48
+ 192 0006 9445     		cmp	ip, r2
+ 193 0008 10DA     		bge	.L12
+ 194              	.LBE2:
+  43:./Hardware/usart/bsp_debug_usart.c ****     for (int i = 0; i < size; i++)
+ 195              		.loc 1 43 1 view .LVU49
+ 196 000a 00B5     		push	{lr}
+ 197              	.LCFI1:
+ 198              		.cfi_def_cfa_offset 4
+ 199              		.cfi_offset 14, -4
+ 200              	.L7:
+ 201              	.LBB3:
+  45:./Hardware/usart/bsp_debug_usart.c ****     {
+  46:./Hardware/usart/bsp_debug_usart.c ****         while((USART1->SR&0X40)==0);//等待上一次串口数据发送完成
+ 202              		.loc 1 46 36 is_stmt 1 discriminator 1 view .LVU50
+ 203              		.loc 1 46 14 discriminator 1 view .LVU51
+ 204              		.loc 1 46 22 is_stmt 0 discriminator 1 view .LVU52
+ 205 000c 084B     		ldr	r3, .L13
+ 206 000e 1B88     		ldrh	r3, [r3]
+ 207              		.loc 1 46 14 discriminator 1 view .LVU53
+ 208 0010 13F0400F 		tst	r3, #64
+ 209 0014 FAD0     		beq	.L7
+  47:./Hardware/usart/bsp_debug_usart.c ****         USART1->DR = (uint8_t) pBuffer[i];       //写DR,串口1将发送数据
+ 210              		.loc 1 47 9 is_stmt 1 discriminator 2 view .LVU54
+ 211              		.loc 1 47 22 is_stmt 0 discriminator 2 view .LVU55
+ 212 0016 11F80CE0 		ldrb	lr, [r1, ip]	@ zero_extendqisi2
+ 213              		.loc 1 47 20 discriminator 2 view .LVU56
+ 214 001a 054B     		ldr	r3, .L13
+ 215 001c A3F804E0 		strh	lr, [r3, #4]	@ movhi
+  44:./Hardware/usart/bsp_debug_usart.c ****     {
+ 216              		.loc 1 44 31 is_stmt 1 discriminator 2 view .LVU57
+  44:./Hardware/usart/bsp_debug_usart.c ****     {
+ 217              		.loc 1 44 32 is_stmt 0 discriminator 2 view .LVU58
+ 218 0020 0CF1010C 		add	ip, ip, #1
+ 219              	.LVL20:
+  44:./Hardware/usart/bsp_debug_usart.c ****     {
+ 220              		.loc 1 44 21 is_stmt 1 discriminator 2 view .LVU59
+  44:./Hardware/usart/bsp_debug_usart.c ****     {
+ 221              		.loc 1 44 5 is_stmt 0 discriminator 2 view .LVU60
+ 222 0024 8445     		cmp	ip, r0
+ 223 0026 F1DB     		blt	.L7
+ 224              	.LBE3:
+  48:./Hardware/usart/bsp_debug_usart.c ****     }
+  49:./Hardware/usart/bsp_debug_usart.c ****     return size;
+ 225              		.loc 1 49 5 is_stmt 1 view .LVU61
+  50:./Hardware/usart/bsp_debug_usart.c **** }
+ 226              		.loc 1 50 1 is_stmt 0 view .LVU62
+ 227 0028 5DF804FB 		ldr	pc, [sp], #4
+ 228              	.LVL21:
+ 229              	.L12:
+ 230              	.LCFI2:
+ 231              		.cfi_def_cfa_offset 0
+ 232              		.cfi_restore 14
+ 233              		.loc 1 50 1 view .LVU63
+ARM GAS  /tmp/cc5SJVt7.s 			page 6
+
+
+ 234 002c 7047     		bx	lr
+ 235              	.L14:
+ 236 002e 00BF     		.align	2
+ 237              	.L13:
+ 238 0030 00380140 		.word	1073821696
+ 239              		.cfi_endproc
+ 240              	.LFE33:
+ 242              		.text
+ 243              	.Letext0:
+ 244              		.file 2 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 245              		.file 3 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 246              		.file 4 "./Libraries/CMSIS/stm32f10x.h"
+ARM GAS  /tmp/cc5SJVt7.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 bsp_debug_usart.c
+     /tmp/cc5SJVt7.s:21     .text.usart_init:0000000000000000 $t
+     /tmp/cc5SJVt7.s:29     .text.usart_init:0000000000000000 usart_init
+     /tmp/cc5SJVt7.s:158    .text.usart_init:0000000000000094 $d
+     /tmp/cc5SJVt7.s:167    .text._write:0000000000000000 $t
+     /tmp/cc5SJVt7.s:174    .text._write:0000000000000000 _write
+     /tmp/cc5SJVt7.s:238    .text._write:0000000000000030 $d
+
+UNDEFINED SYMBOLS
+__aeabi_i2f
+__aeabi_fdiv
+__aeabi_f2uiz
+__aeabi_fsub
+__aeabi_fmul

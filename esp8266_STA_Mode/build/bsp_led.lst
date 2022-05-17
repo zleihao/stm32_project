@@ -1,0 +1,218 @@
+ARM GAS  /tmp/ccwHoSVC.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"bsp_led.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.LED_GPIO_Config,"ax",%progbits
+  16              		.align	1
+  17              		.global	LED_GPIO_Config
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	LED_GPIO_Config:
+  25              	.LFB29:
+  26              		.file 1 "./Hardware/led/bsp_led.c"
+   1:./Hardware/led/bsp_led.c **** /**
+   2:./Hardware/led/bsp_led.c ****   ******************************************************************************
+   3:./Hardware/led/bsp_led.c ****   * @file    bsp_led.c
+   4:./Hardware/led/bsp_led.c ****   * @author  fire
+   5:./Hardware/led/bsp_led.c ****   * @version V1.0
+   6:./Hardware/led/bsp_led.c ****   * @date    2013-xx-xx
+   7:./Hardware/led/bsp_led.c ****   * @brief   led应用函数接口
+   8:./Hardware/led/bsp_led.c ****   ******************************************************************************
+   9:./Hardware/led/bsp_led.c ****   * @attention
+  10:./Hardware/led/bsp_led.c ****   *
+  11:./Hardware/led/bsp_led.c ****   * 实验平台:野火 F103-霸道 STM32 开发板 
+  12:./Hardware/led/bsp_led.c ****   * 论坛    :http://www.firebbs.cn
+  13:./Hardware/led/bsp_led.c ****   * 淘宝    :https://fire-stm32.taobao.com
+  14:./Hardware/led/bsp_led.c ****   *
+  15:./Hardware/led/bsp_led.c ****   ******************************************************************************
+  16:./Hardware/led/bsp_led.c ****   */
+  17:./Hardware/led/bsp_led.c ****   
+  18:./Hardware/led/bsp_led.c **** #include "bsp_led.h"   
+  19:./Hardware/led/bsp_led.c **** 
+  20:./Hardware/led/bsp_led.c ****  /**
+  21:./Hardware/led/bsp_led.c ****   * @brief  初始化控制LED的IO
+  22:./Hardware/led/bsp_led.c ****   * @param  无
+  23:./Hardware/led/bsp_led.c ****   * @retval 无
+  24:./Hardware/led/bsp_led.c ****   */
+  25:./Hardware/led/bsp_led.c **** void LED_GPIO_Config(void)
+  26:./Hardware/led/bsp_led.c **** {		
+  27              		.loc 1 26 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 8
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+  32              	.LCFI0:
+ARM GAS  /tmp/ccwHoSVC.s 			page 2
+
+
+  33              		.cfi_def_cfa_offset 24
+  34              		.cfi_offset 4, -24
+  35              		.cfi_offset 5, -20
+  36              		.cfi_offset 6, -16
+  37              		.cfi_offset 7, -12
+  38              		.cfi_offset 8, -8
+  39              		.cfi_offset 14, -4
+  40 0004 82B0     		sub	sp, sp, #8
+  41              	.LCFI1:
+  42              		.cfi_def_cfa_offset 32
+  27:./Hardware/led/bsp_led.c **** 		/*定义一个GPIO_InitTypeDef类型的结构体*/
+  28:./Hardware/led/bsp_led.c **** 		GPIO_InitTypeDef GPIO_InitStructure;
+  43              		.loc 1 28 3 view .LVU1
+  29:./Hardware/led/bsp_led.c **** 
+  30:./Hardware/led/bsp_led.c **** 		/*开启LED相关的GPIO外设时钟*/
+  31:./Hardware/led/bsp_led.c **** 		RCC_APB2PeriphClockCmd( LED1_GPIO_CLK | LED2_GPIO_CLK | LED3_GPIO_CLK | RCC_APB2Periph_AFIO, ENAB
+  44              		.loc 1 31 3 view .LVU2
+  45 0006 0121     		movs	r1, #1
+  46 0008 0D20     		movs	r0, #13
+  47 000a FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+  48              	.LVL0:
+  32:./Hardware/led/bsp_led.c **** 		/*选择要控制的GPIO引脚*/
+  33:./Hardware/led/bsp_led.c **** 		GPIO_InitStructure.GPIO_Pin = LED1_GPIO_PIN;	
+  49              		.loc 1 33 3 view .LVU3
+  50              		.loc 1 33 31 is_stmt 0 view .LVU4
+  51 000e 4FF00808 		mov	r8, #8
+  52 0012 ADF80480 		strh	r8, [sp, #4]	@ movhi
+  34:./Hardware/led/bsp_led.c **** 
+  35:./Hardware/led/bsp_led.c **** 		/*设置引脚模式为通用推挽输出*/
+  36:./Hardware/led/bsp_led.c **** 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;   
+  53              		.loc 1 36 3 is_stmt 1 view .LVU5
+  54              		.loc 1 36 32 is_stmt 0 view .LVU6
+  55 0016 1023     		movs	r3, #16
+  56 0018 8DF80730 		strb	r3, [sp, #7]
+  37:./Hardware/led/bsp_led.c **** 
+  38:./Hardware/led/bsp_led.c **** 		/*设置引脚速率为50MHz */   
+  39:./Hardware/led/bsp_led.c **** 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
+  57              		.loc 1 39 3 is_stmt 1 view .LVU7
+  58              		.loc 1 39 33 is_stmt 0 view .LVU8
+  59 001c 0323     		movs	r3, #3
+  60 001e 8DF80630 		strb	r3, [sp, #6]
+  40:./Hardware/led/bsp_led.c **** 
+  41:./Hardware/led/bsp_led.c **** 		/*调用库函数，初始化GPIO*/
+  42:./Hardware/led/bsp_led.c **** 		GPIO_Init(LED1_GPIO_PORT, &GPIO_InitStructure);	
+  61              		.loc 1 42 3 is_stmt 1 view .LVU9
+  62 0022 144F     		ldr	r7, .L3
+  63 0024 01A9     		add	r1, sp, #4
+  64 0026 3846     		mov	r0, r7
+  65 0028 FFF7FEFF 		bl	GPIO_Init
+  66              	.LVL1:
+  43:./Hardware/led/bsp_led.c **** 		
+  44:./Hardware/led/bsp_led.c **** 		/*选择要控制的GPIO引脚*/
+  45:./Hardware/led/bsp_led.c **** 		GPIO_InitStructure.GPIO_Pin = LED2_GPIO_PIN;
+  67              		.loc 1 45 3 view .LVU10
+  68              		.loc 1 45 31 is_stmt 0 view .LVU11
+  69 002c 4FF40046 		mov	r6, #32768
+  70 0030 ADF80460 		strh	r6, [sp, #4]	@ movhi
+ARM GAS  /tmp/ccwHoSVC.s 			page 3
+
+
+  46:./Hardware/led/bsp_led.c **** 
+  47:./Hardware/led/bsp_led.c **** 		/*调用库函数，初始化GPIO*/
+  48:./Hardware/led/bsp_led.c **** 		GPIO_Init(LED2_GPIO_PORT, &GPIO_InitStructure);
+  71              		.loc 1 48 3 is_stmt 1 view .LVU12
+  72 0034 104C     		ldr	r4, .L3+4
+  73 0036 01A9     		add	r1, sp, #4
+  74 0038 2046     		mov	r0, r4
+  75 003a FFF7FEFF 		bl	GPIO_Init
+  76              	.LVL2:
+  49:./Hardware/led/bsp_led.c **** 		
+  50:./Hardware/led/bsp_led.c **** 		/*选择要控制的GPIO引脚*/
+  51:./Hardware/led/bsp_led.c **** 		GPIO_InitStructure.GPIO_Pin = LED3_GPIO_PIN;
+  77              		.loc 1 51 3 view .LVU13
+  78              		.loc 1 51 31 is_stmt 0 view .LVU14
+  79 003e 4FF48055 		mov	r5, #4096
+  80 0042 ADF80450 		strh	r5, [sp, #4]	@ movhi
+  52:./Hardware/led/bsp_led.c **** 
+  53:./Hardware/led/bsp_led.c **** 		/*调用库函数，初始化GPIOF*/
+  54:./Hardware/led/bsp_led.c **** 		GPIO_Init(LED3_GPIO_PORT, &GPIO_InitStructure);
+  81              		.loc 1 54 3 is_stmt 1 view .LVU15
+  82 0046 01A9     		add	r1, sp, #4
+  83 0048 2046     		mov	r0, r4
+  84 004a FFF7FEFF 		bl	GPIO_Init
+  85              	.LVL3:
+  55:./Hardware/led/bsp_led.c **** 		
+  56:./Hardware/led/bsp_led.c ****     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
+  86              		.loc 1 56 5 view .LVU16
+  87 004e 0121     		movs	r1, #1
+  88 0050 0A48     		ldr	r0, .L3+8
+  89 0052 FFF7FEFF 		bl	GPIO_PinRemapConfig
+  90              	.LVL4:
+  57:./Hardware/led/bsp_led.c **** 
+  58:./Hardware/led/bsp_led.c **** 
+  59:./Hardware/led/bsp_led.c **** 		/* 关闭所有led灯	*/
+  60:./Hardware/led/bsp_led.c **** 		GPIO_SetBits(LED1_GPIO_PORT, LED1_GPIO_PIN);
+  91              		.loc 1 60 3 view .LVU17
+  92 0056 4146     		mov	r1, r8
+  93 0058 3846     		mov	r0, r7
+  94 005a FFF7FEFF 		bl	GPIO_SetBits
+  95              	.LVL5:
+  61:./Hardware/led/bsp_led.c **** 		
+  62:./Hardware/led/bsp_led.c **** 		/* 关闭所有led灯	*/
+  63:./Hardware/led/bsp_led.c **** 		GPIO_SetBits(LED2_GPIO_PORT, LED2_GPIO_PIN);	 
+  96              		.loc 1 63 3 view .LVU18
+  97 005e 3146     		mov	r1, r6
+  98 0060 2046     		mov	r0, r4
+  99 0062 FFF7FEFF 		bl	GPIO_SetBits
+ 100              	.LVL6:
+  64:./Hardware/led/bsp_led.c ****     
+  65:./Hardware/led/bsp_led.c ****     /* 关闭所有led灯	*/
+  66:./Hardware/led/bsp_led.c **** 		GPIO_SetBits(LED3_GPIO_PORT, LED3_GPIO_PIN);
+ 101              		.loc 1 66 3 view .LVU19
+ 102 0066 2946     		mov	r1, r5
+ 103 0068 2046     		mov	r0, r4
+ 104 006a FFF7FEFF 		bl	GPIO_SetBits
+ 105              	.LVL7:
+  67:./Hardware/led/bsp_led.c **** }
+ARM GAS  /tmp/ccwHoSVC.s 			page 4
+
+
+ 106              		.loc 1 67 1 is_stmt 0 view .LVU20
+ 107 006e 02B0     		add	sp, sp, #8
+ 108              	.LCFI2:
+ 109              		.cfi_def_cfa_offset 24
+ 110              		@ sp needed
+ 111 0070 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 112              	.L4:
+ 113              		.align	2
+ 114              	.L3:
+ 115 0074 000C0140 		.word	1073810432
+ 116 0078 00080140 		.word	1073809408
+ 117 007c 00023000 		.word	3146240
+ 118              		.cfi_endproc
+ 119              	.LFE29:
+ 121              		.text
+ 122              	.Letext0:
+ 123              		.file 2 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 124              		.file 3 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 125              		.file 4 "./Libraries/CMSIS/stm32f10x.h"
+ 126              		.file 5 "./Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_gpio.h"
+ 127              		.file 6 "./Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_rcc.h"
+ARM GAS  /tmp/ccwHoSVC.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 bsp_led.c
+     /tmp/ccwHoSVC.s:16     .text.LED_GPIO_Config:0000000000000000 $t
+     /tmp/ccwHoSVC.s:24     .text.LED_GPIO_Config:0000000000000000 LED_GPIO_Config
+     /tmp/ccwHoSVC.s:115    .text.LED_GPIO_Config:0000000000000074 $d
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphClockCmd
+GPIO_Init
+GPIO_PinRemapConfig
+GPIO_SetBits
