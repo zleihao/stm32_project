@@ -1,0 +1,994 @@
+ARM GAS  /tmp/cceYdonD.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"bsp_iic.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.iic_delay,"ax",%progbits
+  16              		.align	1
+  17              		.arch armv7-m
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	iic_delay:
+  24              	.LFB29:
+  25              		.file 1 "./Hardware/iic/bsp_iic.c"
+   1:./Hardware/iic/bsp_iic.c **** /**
+   2:./Hardware/iic/bsp_iic.c ****  * @brief               bsp_exti.c
+   3:./Hardware/iic/bsp_iic.c ****  * @Date:               2022.4.20
+   4:./Hardware/iic/bsp_iic.c ****  * @Revision:           V1.0
+   5:./Hardware/iic/bsp_iic.c ****  * @Writer:             点灯大师
+   6:./Hardware/iic/bsp_iic.c ****  * @Affiliated unit：   黄河科技学院
+   7:./Hardware/iic/bsp_iic.c ****  * @Email:              im_leihao@163.com
+   8:./Hardware/iic/bsp_iic.c ****  * @gitee:              https://gitee.com/zleihao/st_stm32_drive.git
+   9:./Hardware/iic/bsp_iic.c ****  * @note:               参考野火例程
+  10:./Hardware/iic/bsp_iic.c ****  */
+  11:./Hardware/iic/bsp_iic.c **** #include "bsp_iic.h"
+  12:./Hardware/iic/bsp_iic.c **** 
+  13:./Hardware/iic/bsp_iic.c **** /**
+  14:./Hardware/iic/bsp_iic.c ****  * @brief   iic_delay
+  15:./Hardware/iic/bsp_iic.c ****  * @param   无
+  16:./Hardware/iic/bsp_iic.c ****  * @return  无
+  17:./Hardware/iic/bsp_iic.c ****  * @note    I2C总线位延迟，最快400KHz
+  18:./Hardware/iic/bsp_iic.c ****  */
+  19:./Hardware/iic/bsp_iic.c **** static void iic_delay(void)
+  20:./Hardware/iic/bsp_iic.c **** {
+  26              		.loc 1 20 1
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 8
+  29              		@ frame_needed = 1, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  31 0000 80B4     		push	{r7}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 4
+  34              		.cfi_offset 7, -4
+  35 0002 83B0     		sub	sp, sp, #12
+  36              	.LCFI1:
+  37              		.cfi_def_cfa_offset 16
+  38 0004 00AF     		add	r7, sp, #0
+ARM GAS  /tmp/cceYdonD.s 			page 2
+
+
+  39              	.LCFI2:
+  40              		.cfi_def_cfa_register 7
+  21:./Hardware/iic/bsp_iic.c **** 	uint8_t i;
+  22:./Hardware/iic/bsp_iic.c **** 	/*　
+  23:./Hardware/iic/bsp_iic.c **** 	 	下面的时间是通过逻辑分析仪测试得到的。
+  24:./Hardware/iic/bsp_iic.c ****         工作条件：CPU主频72MHz ，MDK编译环境，1级优化
+  25:./Hardware/iic/bsp_iic.c ****   
+  26:./Hardware/iic/bsp_iic.c **** 		循环次数为10时，SCL频率 = 205KHz 
+  27:./Hardware/iic/bsp_iic.c **** 		循环次数为7时，SCL频率 = 347KHz， SCL高电平时间1.5us，SCL低电平时间2.87us 
+  28:./Hardware/iic/bsp_iic.c **** 	 	循环次数为5时，SCL频率 = 421KHz， SCL高电平时间1.25us，SCL低电平时间2.375us
+  29:./Hardware/iic/bsp_iic.c **** 	*/
+  30:./Hardware/iic/bsp_iic.c **** 	for (i = 0; i < 10; i++);
+  41              		.loc 1 30 9
+  42 0006 0023     		movs	r3, #0
+  43 0008 FB71     		strb	r3, [r7, #7]
+  44              		.loc 1 30 2
+  45 000a 02E0     		b	.L2
+  46              	.L3:
+  47              		.loc 1 30 23 discriminator 3
+  48 000c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  49 000e 0133     		adds	r3, r3, #1
+  50 0010 FB71     		strb	r3, [r7, #7]
+  51              	.L2:
+  52              		.loc 1 30 2 discriminator 1
+  53 0012 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  54 0014 092B     		cmp	r3, #9
+  55 0016 F9D9     		bls	.L3
+  31:./Hardware/iic/bsp_iic.c **** }
+  56              		.loc 1 31 1
+  57 0018 00BF     		nop
+  58 001a 00BF     		nop
+  59 001c 0C37     		adds	r7, r7, #12
+  60              	.LCFI3:
+  61              		.cfi_def_cfa_offset 4
+  62 001e BD46     		mov	sp, r7
+  63              	.LCFI4:
+  64              		.cfi_def_cfa_register 13
+  65              		@ sp needed
+  66 0020 80BC     		pop	{r7}
+  67              	.LCFI5:
+  68              		.cfi_restore 7
+  69              		.cfi_def_cfa_offset 0
+  70 0022 7047     		bx	lr
+  71              		.cfi_endproc
+  72              	.LFE29:
+  74              		.section	.text.iic_start,"ax",%progbits
+  75              		.align	1
+  76              		.global	iic_start
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  80              		.fpu softvfp
+  82              	iic_start:
+  83              	.LFB30:
+  32:./Hardware/iic/bsp_iic.c **** 
+  33:./Hardware/iic/bsp_iic.c **** /**
+  34:./Hardware/iic/bsp_iic.c ****  * @brief    iic_start
+ARM GAS  /tmp/cceYdonD.s 			page 3
+
+
+  35:./Hardware/iic/bsp_iic.c ****  * @param    无
+  36:./Hardware/iic/bsp_iic.c ****  * @return   无
+  37:./Hardware/iic/bsp_iic.c ****  * @note     CPU发起I2C总线启动信号
+  38:./Hardware/iic/bsp_iic.c ****  * @remark   起始时序      
+  39:./Hardware/iic/bsp_iic.c ****  *           SDA   ˉˉˉˉˉ\_______
+  40:./Hardware/iic/bsp_iic.c ****  *           SCL    ˉˉˉˉˉˉˉˉ\_______           
+  41:./Hardware/iic/bsp_iic.c ****  *                    |   |
+  42:./Hardware/iic/bsp_iic.c ****  * 			          START
+  43:./Hardware/iic/bsp_iic.c ****  */
+  44:./Hardware/iic/bsp_iic.c **** void iic_start(void)
+  45:./Hardware/iic/bsp_iic.c **** {
+  84              		.loc 1 45 1
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 1, uses_anonymous_args = 0
+  88 0000 80B5     		push	{r7, lr}
+  89              	.LCFI6:
+  90              		.cfi_def_cfa_offset 8
+  91              		.cfi_offset 7, -8
+  92              		.cfi_offset 14, -4
+  93 0002 00AF     		add	r7, sp, #0
+  94              	.LCFI7:
+  95              		.cfi_def_cfa_register 7
+  46:./Hardware/iic/bsp_iic.c **** 	/* 当SCL高电平时，SDA出现一个下跳沿表示I2C总线启动信号 */
+  47:./Hardware/iic/bsp_iic.c **** 	IIC_SDA_Hight();
+  96              		.loc 1 47 2
+  97 0004 094B     		ldr	r3, .L5
+  98 0006 8022     		movs	r2, #128
+  99 0008 1A61     		str	r2, [r3, #16]
+  48:./Hardware/iic/bsp_iic.c **** 	IIC_SCL_Hight();
+ 100              		.loc 1 48 2
+ 101 000a 084B     		ldr	r3, .L5
+ 102 000c 4022     		movs	r2, #64
+ 103 000e 1A61     		str	r2, [r3, #16]
+  49:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 104              		.loc 1 49 2
+ 105 0010 FFF7FEFF 		bl	iic_delay
+  50:./Hardware/iic/bsp_iic.c **** 	IIC_SDA_Low();
+ 106              		.loc 1 50 2
+ 107 0014 054B     		ldr	r3, .L5
+ 108 0016 8022     		movs	r2, #128
+ 109 0018 5A61     		str	r2, [r3, #20]
+  51:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 110              		.loc 1 51 2
+ 111 001a FFF7FEFF 		bl	iic_delay
+  52:./Hardware/iic/bsp_iic.c **** 	IIC_SCL_Low();
+ 112              		.loc 1 52 2
+ 113 001e 034B     		ldr	r3, .L5
+ 114 0020 4022     		movs	r2, #64
+ 115 0022 5A61     		str	r2, [r3, #20]
+  53:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 116              		.loc 1 53 2
+ 117 0024 FFF7FEFF 		bl	iic_delay
+  54:./Hardware/iic/bsp_iic.c **** }
+ 118              		.loc 1 54 1
+ 119 0028 00BF     		nop
+ 120 002a 80BD     		pop	{r7, pc}
+ARM GAS  /tmp/cceYdonD.s 			page 4
+
+
+ 121              	.L6:
+ 122              		.align	2
+ 123              	.L5:
+ 124 002c 000C0140 		.word	1073810432
+ 125              		.cfi_endproc
+ 126              	.LFE30:
+ 128              		.section	.text.iic_stop,"ax",%progbits
+ 129              		.align	1
+ 130              		.global	iic_stop
+ 131              		.syntax unified
+ 132              		.thumb
+ 133              		.thumb_func
+ 134              		.fpu softvfp
+ 136              	iic_stop:
+ 137              	.LFB31:
+  55:./Hardware/iic/bsp_iic.c **** 
+  56:./Hardware/iic/bsp_iic.c **** /**
+  57:./Hardware/iic/bsp_iic.c ****  * @brief    iic_stop
+  58:./Hardware/iic/bsp_iic.c ****  * @param    无
+  59:./Hardware/iic/bsp_iic.c ****  * @return   无
+  60:./Hardware/iic/bsp_iic.c ****  * @note     CPU发起I2C总线停止信号
+  61:./Hardware/iic/bsp_iic.c ****  * @remark   停止时序
+  62:./Hardware/iic/bsp_iic.c ****  *           SCL _____/ˉˉˉˉˉˉˉ
+  63:./Hardware/iic/bsp_iic.c ****  *           SDA _________/ˉˉˉˉˉ
+  64:./Hardware/iic/bsp_iic.c ****  *                     |   |
+  65:./Hardware/iic/bsp_iic.c ****  *                     STOP    
+  66:./Hardware/iic/bsp_iic.c ****  */
+  67:./Hardware/iic/bsp_iic.c **** void iic_stop(void)
+  68:./Hardware/iic/bsp_iic.c **** {
+ 138              		.loc 1 68 1
+ 139              		.cfi_startproc
+ 140              		@ args = 0, pretend = 0, frame = 0
+ 141              		@ frame_needed = 1, uses_anonymous_args = 0
+ 142 0000 80B5     		push	{r7, lr}
+ 143              	.LCFI8:
+ 144              		.cfi_def_cfa_offset 8
+ 145              		.cfi_offset 7, -8
+ 146              		.cfi_offset 14, -4
+ 147 0002 00AF     		add	r7, sp, #0
+ 148              	.LCFI9:
+ 149              		.cfi_def_cfa_register 7
+  69:./Hardware/iic/bsp_iic.c **** 	/* 当SCL高电平时，SDA出现一个上跳沿表示I2C总线停止信号 */
+  70:./Hardware/iic/bsp_iic.c **** 	IIC_SDA_Low();
+ 150              		.loc 1 70 2
+ 151 0004 064B     		ldr	r3, .L8
+ 152 0006 8022     		movs	r2, #128
+ 153 0008 5A61     		str	r2, [r3, #20]
+  71:./Hardware/iic/bsp_iic.c **** 	IIC_SCL_Hight();
+ 154              		.loc 1 71 2
+ 155 000a 054B     		ldr	r3, .L8
+ 156 000c 4022     		movs	r2, #64
+ 157 000e 1A61     		str	r2, [r3, #16]
+  72:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 158              		.loc 1 72 2
+ 159 0010 FFF7FEFF 		bl	iic_delay
+  73:./Hardware/iic/bsp_iic.c **** 	IIC_SDA_Hight();
+ 160              		.loc 1 73 2
+ARM GAS  /tmp/cceYdonD.s 			page 5
+
+
+ 161 0014 024B     		ldr	r3, .L8
+ 162 0016 8022     		movs	r2, #128
+ 163 0018 1A61     		str	r2, [r3, #16]
+  74:./Hardware/iic/bsp_iic.c **** }
+ 164              		.loc 1 74 1
+ 165 001a 00BF     		nop
+ 166 001c 80BD     		pop	{r7, pc}
+ 167              	.L9:
+ 168 001e 00BF     		.align	2
+ 169              	.L8:
+ 170 0020 000C0140 		.word	1073810432
+ 171              		.cfi_endproc
+ 172              	.LFE31:
+ 174              		.section	.text.iic_send_byte,"ax",%progbits
+ 175              		.align	1
+ 176              		.global	iic_send_byte
+ 177              		.syntax unified
+ 178              		.thumb
+ 179              		.thumb_func
+ 180              		.fpu softvfp
+ 182              	iic_send_byte:
+ 183              	.LFB32:
+  75:./Hardware/iic/bsp_iic.c **** 
+  76:./Hardware/iic/bsp_iic.c **** /**
+  77:./Hardware/iic/bsp_iic.c ****  * @brief    iic_send_byte
+  78:./Hardware/iic/bsp_iic.c ****  * @param    _ucByte  等待发送的字节
+  79:./Hardware/iic/bsp_iic.c ****  * @return   无
+  80:./Hardware/iic/bsp_iic.c ****  * @note     CPU向I2C总线设备发送8bit数据
+  81:./Hardware/iic/bsp_iic.c ****  */
+  82:./Hardware/iic/bsp_iic.c **** void iic_send_byte(uint8_t _ucByte)
+  83:./Hardware/iic/bsp_iic.c **** {
+ 184              		.loc 1 83 1
+ 185              		.cfi_startproc
+ 186              		@ args = 0, pretend = 0, frame = 16
+ 187              		@ frame_needed = 1, uses_anonymous_args = 0
+ 188 0000 80B5     		push	{r7, lr}
+ 189              	.LCFI10:
+ 190              		.cfi_def_cfa_offset 8
+ 191              		.cfi_offset 7, -8
+ 192              		.cfi_offset 14, -4
+ 193 0002 84B0     		sub	sp, sp, #16
+ 194              	.LCFI11:
+ 195              		.cfi_def_cfa_offset 24
+ 196 0004 00AF     		add	r7, sp, #0
+ 197              	.LCFI12:
+ 198              		.cfi_def_cfa_register 7
+ 199 0006 0346     		mov	r3, r0
+ 200 0008 FB71     		strb	r3, [r7, #7]
+  84:./Hardware/iic/bsp_iic.c **** 	uint8_t i;
+  85:./Hardware/iic/bsp_iic.c **** 
+  86:./Hardware/iic/bsp_iic.c **** 	/* 先发送字节的高位bit7 */
+  87:./Hardware/iic/bsp_iic.c **** 	for (i = 0; i < 8; i++)
+ 201              		.loc 1 87 9
+ 202 000a 0023     		movs	r3, #0
+ 203 000c FB73     		strb	r3, [r7, #15]
+ 204              		.loc 1 87 2
+ 205 000e 22E0     		b	.L11
+ARM GAS  /tmp/cceYdonD.s 			page 6
+
+
+ 206              	.L15:
+  88:./Hardware/iic/bsp_iic.c **** 	{		
+  89:./Hardware/iic/bsp_iic.c **** 		if (_ucByte & 0x80)
+ 207              		.loc 1 89 7
+ 208 0010 97F90730 		ldrsb	r3, [r7, #7]
+ 209              		.loc 1 89 6
+ 210 0014 002B     		cmp	r3, #0
+ 211 0016 03DA     		bge	.L12
+  90:./Hardware/iic/bsp_iic.c **** 		{
+  91:./Hardware/iic/bsp_iic.c **** 			IIC_SDA_Hight();
+ 212              		.loc 1 91 4
+ 213 0018 134B     		ldr	r3, .L16
+ 214 001a 8022     		movs	r2, #128
+ 215 001c 1A61     		str	r2, [r3, #16]
+ 216 001e 02E0     		b	.L13
+ 217              	.L12:
+  92:./Hardware/iic/bsp_iic.c **** 		}
+  93:./Hardware/iic/bsp_iic.c **** 		else
+  94:./Hardware/iic/bsp_iic.c **** 		{
+  95:./Hardware/iic/bsp_iic.c **** 			IIC_SDA_Low();
+ 218              		.loc 1 95 4
+ 219 0020 114B     		ldr	r3, .L16
+ 220 0022 8022     		movs	r2, #128
+ 221 0024 5A61     		str	r2, [r3, #20]
+ 222              	.L13:
+  96:./Hardware/iic/bsp_iic.c **** 		}
+  97:./Hardware/iic/bsp_iic.c **** 		iic_delay();
+ 223              		.loc 1 97 3
+ 224 0026 FFF7FEFF 		bl	iic_delay
+  98:./Hardware/iic/bsp_iic.c **** 		IIC_SCL_Hight();
+ 225              		.loc 1 98 3
+ 226 002a 0F4B     		ldr	r3, .L16
+ 227 002c 4022     		movs	r2, #64
+ 228 002e 1A61     		str	r2, [r3, #16]
+  99:./Hardware/iic/bsp_iic.c **** 		iic_delay();	
+ 229              		.loc 1 99 3
+ 230 0030 FFF7FEFF 		bl	iic_delay
+ 100:./Hardware/iic/bsp_iic.c **** 		IIC_SCL_Low();
+ 231              		.loc 1 100 3
+ 232 0034 0C4B     		ldr	r3, .L16
+ 233 0036 4022     		movs	r2, #64
+ 234 0038 5A61     		str	r2, [r3, #20]
+ 101:./Hardware/iic/bsp_iic.c **** 		if (i == 7)
+ 235              		.loc 1 101 6
+ 236 003a FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 237 003c 072B     		cmp	r3, #7
+ 238 003e 02D1     		bne	.L14
+ 102:./Hardware/iic/bsp_iic.c **** 		{
+ 103:./Hardware/iic/bsp_iic.c **** 			IIC_SDA_Hight(); // 释放总线
+ 239              		.loc 1 103 4
+ 240 0040 094B     		ldr	r3, .L16
+ 241 0042 8022     		movs	r2, #128
+ 242 0044 1A61     		str	r2, [r3, #16]
+ 243              	.L14:
+ 104:./Hardware/iic/bsp_iic.c **** 		}
+ 105:./Hardware/iic/bsp_iic.c **** 		_ucByte <<= 1;	/* 左移一个bit */
+ 244              		.loc 1 105 11 discriminator 2
+ARM GAS  /tmp/cceYdonD.s 			page 7
+
+
+ 245 0046 FB79     		ldrb	r3, [r7, #7]
+ 246 0048 5B00     		lsls	r3, r3, #1
+ 247 004a FB71     		strb	r3, [r7, #7]
+ 106:./Hardware/iic/bsp_iic.c **** 		iic_delay();
+ 248              		.loc 1 106 3 discriminator 2
+ 249 004c FFF7FEFF 		bl	iic_delay
+  87:./Hardware/iic/bsp_iic.c **** 	{		
+ 250              		.loc 1 87 22 discriminator 2
+ 251 0050 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 252 0052 0133     		adds	r3, r3, #1
+ 253 0054 FB73     		strb	r3, [r7, #15]
+ 254              	.L11:
+  87:./Hardware/iic/bsp_iic.c **** 	{		
+ 255              		.loc 1 87 2 discriminator 1
+ 256 0056 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 257 0058 072B     		cmp	r3, #7
+ 258 005a D9D9     		bls	.L15
+ 107:./Hardware/iic/bsp_iic.c **** 	}
+ 108:./Hardware/iic/bsp_iic.c **** }
+ 259              		.loc 1 108 1
+ 260 005c 00BF     		nop
+ 261 005e 00BF     		nop
+ 262 0060 1037     		adds	r7, r7, #16
+ 263              	.LCFI13:
+ 264              		.cfi_def_cfa_offset 8
+ 265 0062 BD46     		mov	sp, r7
+ 266              	.LCFI14:
+ 267              		.cfi_def_cfa_register 13
+ 268              		@ sp needed
+ 269 0064 80BD     		pop	{r7, pc}
+ 270              	.L17:
+ 271 0066 00BF     		.align	2
+ 272              	.L16:
+ 273 0068 000C0140 		.word	1073810432
+ 274              		.cfi_endproc
+ 275              	.LFE32:
+ 277              		.section	.text.iic_read_byte,"ax",%progbits
+ 278              		.align	1
+ 279              		.global	iic_read_byte
+ 280              		.syntax unified
+ 281              		.thumb
+ 282              		.thumb_func
+ 283              		.fpu softvfp
+ 285              	iic_read_byte:
+ 286              	.LFB33:
+ 109:./Hardware/iic/bsp_iic.c **** 
+ 110:./Hardware/iic/bsp_iic.c **** /**
+ 111:./Hardware/iic/bsp_iic.c ****  * @brief    iic_read_byte
+ 112:./Hardware/iic/bsp_iic.c ****  * @param    无
+ 113:./Hardware/iic/bsp_iic.c ****  * @return   读到的数据
+ 114:./Hardware/iic/bsp_iic.c ****  * @note     CPU从I2C总线设备读取8bit数据
+ 115:./Hardware/iic/bsp_iic.c ****  */
+ 116:./Hardware/iic/bsp_iic.c **** uint8_t iic_read_byte(void)
+ 117:./Hardware/iic/bsp_iic.c **** {
+ 287              		.loc 1 117 1
+ 288              		.cfi_startproc
+ 289              		@ args = 0, pretend = 0, frame = 8
+ARM GAS  /tmp/cceYdonD.s 			page 8
+
+
+ 290              		@ frame_needed = 1, uses_anonymous_args = 0
+ 291 0000 80B5     		push	{r7, lr}
+ 292              	.LCFI15:
+ 293              		.cfi_def_cfa_offset 8
+ 294              		.cfi_offset 7, -8
+ 295              		.cfi_offset 14, -4
+ 296 0002 82B0     		sub	sp, sp, #8
+ 297              	.LCFI16:
+ 298              		.cfi_def_cfa_offset 16
+ 299 0004 00AF     		add	r7, sp, #0
+ 300              	.LCFI17:
+ 301              		.cfi_def_cfa_register 7
+ 118:./Hardware/iic/bsp_iic.c **** 	uint8_t i;
+ 119:./Hardware/iic/bsp_iic.c **** 	uint8_t value;
+ 120:./Hardware/iic/bsp_iic.c **** 
+ 121:./Hardware/iic/bsp_iic.c **** 	/* 读到第1个bit为数据的bit7 */
+ 122:./Hardware/iic/bsp_iic.c **** 	value = 0;
+ 302              		.loc 1 122 8
+ 303 0006 0023     		movs	r3, #0
+ 304 0008 BB71     		strb	r3, [r7, #6]
+ 123:./Hardware/iic/bsp_iic.c **** 	for (i = 0; i < 8; i++)
+ 305              		.loc 1 123 9
+ 306 000a 0023     		movs	r3, #0
+ 307 000c FB71     		strb	r3, [r7, #7]
+ 308              		.loc 1 123 2
+ 309 000e 18E0     		b	.L19
+ 310              	.L21:
+ 124:./Hardware/iic/bsp_iic.c **** 	{
+ 125:./Hardware/iic/bsp_iic.c **** 		value <<= 1;
+ 311              		.loc 1 125 9
+ 312 0010 BB79     		ldrb	r3, [r7, #6]
+ 313 0012 5B00     		lsls	r3, r3, #1
+ 314 0014 BB71     		strb	r3, [r7, #6]
+ 126:./Hardware/iic/bsp_iic.c **** 		IIC_SCL_Hight();
+ 315              		.loc 1 126 3
+ 316 0016 0F4B     		ldr	r3, .L23
+ 317 0018 4022     		movs	r2, #64
+ 318 001a 1A61     		str	r2, [r3, #16]
+ 127:./Hardware/iic/bsp_iic.c **** 		iic_delay();
+ 319              		.loc 1 127 3
+ 320 001c FFF7FEFF 		bl	iic_delay
+ 128:./Hardware/iic/bsp_iic.c **** 		if (IIC_SDA_READ())
+ 321              		.loc 1 128 7
+ 322 0020 0C4B     		ldr	r3, .L23
+ 323 0022 9B68     		ldr	r3, [r3, #8]
+ 324 0024 03F08003 		and	r3, r3, #128
+ 325              		.loc 1 128 6
+ 326 0028 002B     		cmp	r3, #0
+ 327 002a 02D0     		beq	.L20
+ 129:./Hardware/iic/bsp_iic.c **** 		{
+ 130:./Hardware/iic/bsp_iic.c **** 			value++;
+ 328              		.loc 1 130 9
+ 329 002c BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 330 002e 0133     		adds	r3, r3, #1
+ 331 0030 BB71     		strb	r3, [r7, #6]
+ 332              	.L20:
+ 131:./Hardware/iic/bsp_iic.c **** 		}
+ARM GAS  /tmp/cceYdonD.s 			page 9
+
+
+ 132:./Hardware/iic/bsp_iic.c **** 		IIC_SCL_Low();
+ 333              		.loc 1 132 3 discriminator 2
+ 334 0032 084B     		ldr	r3, .L23
+ 335 0034 4022     		movs	r2, #64
+ 336 0036 5A61     		str	r2, [r3, #20]
+ 133:./Hardware/iic/bsp_iic.c **** 		iic_delay();
+ 337              		.loc 1 133 3 discriminator 2
+ 338 0038 FFF7FEFF 		bl	iic_delay
+ 123:./Hardware/iic/bsp_iic.c **** 	{
+ 339              		.loc 1 123 22 discriminator 2
+ 340 003c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 341 003e 0133     		adds	r3, r3, #1
+ 342 0040 FB71     		strb	r3, [r7, #7]
+ 343              	.L19:
+ 123:./Hardware/iic/bsp_iic.c **** 	{
+ 344              		.loc 1 123 2 discriminator 1
+ 345 0042 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 346 0044 072B     		cmp	r3, #7
+ 347 0046 E3D9     		bls	.L21
+ 134:./Hardware/iic/bsp_iic.c **** 	}
+ 135:./Hardware/iic/bsp_iic.c **** 	return value;
+ 348              		.loc 1 135 9
+ 349 0048 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 136:./Hardware/iic/bsp_iic.c **** }
+ 350              		.loc 1 136 1
+ 351 004a 1846     		mov	r0, r3
+ 352 004c 0837     		adds	r7, r7, #8
+ 353              	.LCFI18:
+ 354              		.cfi_def_cfa_offset 8
+ 355 004e BD46     		mov	sp, r7
+ 356              	.LCFI19:
+ 357              		.cfi_def_cfa_register 13
+ 358              		@ sp needed
+ 359 0050 80BD     		pop	{r7, pc}
+ 360              	.L24:
+ 361 0052 00BF     		.align	2
+ 362              	.L23:
+ 363 0054 000C0140 		.word	1073810432
+ 364              		.cfi_endproc
+ 365              	.LFE33:
+ 367              		.section	.text.iic_wait_ack,"ax",%progbits
+ 368              		.align	1
+ 369              		.global	iic_wait_ack
+ 370              		.syntax unified
+ 371              		.thumb
+ 372              		.thumb_func
+ 373              		.fpu softvfp
+ 375              	iic_wait_ack:
+ 376              	.LFB34:
+ 137:./Hardware/iic/bsp_iic.c **** 
+ 138:./Hardware/iic/bsp_iic.c **** /**
+ 139:./Hardware/iic/bsp_iic.c ****  * @brief    iic_wait_ack
+ 140:./Hardware/iic/bsp_iic.c ****  * @param    无
+ 141:./Hardware/iic/bsp_iic.c ****  * @return   返回0表示正确应答，1表示无器件响应
+ 142:./Hardware/iic/bsp_iic.c ****  * @note     CPU产生一个时钟，并读取器件的ACK应答信号
+ 143:./Hardware/iic/bsp_iic.c ****  */
+ 144:./Hardware/iic/bsp_iic.c **** uint8_t iic_wait_ack(void)
+ARM GAS  /tmp/cceYdonD.s 			page 10
+
+
+ 145:./Hardware/iic/bsp_iic.c **** {
+ 377              		.loc 1 145 1
+ 378              		.cfi_startproc
+ 379              		@ args = 0, pretend = 0, frame = 8
+ 380              		@ frame_needed = 1, uses_anonymous_args = 0
+ 381 0000 80B5     		push	{r7, lr}
+ 382              	.LCFI20:
+ 383              		.cfi_def_cfa_offset 8
+ 384              		.cfi_offset 7, -8
+ 385              		.cfi_offset 14, -4
+ 386 0002 82B0     		sub	sp, sp, #8
+ 387              	.LCFI21:
+ 388              		.cfi_def_cfa_offset 16
+ 389 0004 00AF     		add	r7, sp, #0
+ 390              	.LCFI22:
+ 391              		.cfi_def_cfa_register 7
+ 146:./Hardware/iic/bsp_iic.c **** 	uint8_t re;
+ 147:./Hardware/iic/bsp_iic.c **** 
+ 148:./Hardware/iic/bsp_iic.c **** 	IIC_SDA_Hight();	/* CPU释放SDA总线 */
+ 392              		.loc 1 148 2
+ 393 0006 0F4B     		ldr	r3, .L29
+ 394 0008 8022     		movs	r2, #128
+ 395 000a 1A61     		str	r2, [r3, #16]
+ 149:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 396              		.loc 1 149 2
+ 397 000c FFF7FEFF 		bl	iic_delay
+ 150:./Hardware/iic/bsp_iic.c **** 	IIC_SCL_Hight();	/* CPU驱动SCL = 1, 此时器件会返回ACK应答 */
+ 398              		.loc 1 150 2
+ 399 0010 0C4B     		ldr	r3, .L29
+ 400 0012 4022     		movs	r2, #64
+ 401 0014 1A61     		str	r2, [r3, #16]
+ 151:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 402              		.loc 1 151 2
+ 403 0016 FFF7FEFF 		bl	iic_delay
+ 152:./Hardware/iic/bsp_iic.c **** 	if (IIC_SDA_READ())	/* CPU读取SDA口线状态 */
+ 404              		.loc 1 152 6
+ 405 001a 0A4B     		ldr	r3, .L29
+ 406 001c 9B68     		ldr	r3, [r3, #8]
+ 407 001e 03F08003 		and	r3, r3, #128
+ 408              		.loc 1 152 5
+ 409 0022 002B     		cmp	r3, #0
+ 410 0024 02D0     		beq	.L26
+ 153:./Hardware/iic/bsp_iic.c **** 	{
+ 154:./Hardware/iic/bsp_iic.c **** 		re = 1;
+ 411              		.loc 1 154 6
+ 412 0026 0123     		movs	r3, #1
+ 413 0028 FB71     		strb	r3, [r7, #7]
+ 414 002a 01E0     		b	.L27
+ 415              	.L26:
+ 155:./Hardware/iic/bsp_iic.c **** 	}
+ 156:./Hardware/iic/bsp_iic.c **** 	else
+ 157:./Hardware/iic/bsp_iic.c **** 	{
+ 158:./Hardware/iic/bsp_iic.c **** 		re = 0;
+ 416              		.loc 1 158 6
+ 417 002c 0023     		movs	r3, #0
+ 418 002e FB71     		strb	r3, [r7, #7]
+ 419              	.L27:
+ARM GAS  /tmp/cceYdonD.s 			page 11
+
+
+ 159:./Hardware/iic/bsp_iic.c **** 	}
+ 160:./Hardware/iic/bsp_iic.c **** 	IIC_SCL_Low();
+ 420              		.loc 1 160 2
+ 421 0030 044B     		ldr	r3, .L29
+ 422 0032 4022     		movs	r2, #64
+ 423 0034 5A61     		str	r2, [r3, #20]
+ 161:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 424              		.loc 1 161 2
+ 425 0036 FFF7FEFF 		bl	iic_delay
+ 162:./Hardware/iic/bsp_iic.c **** 	return re;
+ 426              		.loc 1 162 9
+ 427 003a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 163:./Hardware/iic/bsp_iic.c **** }
+ 428              		.loc 1 163 1
+ 429 003c 1846     		mov	r0, r3
+ 430 003e 0837     		adds	r7, r7, #8
+ 431              	.LCFI23:
+ 432              		.cfi_def_cfa_offset 8
+ 433 0040 BD46     		mov	sp, r7
+ 434              	.LCFI24:
+ 435              		.cfi_def_cfa_register 13
+ 436              		@ sp needed
+ 437 0042 80BD     		pop	{r7, pc}
+ 438              	.L30:
+ 439              		.align	2
+ 440              	.L29:
+ 441 0044 000C0140 		.word	1073810432
+ 442              		.cfi_endproc
+ 443              	.LFE34:
+ 445              		.section	.text.iic_ack,"ax",%progbits
+ 446              		.align	1
+ 447              		.global	iic_ack
+ 448              		.syntax unified
+ 449              		.thumb
+ 450              		.thumb_func
+ 451              		.fpu softvfp
+ 453              	iic_ack:
+ 454              	.LFB35:
+ 164:./Hardware/iic/bsp_iic.c **** 
+ 165:./Hardware/iic/bsp_iic.c **** /**
+ 166:./Hardware/iic/bsp_iic.c ****  * @brief    iic_ack
+ 167:./Hardware/iic/bsp_iic.c ****  * @param    无
+ 168:./Hardware/iic/bsp_iic.c ****  * @return   无
+ 169:./Hardware/iic/bsp_iic.c ****  * @note     CPU产生一个ACK信号
+ 170:./Hardware/iic/bsp_iic.c ****  */
+ 171:./Hardware/iic/bsp_iic.c **** void iic_ack(void)
+ 172:./Hardware/iic/bsp_iic.c **** {
+ 455              		.loc 1 172 1
+ 456              		.cfi_startproc
+ 457              		@ args = 0, pretend = 0, frame = 0
+ 458              		@ frame_needed = 1, uses_anonymous_args = 0
+ 459 0000 80B5     		push	{r7, lr}
+ 460              	.LCFI25:
+ 461              		.cfi_def_cfa_offset 8
+ 462              		.cfi_offset 7, -8
+ 463              		.cfi_offset 14, -4
+ 464 0002 00AF     		add	r7, sp, #0
+ARM GAS  /tmp/cceYdonD.s 			page 12
+
+
+ 465              	.LCFI26:
+ 466              		.cfi_def_cfa_register 7
+ 173:./Hardware/iic/bsp_iic.c **** 	IIC_SDA_Low();	/* CPU驱动SDA = 0 */
+ 467              		.loc 1 173 2
+ 468 0004 094B     		ldr	r3, .L32
+ 469 0006 8022     		movs	r2, #128
+ 470 0008 5A61     		str	r2, [r3, #20]
+ 174:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 471              		.loc 1 174 2
+ 472 000a FFF7FEFF 		bl	iic_delay
+ 175:./Hardware/iic/bsp_iic.c **** 	IIC_SCL_Hight();	/* CPU产生1个时钟 */
+ 473              		.loc 1 175 2
+ 474 000e 074B     		ldr	r3, .L32
+ 475 0010 4022     		movs	r2, #64
+ 476 0012 1A61     		str	r2, [r3, #16]
+ 176:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 477              		.loc 1 176 2
+ 478 0014 FFF7FEFF 		bl	iic_delay
+ 177:./Hardware/iic/bsp_iic.c **** 	IIC_SCL_Low();
+ 479              		.loc 1 177 2
+ 480 0018 044B     		ldr	r3, .L32
+ 481 001a 4022     		movs	r2, #64
+ 482 001c 5A61     		str	r2, [r3, #20]
+ 178:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 483              		.loc 1 178 2
+ 484 001e FFF7FEFF 		bl	iic_delay
+ 179:./Hardware/iic/bsp_iic.c **** 	IIC_SDA_Hight();	/* CPU释放SDA总线 */
+ 485              		.loc 1 179 2
+ 486 0022 024B     		ldr	r3, .L32
+ 487 0024 8022     		movs	r2, #128
+ 488 0026 1A61     		str	r2, [r3, #16]
+ 180:./Hardware/iic/bsp_iic.c **** }
+ 489              		.loc 1 180 1
+ 490 0028 00BF     		nop
+ 491 002a 80BD     		pop	{r7, pc}
+ 492              	.L33:
+ 493              		.align	2
+ 494              	.L32:
+ 495 002c 000C0140 		.word	1073810432
+ 496              		.cfi_endproc
+ 497              	.LFE35:
+ 499              		.section	.text.iic_no_ack,"ax",%progbits
+ 500              		.align	1
+ 501              		.global	iic_no_ack
+ 502              		.syntax unified
+ 503              		.thumb
+ 504              		.thumb_func
+ 505              		.fpu softvfp
+ 507              	iic_no_ack:
+ 508              	.LFB36:
+ 181:./Hardware/iic/bsp_iic.c **** 
+ 182:./Hardware/iic/bsp_iic.c **** /**
+ 183:./Hardware/iic/bsp_iic.c ****  * @brief    iic_no_ack
+ 184:./Hardware/iic/bsp_iic.c ****  * @param    无
+ 185:./Hardware/iic/bsp_iic.c ****  * @return   无
+ 186:./Hardware/iic/bsp_iic.c ****  * @note     CPU产生1个NACK信号
+ 187:./Hardware/iic/bsp_iic.c ****  */
+ARM GAS  /tmp/cceYdonD.s 			page 13
+
+
+ 188:./Hardware/iic/bsp_iic.c **** void iic_no_ack(void)
+ 189:./Hardware/iic/bsp_iic.c **** {
+ 509              		.loc 1 189 1
+ 510              		.cfi_startproc
+ 511              		@ args = 0, pretend = 0, frame = 0
+ 512              		@ frame_needed = 1, uses_anonymous_args = 0
+ 513 0000 80B5     		push	{r7, lr}
+ 514              	.LCFI27:
+ 515              		.cfi_def_cfa_offset 8
+ 516              		.cfi_offset 7, -8
+ 517              		.cfi_offset 14, -4
+ 518 0002 00AF     		add	r7, sp, #0
+ 519              	.LCFI28:
+ 520              		.cfi_def_cfa_register 7
+ 190:./Hardware/iic/bsp_iic.c **** 	IIC_SDA_Hight();	/* CPU驱动SDA = 1 */
+ 521              		.loc 1 190 2
+ 522 0004 084B     		ldr	r3, .L35
+ 523 0006 8022     		movs	r2, #128
+ 524 0008 1A61     		str	r2, [r3, #16]
+ 191:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 525              		.loc 1 191 2
+ 526 000a FFF7FEFF 		bl	iic_delay
+ 192:./Hardware/iic/bsp_iic.c **** 	IIC_SCL_Hight();	/* CPU产生1个时钟 */
+ 527              		.loc 1 192 2
+ 528 000e 064B     		ldr	r3, .L35
+ 529 0010 4022     		movs	r2, #64
+ 530 0012 1A61     		str	r2, [r3, #16]
+ 193:./Hardware/iic/bsp_iic.c **** 	iic_delay();
+ 531              		.loc 1 193 2
+ 532 0014 FFF7FEFF 		bl	iic_delay
+ 194:./Hardware/iic/bsp_iic.c **** 	IIC_SCL_Low();
+ 533              		.loc 1 194 2
+ 534 0018 034B     		ldr	r3, .L35
+ 535 001a 4022     		movs	r2, #64
+ 536 001c 5A61     		str	r2, [r3, #20]
+ 195:./Hardware/iic/bsp_iic.c **** 	iic_delay();	
+ 537              		.loc 1 195 2
+ 538 001e FFF7FEFF 		bl	iic_delay
+ 196:./Hardware/iic/bsp_iic.c **** }
+ 539              		.loc 1 196 1
+ 540 0022 00BF     		nop
+ 541 0024 80BD     		pop	{r7, pc}
+ 542              	.L36:
+ 543 0026 00BF     		.align	2
+ 544              	.L35:
+ 545 0028 000C0140 		.word	1073810432
+ 546              		.cfi_endproc
+ 547              	.LFE36:
+ 549              		.section	.text.iic_config_gpio,"ax",%progbits
+ 550              		.align	1
+ 551              		.syntax unified
+ 552              		.thumb
+ 553              		.thumb_func
+ 554              		.fpu softvfp
+ 556              	iic_config_gpio:
+ 557              	.LFB37:
+ 197:./Hardware/iic/bsp_iic.c **** 
+ARM GAS  /tmp/cceYdonD.s 			page 14
+
+
+ 198:./Hardware/iic/bsp_iic.c **** /**
+ 199:./Hardware/iic/bsp_iic.c ****  * @brief    iic_config_gpio
+ 200:./Hardware/iic/bsp_iic.c ****  * @param    无
+ 201:./Hardware/iic/bsp_iic.c ****  * @return   无
+ 202:./Hardware/iic/bsp_iic.c ****  * @note     配置I2C总线的GPIO，采用模拟IO的方式实现
+ 203:./Hardware/iic/bsp_iic.c ****  */
+ 204:./Hardware/iic/bsp_iic.c **** static void iic_config_gpio(void)
+ 205:./Hardware/iic/bsp_iic.c **** {
+ 558              		.loc 1 205 1
+ 559              		.cfi_startproc
+ 560              		@ args = 0, pretend = 0, frame = 8
+ 561              		@ frame_needed = 1, uses_anonymous_args = 0
+ 562 0000 80B5     		push	{r7, lr}
+ 563              	.LCFI29:
+ 564              		.cfi_def_cfa_offset 8
+ 565              		.cfi_offset 7, -8
+ 566              		.cfi_offset 14, -4
+ 567 0002 82B0     		sub	sp, sp, #8
+ 568              	.LCFI30:
+ 569              		.cfi_def_cfa_offset 16
+ 570 0004 00AF     		add	r7, sp, #0
+ 571              	.LCFI31:
+ 572              		.cfi_def_cfa_register 7
+ 206:./Hardware/iic/bsp_iic.c **** 	GPIO_InitTypeDef GPIO_InitStructure;
+ 207:./Hardware/iic/bsp_iic.c **** 
+ 208:./Hardware/iic/bsp_iic.c **** 	RCC_APB2PeriphClockCmd(IIC_RCC_PORT, ENABLE);	/* 打开GPIO时钟 */
+ 573              		.loc 1 208 2
+ 574 0006 0121     		movs	r1, #1
+ 575 0008 0820     		movs	r0, #8
+ 576 000a FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 209:./Hardware/iic/bsp_iic.c **** 	
+ 210:./Hardware/iic/bsp_iic.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 577              		.loc 1 210 32
+ 578 000e 0323     		movs	r3, #3
+ 579 0010 BB71     		strb	r3, [r7, #6]
+ 211:./Hardware/iic/bsp_iic.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;  	/* 开漏输出 */
+ 580              		.loc 1 211 31
+ 581 0012 1423     		movs	r3, #20
+ 582 0014 FB71     		strb	r3, [r7, #7]
+ 212:./Hardware/iic/bsp_iic.c **** 
+ 213:./Hardware/iic/bsp_iic.c **** 	//SCL
+ 214:./Hardware/iic/bsp_iic.c **** 	GPIO_InitStructure.GPIO_Pin = IIC_SCL_PIN;
+ 583              		.loc 1 214 30
+ 584 0016 4023     		movs	r3, #64
+ 585 0018 BB80     		strh	r3, [r7, #4]	@ movhi
+ 215:./Hardware/iic/bsp_iic.c **** 	GPIO_Init(IIC_SCL_GPIO_PORT, &GPIO_InitStructure);
+ 586              		.loc 1 215 2
+ 587 001a 3B1D     		adds	r3, r7, #4
+ 588 001c 1946     		mov	r1, r3
+ 589 001e 0848     		ldr	r0, .L38
+ 590 0020 FFF7FEFF 		bl	GPIO_Init
+ 216:./Hardware/iic/bsp_iic.c **** 
+ 217:./Hardware/iic/bsp_iic.c **** 	//SDA
+ 218:./Hardware/iic/bsp_iic.c **** 	GPIO_InitStructure.GPIO_Pin = IIC_SDA_PIN;
+ 591              		.loc 1 218 30
+ 592 0024 8023     		movs	r3, #128
+ 593 0026 BB80     		strh	r3, [r7, #4]	@ movhi
+ARM GAS  /tmp/cceYdonD.s 			page 15
+
+
+ 219:./Hardware/iic/bsp_iic.c **** 	GPIO_Init(IIC_SDA_GPIO_PORT, &GPIO_InitStructure);
+ 594              		.loc 1 219 2
+ 595 0028 3B1D     		adds	r3, r7, #4
+ 596 002a 1946     		mov	r1, r3
+ 597 002c 0448     		ldr	r0, .L38
+ 598 002e FFF7FEFF 		bl	GPIO_Init
+ 220:./Hardware/iic/bsp_iic.c **** 	/* 给一个停止信号, 复位I2C总线上的所有设备到待机模式 */
+ 221:./Hardware/iic/bsp_iic.c **** 	iic_stop();
+ 599              		.loc 1 221 2
+ 600 0032 FFF7FEFF 		bl	iic_stop
+ 222:./Hardware/iic/bsp_iic.c **** }
+ 601              		.loc 1 222 1
+ 602 0036 00BF     		nop
+ 603 0038 0837     		adds	r7, r7, #8
+ 604              	.LCFI32:
+ 605              		.cfi_def_cfa_offset 8
+ 606 003a BD46     		mov	sp, r7
+ 607              	.LCFI33:
+ 608              		.cfi_def_cfa_register 13
+ 609              		@ sp needed
+ 610 003c 80BD     		pop	{r7, pc}
+ 611              	.L39:
+ 612 003e 00BF     		.align	2
+ 613              	.L38:
+ 614 0040 000C0140 		.word	1073810432
+ 615              		.cfi_endproc
+ 616              	.LFE37:
+ 618              		.section	.text.iic_check_device,"ax",%progbits
+ 619              		.align	1
+ 620              		.global	iic_check_device
+ 621              		.syntax unified
+ 622              		.thumb
+ 623              		.thumb_func
+ 624              		.fpu softvfp
+ 626              	iic_check_device:
+ 627              	.LFB38:
+ 223:./Hardware/iic/bsp_iic.c **** 
+ 224:./Hardware/iic/bsp_iic.c **** /**
+ 225:./Hardware/iic/bsp_iic.c ****  * @brief    iic_check_device
+ 226:./Hardware/iic/bsp_iic.c ****  * @param    _Address  设备的I2C总线地址
+ 227:./Hardware/iic/bsp_iic.c ****  * @return   返回值     0 表示正确， 返回1表示未探测到
+ 228:./Hardware/iic/bsp_iic.c ****  * @note     检测I2C总线设备，CPU向发送设备地址，然后读取设备应答来判断�
+ 229:./Hardware/iic/bsp_iic.c ****  */
+ 230:./Hardware/iic/bsp_iic.c **** uint8_t iic_check_device(uint8_t _Address)
+ 231:./Hardware/iic/bsp_iic.c **** {
+ 628              		.loc 1 231 1
+ 629              		.cfi_startproc
+ 630              		@ args = 0, pretend = 0, frame = 16
+ 631              		@ frame_needed = 1, uses_anonymous_args = 0
+ 632 0000 80B5     		push	{r7, lr}
+ 633              	.LCFI34:
+ 634              		.cfi_def_cfa_offset 8
+ 635              		.cfi_offset 7, -8
+ 636              		.cfi_offset 14, -4
+ 637 0002 84B0     		sub	sp, sp, #16
+ 638              	.LCFI35:
+ 639              		.cfi_def_cfa_offset 24
+ARM GAS  /tmp/cceYdonD.s 			page 16
+
+
+ 640 0004 00AF     		add	r7, sp, #0
+ 641              	.LCFI36:
+ 642              		.cfi_def_cfa_register 7
+ 643 0006 0346     		mov	r3, r0
+ 644 0008 FB71     		strb	r3, [r7, #7]
+ 232:./Hardware/iic/bsp_iic.c **** 	uint8_t ucAck;
+ 233:./Hardware/iic/bsp_iic.c **** 
+ 234:./Hardware/iic/bsp_iic.c **** 	iic_config_gpio();		/* 配置GPIO */
+ 645              		.loc 1 234 2
+ 646 000a FFF7FEFF 		bl	iic_config_gpio
+ 235:./Hardware/iic/bsp_iic.c **** 
+ 236:./Hardware/iic/bsp_iic.c **** 	
+ 237:./Hardware/iic/bsp_iic.c **** 	iic_start();		/* 发送启动信号 */
+ 647              		.loc 1 237 2
+ 648 000e FFF7FEFF 		bl	iic_start
+ 238:./Hardware/iic/bsp_iic.c **** 
+ 239:./Hardware/iic/bsp_iic.c **** 	/* 发送设备地址+读写控制bit（0 = w， 1 = r) bit7 先传 */
+ 240:./Hardware/iic/bsp_iic.c **** 	iic_send_byte(_Address | IIC_WR);
+ 649              		.loc 1 240 2
+ 650 0012 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 651 0014 1846     		mov	r0, r3
+ 652 0016 FFF7FEFF 		bl	iic_send_byte
+ 241:./Hardware/iic/bsp_iic.c **** 	ucAck = iic_wait_ack();	/* 检测设备的ACK应答 */
+ 653              		.loc 1 241 10
+ 654 001a FFF7FEFF 		bl	iic_wait_ack
+ 655 001e 0346     		mov	r3, r0
+ 656 0020 FB73     		strb	r3, [r7, #15]
+ 242:./Hardware/iic/bsp_iic.c **** 
+ 243:./Hardware/iic/bsp_iic.c **** 	iic_stop();			/* 发送停止信号 */
+ 657              		.loc 1 243 2
+ 658 0022 FFF7FEFF 		bl	iic_stop
+ 244:./Hardware/iic/bsp_iic.c **** 
+ 245:./Hardware/iic/bsp_iic.c **** 	return ucAck;
+ 659              		.loc 1 245 9
+ 660 0026 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 246:./Hardware/iic/bsp_iic.c **** }
+ 661              		.loc 1 246 1
+ 662 0028 1846     		mov	r0, r3
+ 663 002a 1037     		adds	r7, r7, #16
+ 664              	.LCFI37:
+ 665              		.cfi_def_cfa_offset 8
+ 666 002c BD46     		mov	sp, r7
+ 667              	.LCFI38:
+ 668              		.cfi_def_cfa_register 13
+ 669              		@ sp needed
+ 670 002e 80BD     		pop	{r7, pc}
+ 671              		.cfi_endproc
+ 672              	.LFE38:
+ 674              		.text
+ 675              	.Letext0:
+ 676              		.file 2 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 677              		.file 3 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 678              		.file 4 "./Libraries/CMSIS/stm32f10x.h"
+ 679              		.file 5 "./Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_gpio.h"
+ARM GAS  /tmp/cceYdonD.s 			page 17
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 bsp_iic.c
+     /tmp/cceYdonD.s:16     .text.iic_delay:0000000000000000 $t
+     /tmp/cceYdonD.s:23     .text.iic_delay:0000000000000000 iic_delay
+     /tmp/cceYdonD.s:75     .text.iic_start:0000000000000000 $t
+     /tmp/cceYdonD.s:82     .text.iic_start:0000000000000000 iic_start
+     /tmp/cceYdonD.s:124    .text.iic_start:000000000000002c $d
+     /tmp/cceYdonD.s:129    .text.iic_stop:0000000000000000 $t
+     /tmp/cceYdonD.s:136    .text.iic_stop:0000000000000000 iic_stop
+     /tmp/cceYdonD.s:170    .text.iic_stop:0000000000000020 $d
+     /tmp/cceYdonD.s:175    .text.iic_send_byte:0000000000000000 $t
+     /tmp/cceYdonD.s:182    .text.iic_send_byte:0000000000000000 iic_send_byte
+     /tmp/cceYdonD.s:273    .text.iic_send_byte:0000000000000068 $d
+     /tmp/cceYdonD.s:278    .text.iic_read_byte:0000000000000000 $t
+     /tmp/cceYdonD.s:285    .text.iic_read_byte:0000000000000000 iic_read_byte
+     /tmp/cceYdonD.s:363    .text.iic_read_byte:0000000000000054 $d
+     /tmp/cceYdonD.s:368    .text.iic_wait_ack:0000000000000000 $t
+     /tmp/cceYdonD.s:375    .text.iic_wait_ack:0000000000000000 iic_wait_ack
+     /tmp/cceYdonD.s:441    .text.iic_wait_ack:0000000000000044 $d
+     /tmp/cceYdonD.s:446    .text.iic_ack:0000000000000000 $t
+     /tmp/cceYdonD.s:453    .text.iic_ack:0000000000000000 iic_ack
+     /tmp/cceYdonD.s:495    .text.iic_ack:000000000000002c $d
+     /tmp/cceYdonD.s:500    .text.iic_no_ack:0000000000000000 $t
+     /tmp/cceYdonD.s:507    .text.iic_no_ack:0000000000000000 iic_no_ack
+     /tmp/cceYdonD.s:545    .text.iic_no_ack:0000000000000028 $d
+     /tmp/cceYdonD.s:550    .text.iic_config_gpio:0000000000000000 $t
+     /tmp/cceYdonD.s:556    .text.iic_config_gpio:0000000000000000 iic_config_gpio
+     /tmp/cceYdonD.s:614    .text.iic_config_gpio:0000000000000040 $d
+     /tmp/cceYdonD.s:619    .text.iic_check_device:0000000000000000 $t
+     /tmp/cceYdonD.s:626    .text.iic_check_device:0000000000000000 iic_check_device
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphClockCmd
+GPIO_Init

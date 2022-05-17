@@ -1,0 +1,192 @@
+ARM GAS  /tmp/ccpIksSD.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"main.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.rodata
+  16              		.align	2
+  17              	.LC0:
+  18 0000 42483137 		.ascii	"BH1750\345\256\236\351\252\214\000"
+  18      3530E5AE 
+  18      9EE9AA8C 
+  18      00
+  19 000d 000000   		.align	2
+  20              	.LC1:
+  21 0010 E6A380E6 		.ascii	"\346\243\200\346\265\213\345\210\260bh1750\350\256\276"
+  21      B58BE588 
+  21      B0626831 
+  21      373530E8 
+  21      AEBE
+  22 0022 E5A48700 		.ascii	"\345\244\207\000"
+  23 0026 0000     		.align	2
+  24              	.LC2:
+  25 0028 E8AEBEE5 		.ascii	"\350\256\276\345\244\207\344\270\215\345\255\230\345"
+  25      A487E4B8 
+  25      8DE5AD98 
+  25      E5
+  26 0035 9CA8EFBC 		.ascii	"\234\250\357\274\214\345\267\262\351\200\200\345\207"
+  26      8CE5B7B2 
+  26      E98080E5 
+  26      87
+  27 0042 BA00     		.ascii	"\272\000"
+  28              		.global	__aeabi_f2d
+  29              		.align	2
+  30              	.LC3:
+  31 0044 25302E33 		.ascii	"%0.3f\012\000"
+  31      660A00
+  32              		.section	.text.main,"ax",%progbits
+  33              		.align	1
+  34              		.global	main
+  35              		.arch armv7-m
+  36              		.syntax unified
+  37              		.thumb
+  38              		.thumb_func
+  39              		.fpu softvfp
+  41              	main:
+  42              	.LFB32:
+  43              		.file 1 "./User/Src/main.c"
+   1:./User/Src/main.c **** /**		 
+ARM GAS  /tmp/ccpIksSD.s 			page 2
+
+
+   2:./User/Src/main.c ****  * @Date:               2022.3.16 
+   3:./User/Src/main.c ****  * @Revision:           V1.0
+   4:./User/Src/main.c ****  * @Writer:             点灯大师
+   5:./User/Src/main.c ****  * @Affiliated unit：   黄河科技学院
+   6:./User/Src/main.c ****  * @Description:        基于STM32F103的固件库工程模板
+   7:./User/Src/main.c ****  * @Email:              im_leihao@163.com
+   8:./User/Src/main.c ****  * @gitee:              https://gitee.com/zleihao/STM32F103.git
+   9:./User/Src/main.c ****  */
+  10:./User/Src/main.c **** #include "bsp_debug_usart.h"
+  11:./User/Src/main.c **** #include"bsp_iic.h"
+  12:./User/Src/main.c **** #include "bh1750.h"
+  13:./User/Src/main.c **** 
+  14:./User/Src/main.c **** 
+  15:./User/Src/main.c **** int main(void) {
+  44              		.loc 1 15 16
+  45              		.cfi_startproc
+  46              		@ args = 0, pretend = 0, frame = 0
+  47              		@ frame_needed = 1, uses_anonymous_args = 0
+  48 0000 80B5     		push	{r7, lr}
+  49              	.LCFI0:
+  50              		.cfi_def_cfa_offset 8
+  51              		.cfi_offset 7, -8
+  52              		.cfi_offset 14, -4
+  53 0002 00AF     		add	r7, sp, #0
+  54              	.LCFI1:
+  55              		.cfi_def_cfa_register 7
+  16:./User/Src/main.c **** 
+  17:./User/Src/main.c **** 	//初始化USART1
+  18:./User/Src/main.c **** 	USART_Config();
+  56              		.loc 1 18 2
+  57 0004 FFF7FEFF 		bl	USART_Config
+  19:./User/Src/main.c **** 	SysTick_Init();
+  58              		.loc 1 19 2
+  59 0008 FFF7FEFF 		bl	SysTick_Init
+  20:./User/Src/main.c **** 	printf("BH1750实验\n");
+  60              		.loc 1 20 2
+  61 000c 1148     		ldr	r0, .L7
+  62 000e FFF7FEFF 		bl	puts
+  21:./User/Src/main.c **** 	if (bh_CheckOk() == 0) {
+  63              		.loc 1 21 6
+  64 0012 FFF7FEFF 		bl	bh_CheckOk
+  65 0016 0346     		mov	r3, r0
+  66              		.loc 1 21 5
+  67 0018 002B     		cmp	r3, #0
+  68 001a 05D1     		bne	.L2
+  22:./User/Src/main.c **** 		printf("检测到bh1750设备\n");
+  69              		.loc 1 22 3
+  70 001c 0E48     		ldr	r0, .L7+4
+  71 001e FFF7FEFF 		bl	puts
+  23:./User/Src/main.c **** 	} else {
+  24:./User/Src/main.c **** 		printf("设备不存在，已退出\n");
+  25:./User/Src/main.c **** 		return 0;
+  26:./User/Src/main.c **** 	}
+  27:./User/Src/main.c ****     //初始化bh1750
+  28:./User/Src/main.c **** 	bh1570_Init();
+  72              		.loc 1 28 2
+  73 0022 FFF7FEFF 		bl	bh1570_Init
+ARM GAS  /tmp/ccpIksSD.s 			page 3
+
+
+  74 0026 04E0     		b	.L5
+  75              	.L2:
+  24:./User/Src/main.c **** 		return 0;
+  76              		.loc 1 24 3
+  77 0028 0C48     		ldr	r0, .L7+8
+  78 002a FFF7FEFF 		bl	puts
+  25:./User/Src/main.c **** 	}
+  79              		.loc 1 25 10
+  80 002e 0023     		movs	r3, #0
+  81 0030 0EE0     		b	.L6
+  82              	.L5:
+  29:./User/Src/main.c **** 	while (1) {
+  30:./User/Src/main.c **** 		printf("%0.3f\n",read_result());
+  83              		.loc 1 30 20 discriminator 1
+  84 0032 FFF7FEFF 		bl	read_result
+  85 0036 0346     		mov	r3, r0
+  86              		.loc 1 30 3 discriminator 1
+  87 0038 1846     		mov	r0, r3
+  88 003a FFF7FEFF 		bl	__aeabi_f2d
+  89 003e 0246     		mov	r2, r0
+  90 0040 0B46     		mov	r3, r1
+  91 0042 0748     		ldr	r0, .L7+12
+  92 0044 FFF7FEFF 		bl	printf
+  31:./User/Src/main.c **** 		//200ms读取一次
+  32:./User/Src/main.c **** 		SysTick_Delay_Ms(200);
+  93              		.loc 1 32 3 discriminator 1
+  94 0048 C820     		movs	r0, #200
+  95 004a FFF7FEFF 		bl	SysTick_Delay_Ms
+  30:./User/Src/main.c **** 		//200ms读取一次
+  96              		.loc 1 30 3 discriminator 1
+  97 004e F0E7     		b	.L5
+  98              	.L6:
+  33:./User/Src/main.c **** 	}
+  34:./User/Src/main.c **** 
+  35:./User/Src/main.c **** }
+  99              		.loc 1 35 1
+ 100 0050 1846     		mov	r0, r3
+ 101 0052 80BD     		pop	{r7, pc}
+ 102              	.L8:
+ 103              		.align	2
+ 104              	.L7:
+ 105 0054 00000000 		.word	.LC0
+ 106 0058 10000000 		.word	.LC1
+ 107 005c 28000000 		.word	.LC2
+ 108 0060 44000000 		.word	.LC3
+ 109              		.cfi_endproc
+ 110              	.LFE32:
+ 112              		.text
+ 113              	.Letext0:
+ARM GAS  /tmp/ccpIksSD.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/ccpIksSD.s:16     .rodata:0000000000000000 $d
+     /tmp/ccpIksSD.s:33     .text.main:0000000000000000 $t
+     /tmp/ccpIksSD.s:41     .text.main:0000000000000000 main
+     /tmp/ccpIksSD.s:105    .text.main:0000000000000054 $d
+
+UNDEFINED SYMBOLS
+__aeabi_f2d
+USART_Config
+SysTick_Init
+puts
+bh_CheckOk
+bh1570_Init
+read_result
+printf
+SysTick_Delay_Ms

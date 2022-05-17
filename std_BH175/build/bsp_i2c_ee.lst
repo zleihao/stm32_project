@@ -1,0 +1,1184 @@
+ARM GAS  /tmp/ccPiIuKt.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"bsp_i2c_ee.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.ee_CheckOk,"ax",%progbits
+  16              		.align	1
+  17              		.global	ee_CheckOk
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	ee_CheckOk:
+  25              	.LFB32:
+  26              		.file 1 "./Hardware/eeprom/bsp_i2c_ee.c"
+   1:./Hardware/eeprom/bsp_i2c_ee.c **** /**
+   2:./Hardware/eeprom/bsp_i2c_ee.c ****   ******************************************************************************
+   3:./Hardware/eeprom/bsp_i2c_ee.c ****   * @file    bsp_i2c_ee.c
+   4:./Hardware/eeprom/bsp_i2c_ee.c ****   * @version V1.0
+   5:./Hardware/eeprom/bsp_i2c_ee.c ****   * @date    2013-xx-xx
+   6:./Hardware/eeprom/bsp_i2c_ee.c ****   * @brief   i2c EEPROM(AT24C02)应用函数bsp
+   7:./Hardware/eeprom/bsp_i2c_ee.c ****   ******************************************************************************
+   8:./Hardware/eeprom/bsp_i2c_ee.c ****   * @attention
+   9:./Hardware/eeprom/bsp_i2c_ee.c ****   *
+  10:./Hardware/eeprom/bsp_i2c_ee.c ****   * 实验平台:野火 F103-指南者 STM32 开发板 
+  11:./Hardware/eeprom/bsp_i2c_ee.c ****   * 论坛    :http://www.firebbs.cn
+  12:./Hardware/eeprom/bsp_i2c_ee.c ****   * 淘宝    :https://fire-stm32.taobao.com
+  13:./Hardware/eeprom/bsp_i2c_ee.c ****   *
+  14:./Hardware/eeprom/bsp_i2c_ee.c ****   ******************************************************************************
+  15:./Hardware/eeprom/bsp_i2c_ee.c ****   */ 
+  16:./Hardware/eeprom/bsp_i2c_ee.c **** 
+  17:./Hardware/eeprom/bsp_i2c_ee.c **** #include "bsp_i2c_ee.h"
+  18:./Hardware/eeprom/bsp_i2c_ee.c **** #include "bsp_iic.h"
+  19:./Hardware/eeprom/bsp_i2c_ee.c **** #include "bsp_debug_usart.h"
+  20:./Hardware/eeprom/bsp_i2c_ee.c **** 
+  21:./Hardware/eeprom/bsp_i2c_ee.c **** /*
+  22:./Hardware/eeprom/bsp_i2c_ee.c **** ***************************************************************************************************
+  23:./Hardware/eeprom/bsp_i2c_ee.c **** *	函 数 名: ee_CheckOk
+  24:./Hardware/eeprom/bsp_i2c_ee.c **** *	功能说明: 判断串行EERPOM是否正常
+  25:./Hardware/eeprom/bsp_i2c_ee.c **** *	形    参：无
+  26:./Hardware/eeprom/bsp_i2c_ee.c **** *	返 回 值: 1 表示正常， 0 表示不正常
+  27:./Hardware/eeprom/bsp_i2c_ee.c **** ***************************************************************************************************
+  28:./Hardware/eeprom/bsp_i2c_ee.c **** */
+  29:./Hardware/eeprom/bsp_i2c_ee.c **** uint8_t ee_CheckOk(void)
+  30:./Hardware/eeprom/bsp_i2c_ee.c **** {
+  27              		.loc 1 30 1
+  28              		.cfi_startproc
+ARM GAS  /tmp/ccPiIuKt.s 			page 2
+
+
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 1, uses_anonymous_args = 0
+  31 0000 80B5     		push	{r7, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 7, -8
+  35              		.cfi_offset 14, -4
+  36 0002 00AF     		add	r7, sp, #0
+  37              	.LCFI1:
+  38              		.cfi_def_cfa_register 7
+  31:./Hardware/eeprom/bsp_i2c_ee.c **** 	if (iic_check_device(EEPROM_DEV_ADDR) == 0)
+  39              		.loc 1 31 6
+  40 0004 A020     		movs	r0, #160
+  41 0006 FFF7FEFF 		bl	iic_check_device
+  42 000a 0346     		mov	r3, r0
+  43              		.loc 1 31 5
+  44 000c 002B     		cmp	r3, #0
+  45 000e 01D1     		bne	.L2
+  32:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+  33:./Hardware/eeprom/bsp_i2c_ee.c **** 		return 1;
+  46              		.loc 1 33 10
+  47 0010 0123     		movs	r3, #1
+  48 0012 02E0     		b	.L3
+  49              	.L2:
+  34:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+  35:./Hardware/eeprom/bsp_i2c_ee.c **** 	else
+  36:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+  37:./Hardware/eeprom/bsp_i2c_ee.c **** 		/* 失败后，切记发送I2C总线停止信号 */
+  38:./Hardware/eeprom/bsp_i2c_ee.c **** 		iic_stop();		
+  50              		.loc 1 38 3
+  51 0014 FFF7FEFF 		bl	iic_stop
+  39:./Hardware/eeprom/bsp_i2c_ee.c **** 		return 0;
+  52              		.loc 1 39 10
+  53 0018 0023     		movs	r3, #0
+  54              	.L3:
+  40:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+  41:./Hardware/eeprom/bsp_i2c_ee.c **** }
+  55              		.loc 1 41 1
+  56 001a 1846     		mov	r0, r3
+  57 001c 80BD     		pop	{r7, pc}
+  58              		.cfi_endproc
+  59              	.LFE32:
+  61              		.section	.text.ee_ReadBytes,"ax",%progbits
+  62              		.align	1
+  63              		.global	ee_ReadBytes
+  64              		.syntax unified
+  65              		.thumb
+  66              		.thumb_func
+  67              		.fpu softvfp
+  69              	ee_ReadBytes:
+  70              	.LFB33:
+  42:./Hardware/eeprom/bsp_i2c_ee.c **** 
+  43:./Hardware/eeprom/bsp_i2c_ee.c **** /*
+  44:./Hardware/eeprom/bsp_i2c_ee.c **** ***************************************************************************************************
+  45:./Hardware/eeprom/bsp_i2c_ee.c **** *	函 数 名: ee_ReadBytes
+  46:./Hardware/eeprom/bsp_i2c_ee.c **** *	功能说明: 从串行EEPROM指定地址处开始读取若干数据
+  47:./Hardware/eeprom/bsp_i2c_ee.c **** *	形    参：_usAddress : 起始地址
+ARM GAS  /tmp/ccPiIuKt.s 			page 3
+
+
+  48:./Hardware/eeprom/bsp_i2c_ee.c **** *			 _usSize : 数据长度，单位为字节
+  49:./Hardware/eeprom/bsp_i2c_ee.c **** *			 _pReadBuf : 存放读到的数据的缓冲区指针
+  50:./Hardware/eeprom/bsp_i2c_ee.c **** *	返 回 值: 0 表示失败，1表示成功
+  51:./Hardware/eeprom/bsp_i2c_ee.c **** ***************************************************************************************************
+  52:./Hardware/eeprom/bsp_i2c_ee.c **** */
+  53:./Hardware/eeprom/bsp_i2c_ee.c **** uint8_t ee_ReadBytes(uint8_t *_pReadBuf, uint16_t _usAddress, uint16_t _usSize)
+  54:./Hardware/eeprom/bsp_i2c_ee.c **** {
+  71              		.loc 1 54 1
+  72              		.cfi_startproc
+  73              		@ args = 0, pretend = 0, frame = 16
+  74              		@ frame_needed = 1, uses_anonymous_args = 0
+  75 0000 90B5     		push	{r4, r7, lr}
+  76              	.LCFI2:
+  77              		.cfi_def_cfa_offset 12
+  78              		.cfi_offset 4, -12
+  79              		.cfi_offset 7, -8
+  80              		.cfi_offset 14, -4
+  81 0002 85B0     		sub	sp, sp, #20
+  82              	.LCFI3:
+  83              		.cfi_def_cfa_offset 32
+  84 0004 00AF     		add	r7, sp, #0
+  85              	.LCFI4:
+  86              		.cfi_def_cfa_register 7
+  87 0006 7860     		str	r0, [r7, #4]
+  88 0008 0B46     		mov	r3, r1
+  89 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+  90 000c 1346     		mov	r3, r2	@ movhi
+  91 000e 3B80     		strh	r3, [r7]	@ movhi
+  55:./Hardware/eeprom/bsp_i2c_ee.c **** 	uint16_t i;
+  56:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+  57:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 采用串行EEPROM随即读取指令序列，连续读取若干字节 */
+  58:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+  59:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 第1步：发起I2C总线启动信号 */
+  60:./Hardware/eeprom/bsp_i2c_ee.c **** 	iic_start();
+  92              		.loc 1 60 2
+  93 0010 FFF7FEFF 		bl	iic_start
+  61:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+  62:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 第2步：发起控制字节，高7bit是地址，bit0是读写控制位，0表示写，1表示读 */
+  63:./Hardware/eeprom/bsp_i2c_ee.c **** 	iic_send_byte(EEPROM_DEV_ADDR | IIC_WR);	/* 此处是写指令 */
+  94              		.loc 1 63 2
+  95 0014 A020     		movs	r0, #160
+  96 0016 FFF7FEFF 		bl	iic_send_byte
+  64:./Hardware/eeprom/bsp_i2c_ee.c **** 	 
+  65:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 第3步：等待ACK */
+  66:./Hardware/eeprom/bsp_i2c_ee.c **** 	if (iic_wait_ack() != 0)
+  97              		.loc 1 66 6
+  98 001a FFF7FEFF 		bl	iic_wait_ack
+  99 001e 0346     		mov	r3, r0
+ 100              		.loc 1 66 5
+ 101 0020 002B     		cmp	r3, #0
+ 102 0022 32D1     		bne	.L14
+  67:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+  68:./Hardware/eeprom/bsp_i2c_ee.c **** 		goto cmd_fail;	/* EEPROM器件无应答 */
+  69:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+  70:./Hardware/eeprom/bsp_i2c_ee.c **** 
+  71:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 第4步：发送字节地址，24C02只有256字节，因此1个字节就够了，如果是24C04以上，那么此处需要连发多个
+  72:./Hardware/eeprom/bsp_i2c_ee.c **** 	iic_send_byte((uint8_t)_usAddress);
+ARM GAS  /tmp/ccPiIuKt.s 			page 4
+
+
+ 103              		.loc 1 72 2
+ 104 0024 7B88     		ldrh	r3, [r7, #2]	@ movhi
+ 105 0026 DBB2     		uxtb	r3, r3
+ 106 0028 1846     		mov	r0, r3
+ 107 002a FFF7FEFF 		bl	iic_send_byte
+  73:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+  74:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 第5步：等待ACK */
+  75:./Hardware/eeprom/bsp_i2c_ee.c **** 	if (iic_wait_ack() != 0)
+ 108              		.loc 1 75 6
+ 109 002e FFF7FEFF 		bl	iic_wait_ack
+ 110 0032 0346     		mov	r3, r0
+ 111              		.loc 1 75 5
+ 112 0034 002B     		cmp	r3, #0
+ 113 0036 2AD1     		bne	.L15
+  76:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+  77:./Hardware/eeprom/bsp_i2c_ee.c **** 		goto cmd_fail;	/* EEPROM器件无应答 */
+  78:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+  79:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+  80:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 第6步：重新启动I2C总线。前面的代码的目的向EEPROM传送地址，下面开始读取数据 */
+  81:./Hardware/eeprom/bsp_i2c_ee.c **** 	iic_start();
+ 114              		.loc 1 81 2
+ 115 0038 FFF7FEFF 		bl	iic_start
+  82:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+  83:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 第7步：发起控制字节，高7bit是地址，bit0是读写控制位，0表示写，1表示读 */
+  84:./Hardware/eeprom/bsp_i2c_ee.c **** 	iic_send_byte(EEPROM_DEV_ADDR | IIC_RD);	/* 此处是读指令 */
+ 116              		.loc 1 84 2
+ 117 003c A120     		movs	r0, #161
+ 118 003e FFF7FEFF 		bl	iic_send_byte
+  85:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+  86:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 第8步：发送ACK */
+  87:./Hardware/eeprom/bsp_i2c_ee.c **** 	if (iic_wait_ack() != 0)
+ 119              		.loc 1 87 6
+ 120 0042 FFF7FEFF 		bl	iic_wait_ack
+ 121 0046 0346     		mov	r3, r0
+ 122              		.loc 1 87 5
+ 123 0048 002B     		cmp	r3, #0
+ 124 004a 22D1     		bne	.L16
+  88:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+  89:./Hardware/eeprom/bsp_i2c_ee.c **** 		goto cmd_fail;	/* EEPROM器件无应答 */
+  90:./Hardware/eeprom/bsp_i2c_ee.c **** 	}	
+  91:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+  92:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 第9步：循环读取数据 */
+  93:./Hardware/eeprom/bsp_i2c_ee.c **** 	for (i = 0; i < _usSize; i++)
+ 125              		.loc 1 93 9
+ 126 004c 0023     		movs	r3, #0
+ 127 004e FB81     		strh	r3, [r7, #14]	@ movhi
+ 128              		.loc 1 93 2
+ 129 0050 13E0     		b	.L9
+ 130              	.L12:
+  94:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+  95:./Hardware/eeprom/bsp_i2c_ee.c **** 		_pReadBuf[i] = iic_read_byte();	/* 读1个字节 */
+ 131              		.loc 1 95 12
+ 132 0052 FB89     		ldrh	r3, [r7, #14]
+ 133 0054 7A68     		ldr	r2, [r7, #4]
+ 134 0056 D418     		adds	r4, r2, r3
+ 135              		.loc 1 95 18
+ 136 0058 FFF7FEFF 		bl	iic_read_byte
+ARM GAS  /tmp/ccPiIuKt.s 			page 5
+
+
+ 137 005c 0346     		mov	r3, r0
+ 138              		.loc 1 95 16
+ 139 005e 2370     		strb	r3, [r4]
+  96:./Hardware/eeprom/bsp_i2c_ee.c **** 		
+  97:./Hardware/eeprom/bsp_i2c_ee.c **** 		/* 每读完1个字节后，需要发送Ack， 最后一个字节不需要Ack，发Nack */
+  98:./Hardware/eeprom/bsp_i2c_ee.c **** 		if (i != _usSize - 1)
+ 140              		.loc 1 98 9
+ 141 0060 FA89     		ldrh	r2, [r7, #14]
+ 142              		.loc 1 98 20
+ 143 0062 3B88     		ldrh	r3, [r7]
+ 144 0064 013B     		subs	r3, r3, #1
+ 145              		.loc 1 98 6
+ 146 0066 9A42     		cmp	r2, r3
+ 147 0068 02D0     		beq	.L10
+  99:./Hardware/eeprom/bsp_i2c_ee.c **** 		{
+ 100:./Hardware/eeprom/bsp_i2c_ee.c **** 			iic_ack();	/* 中间字节读完后，CPU产生ACK信号(驱动SDA = 0) */
+ 148              		.loc 1 100 4
+ 149 006a FFF7FEFF 		bl	iic_ack
+ 150 006e 01E0     		b	.L11
+ 151              	.L10:
+ 101:./Hardware/eeprom/bsp_i2c_ee.c **** 		}
+ 102:./Hardware/eeprom/bsp_i2c_ee.c **** 		else
+ 103:./Hardware/eeprom/bsp_i2c_ee.c **** 		{
+ 104:./Hardware/eeprom/bsp_i2c_ee.c **** 			iic_no_ack();	/* 最后1个字节读完后，CPU产生NACK信号(驱动SDA = 1) */
+ 152              		.loc 1 104 4
+ 153 0070 FFF7FEFF 		bl	iic_no_ack
+ 154              	.L11:
+  93:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 155              		.loc 1 93 28 discriminator 2
+ 156 0074 FB89     		ldrh	r3, [r7, #14]
+ 157 0076 0133     		adds	r3, r3, #1
+ 158 0078 FB81     		strh	r3, [r7, #14]	@ movhi
+ 159              	.L9:
+  93:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 160              		.loc 1 93 2 discriminator 1
+ 161 007a FA89     		ldrh	r2, [r7, #14]
+ 162 007c 3B88     		ldrh	r3, [r7]
+ 163 007e 9A42     		cmp	r2, r3
+ 164 0080 E7D3     		bcc	.L12
+ 105:./Hardware/eeprom/bsp_i2c_ee.c **** 		}
+ 106:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 107:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 发送I2C总线停止信号 */
+ 108:./Hardware/eeprom/bsp_i2c_ee.c **** 	iic_stop();
+ 165              		.loc 1 108 2
+ 166 0082 FFF7FEFF 		bl	iic_stop
+ 109:./Hardware/eeprom/bsp_i2c_ee.c **** 	return 1;	/* 执行成功 */
+ 167              		.loc 1 109 9
+ 168 0086 0123     		movs	r3, #1
+ 169 0088 07E0     		b	.L13
+ 170              	.L14:
+  68:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 171              		.loc 1 68 3
+ 172 008a 00BF     		nop
+ 173 008c 02E0     		b	.L6
+ 174              	.L15:
+  77:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 175              		.loc 1 77 3
+ARM GAS  /tmp/ccPiIuKt.s 			page 6
+
+
+ 176 008e 00BF     		nop
+ 177 0090 00E0     		b	.L6
+ 178              	.L16:
+  89:./Hardware/eeprom/bsp_i2c_ee.c **** 	}	
+ 179              		.loc 1 89 3
+ 180 0092 00BF     		nop
+ 181              	.L6:
+ 110:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 111:./Hardware/eeprom/bsp_i2c_ee.c **** cmd_fail: /* 命令执行失败后，切记发送停止信号，避免影响I2C总线上其他设备 */
+ 112:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 发送I2C总线停止信号 */
+ 113:./Hardware/eeprom/bsp_i2c_ee.c **** 	iic_stop();
+ 182              		.loc 1 113 2
+ 183 0094 FFF7FEFF 		bl	iic_stop
+ 114:./Hardware/eeprom/bsp_i2c_ee.c **** 	return 0;
+ 184              		.loc 1 114 9
+ 185 0098 0023     		movs	r3, #0
+ 186              	.L13:
+ 115:./Hardware/eeprom/bsp_i2c_ee.c **** }
+ 187              		.loc 1 115 1
+ 188 009a 1846     		mov	r0, r3
+ 189 009c 1437     		adds	r7, r7, #20
+ 190              	.LCFI5:
+ 191              		.cfi_def_cfa_offset 12
+ 192 009e BD46     		mov	sp, r7
+ 193              	.LCFI6:
+ 194              		.cfi_def_cfa_register 13
+ 195              		@ sp needed
+ 196 00a0 90BD     		pop	{r4, r7, pc}
+ 197              		.cfi_endproc
+ 198              	.LFE33:
+ 200              		.section	.text.ee_WriteBytes,"ax",%progbits
+ 201              		.align	1
+ 202              		.global	ee_WriteBytes
+ 203              		.syntax unified
+ 204              		.thumb
+ 205              		.thumb_func
+ 206              		.fpu softvfp
+ 208              	ee_WriteBytes:
+ 209              	.LFB34:
+ 116:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 117:./Hardware/eeprom/bsp_i2c_ee.c **** /*
+ 118:./Hardware/eeprom/bsp_i2c_ee.c **** ***************************************************************************************************
+ 119:./Hardware/eeprom/bsp_i2c_ee.c **** *	函 数 名: ee_WriteBytes
+ 120:./Hardware/eeprom/bsp_i2c_ee.c **** *	功能说明: 向串行EEPROM指定地址写入若干数据，采用页写操作提高写入效率
+ 121:./Hardware/eeprom/bsp_i2c_ee.c **** *	形    参：_usAddress : 起始地址
+ 122:./Hardware/eeprom/bsp_i2c_ee.c **** *			 _usSize : 数据长度，单位为字节
+ 123:./Hardware/eeprom/bsp_i2c_ee.c **** *			 _pWriteBuf : 存放读到的数据的缓冲区指针
+ 124:./Hardware/eeprom/bsp_i2c_ee.c **** *	返 回 值: 0 表示失败，1表示成功
+ 125:./Hardware/eeprom/bsp_i2c_ee.c **** ***************************************************************************************************
+ 126:./Hardware/eeprom/bsp_i2c_ee.c **** */
+ 127:./Hardware/eeprom/bsp_i2c_ee.c **** uint8_t ee_WriteBytes(uint8_t *_pWriteBuf, uint16_t _usAddress, uint16_t _usSize)
+ 128:./Hardware/eeprom/bsp_i2c_ee.c **** {
+ 210              		.loc 1 128 1
+ 211              		.cfi_startproc
+ 212              		@ args = 0, pretend = 0, frame = 16
+ 213              		@ frame_needed = 1, uses_anonymous_args = 0
+ 214 0000 80B5     		push	{r7, lr}
+ARM GAS  /tmp/ccPiIuKt.s 			page 7
+
+
+ 215              	.LCFI7:
+ 216              		.cfi_def_cfa_offset 8
+ 217              		.cfi_offset 7, -8
+ 218              		.cfi_offset 14, -4
+ 219 0002 84B0     		sub	sp, sp, #16
+ 220              	.LCFI8:
+ 221              		.cfi_def_cfa_offset 24
+ 222 0004 00AF     		add	r7, sp, #0
+ 223              	.LCFI9:
+ 224              		.cfi_def_cfa_register 7
+ 225 0006 7860     		str	r0, [r7, #4]
+ 226 0008 0B46     		mov	r3, r1
+ 227 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+ 228 000c 1346     		mov	r3, r2	@ movhi
+ 229 000e 3B80     		strh	r3, [r7]	@ movhi
+ 129:./Hardware/eeprom/bsp_i2c_ee.c **** 	uint16_t i,m;
+ 130:./Hardware/eeprom/bsp_i2c_ee.c **** 	uint16_t usAddr;
+ 131:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+ 132:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 
+ 133:./Hardware/eeprom/bsp_i2c_ee.c **** 		写串行EEPROM不像读操作可以连续读取很多字节，每次写操作只能在同一个page。
+ 134:./Hardware/eeprom/bsp_i2c_ee.c **** 		对于24xx02，page size = 8
+ 135:./Hardware/eeprom/bsp_i2c_ee.c **** 		简单的处理方法为：按字节写操作模式，每写1个字节，都发送地址
+ 136:./Hardware/eeprom/bsp_i2c_ee.c **** 		为了提高连续写的效率: 本函数采用page wirte操作。
+ 137:./Hardware/eeprom/bsp_i2c_ee.c **** 	*/
+ 138:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 139:./Hardware/eeprom/bsp_i2c_ee.c **** 	usAddr = _usAddress;	
+ 230              		.loc 1 139 9
+ 231 0010 7B88     		ldrh	r3, [r7, #2]	@ movhi
+ 232 0012 7B81     		strh	r3, [r7, #10]	@ movhi
+ 140:./Hardware/eeprom/bsp_i2c_ee.c **** 	for (i = 0; i < _usSize; i++)
+ 233              		.loc 1 140 9
+ 234 0014 0023     		movs	r3, #0
+ 235 0016 FB81     		strh	r3, [r7, #14]	@ movhi
+ 236              		.loc 1 140 2
+ 237 0018 3FE0     		b	.L18
+ 238              	.L28:
+ 141:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 142:./Hardware/eeprom/bsp_i2c_ee.c **** 		/* 当发送第1个字节或是页面首地址时，需要重新发起启动信号和地址 */
+ 143:./Hardware/eeprom/bsp_i2c_ee.c **** 		if ((i == 0) || (usAddr & (EEPROM_PAGE_SIZE - 1)) == 0)
+ 239              		.loc 1 143 6
+ 240 001a FB89     		ldrh	r3, [r7, #14]
+ 241 001c 002B     		cmp	r3, #0
+ 242 001e 04D0     		beq	.L19
+ 243              		.loc 1 143 27 discriminator 1
+ 244 0020 7B89     		ldrh	r3, [r7, #10]
+ 245 0022 03F00703 		and	r3, r3, #7
+ 246              		.loc 1 143 16 discriminator 1
+ 247 0026 002B     		cmp	r3, #0
+ 248 0028 25D1     		bne	.L20
+ 249              	.L19:
+ 144:./Hardware/eeprom/bsp_i2c_ee.c **** 		{
+ 145:./Hardware/eeprom/bsp_i2c_ee.c **** 			/*　第０步：发停止信号，启动内部写操作　*/
+ 146:./Hardware/eeprom/bsp_i2c_ee.c **** 			iic_stop();
+ 250              		.loc 1 146 4
+ 251 002a FFF7FEFF 		bl	iic_stop
+ 147:./Hardware/eeprom/bsp_i2c_ee.c **** 			
+ 148:./Hardware/eeprom/bsp_i2c_ee.c **** 			/* 通过检查器件应答的方式，判断内部写操作是否完成, 一般小于 10ms 			
+ARM GAS  /tmp/ccPiIuKt.s 			page 8
+
+
+ 149:./Hardware/eeprom/bsp_i2c_ee.c **** 				CLK频率为200KHz时，查询次数为30次左右
+ 150:./Hardware/eeprom/bsp_i2c_ee.c **** 			*/
+ 151:./Hardware/eeprom/bsp_i2c_ee.c **** 			for (m = 0; m < 1000; m++)
+ 252              		.loc 1 151 11
+ 253 002e 0023     		movs	r3, #0
+ 254 0030 BB81     		strh	r3, [r7, #12]	@ movhi
+ 255              		.loc 1 151 4
+ 256 0032 0CE0     		b	.L21
+ 257              	.L24:
+ 152:./Hardware/eeprom/bsp_i2c_ee.c **** 			{				
+ 153:./Hardware/eeprom/bsp_i2c_ee.c **** 				/* 第1步：发起I2C总线启动信号 */
+ 154:./Hardware/eeprom/bsp_i2c_ee.c **** 				iic_start();
+ 258              		.loc 1 154 5
+ 259 0034 FFF7FEFF 		bl	iic_start
+ 155:./Hardware/eeprom/bsp_i2c_ee.c **** 				
+ 156:./Hardware/eeprom/bsp_i2c_ee.c **** 				/* 第2步：发起控制字节，高7bit是地址，bit0是读写控制位，0表示写，1表示读 */
+ 157:./Hardware/eeprom/bsp_i2c_ee.c **** 				iic_send_byte(EEPROM_DEV_ADDR | IIC_WR);	/* 此处是写指令 */
+ 260              		.loc 1 157 5
+ 261 0038 A020     		movs	r0, #160
+ 262 003a FFF7FEFF 		bl	iic_send_byte
+ 158:./Hardware/eeprom/bsp_i2c_ee.c **** 				
+ 159:./Hardware/eeprom/bsp_i2c_ee.c **** 				/* 第3步：发送一个时钟，判断器件是否正确应答 */
+ 160:./Hardware/eeprom/bsp_i2c_ee.c **** 				if (iic_wait_ack() == 0)
+ 263              		.loc 1 160 9
+ 264 003e FFF7FEFF 		bl	iic_wait_ack
+ 265 0042 0346     		mov	r3, r0
+ 266              		.loc 1 160 8
+ 267 0044 002B     		cmp	r3, #0
+ 268 0046 07D0     		beq	.L30
+ 151:./Hardware/eeprom/bsp_i2c_ee.c **** 			{				
+ 269              		.loc 1 151 27 discriminator 2
+ 270 0048 BB89     		ldrh	r3, [r7, #12]
+ 271 004a 0133     		adds	r3, r3, #1
+ 272 004c BB81     		strh	r3, [r7, #12]	@ movhi
+ 273              	.L21:
+ 151:./Hardware/eeprom/bsp_i2c_ee.c **** 			{				
+ 274              		.loc 1 151 4 discriminator 1
+ 275 004e BB89     		ldrh	r3, [r7, #12]
+ 276 0050 B3F57A7F 		cmp	r3, #1000
+ 277 0054 EED3     		bcc	.L24
+ 278 0056 00E0     		b	.L23
+ 279              	.L30:
+ 161:./Hardware/eeprom/bsp_i2c_ee.c **** 				{
+ 162:./Hardware/eeprom/bsp_i2c_ee.c **** 					break;
+ 280              		.loc 1 162 6
+ 281 0058 00BF     		nop
+ 282              	.L23:
+ 163:./Hardware/eeprom/bsp_i2c_ee.c **** 				}
+ 164:./Hardware/eeprom/bsp_i2c_ee.c **** 			}
+ 165:./Hardware/eeprom/bsp_i2c_ee.c **** 			if (m  == 1000)
+ 283              		.loc 1 165 7
+ 284 005a BB89     		ldrh	r3, [r7, #12]
+ 285 005c B3F57A7F 		cmp	r3, #1000
+ 286 0060 23D0     		beq	.L31
+ 166:./Hardware/eeprom/bsp_i2c_ee.c **** 			{
+ 167:./Hardware/eeprom/bsp_i2c_ee.c **** 				goto cmd_fail;	/* EEPROM器件写超时 */
+ 168:./Hardware/eeprom/bsp_i2c_ee.c **** 			}
+ARM GAS  /tmp/ccPiIuKt.s 			page 9
+
+
+ 169:./Hardware/eeprom/bsp_i2c_ee.c **** 		
+ 170:./Hardware/eeprom/bsp_i2c_ee.c **** 			/* 第4步：发送字节地址，24C02只有256字节，因此1个字节就够了，如果是24C04以上，那么此处需要连发多
+ 171:./Hardware/eeprom/bsp_i2c_ee.c **** 			iic_send_byte((uint8_t)usAddr);
+ 287              		.loc 1 171 4
+ 288 0062 7B89     		ldrh	r3, [r7, #10]	@ movhi
+ 289 0064 DBB2     		uxtb	r3, r3
+ 290 0066 1846     		mov	r0, r3
+ 291 0068 FFF7FEFF 		bl	iic_send_byte
+ 172:./Hardware/eeprom/bsp_i2c_ee.c **** 			
+ 173:./Hardware/eeprom/bsp_i2c_ee.c **** 			/* 第5步：等待ACK */
+ 174:./Hardware/eeprom/bsp_i2c_ee.c **** 			if (iic_wait_ack() != 0)
+ 292              		.loc 1 174 8
+ 293 006c FFF7FEFF 		bl	iic_wait_ack
+ 294 0070 0346     		mov	r3, r0
+ 295              		.loc 1 174 7
+ 296 0072 002B     		cmp	r3, #0
+ 297 0074 1BD1     		bne	.L32
+ 298              	.L20:
+ 175:./Hardware/eeprom/bsp_i2c_ee.c **** 			{
+ 176:./Hardware/eeprom/bsp_i2c_ee.c **** 				goto cmd_fail;	/* EEPROM器件无应答 */
+ 177:./Hardware/eeprom/bsp_i2c_ee.c **** 			}
+ 178:./Hardware/eeprom/bsp_i2c_ee.c **** 		}
+ 179:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+ 180:./Hardware/eeprom/bsp_i2c_ee.c **** 		/* 第6步：开始写入数据 */
+ 181:./Hardware/eeprom/bsp_i2c_ee.c **** 		iic_send_byte(_pWriteBuf[i]);
+ 299              		.loc 1 181 27
+ 300 0076 FB89     		ldrh	r3, [r7, #14]
+ 301 0078 7A68     		ldr	r2, [r7, #4]
+ 302 007a 1344     		add	r3, r3, r2
+ 303              		.loc 1 181 3
+ 304 007c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 305 007e 1846     		mov	r0, r3
+ 306 0080 FFF7FEFF 		bl	iic_send_byte
+ 182:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+ 183:./Hardware/eeprom/bsp_i2c_ee.c **** 		/* 第7步：发送ACK */
+ 184:./Hardware/eeprom/bsp_i2c_ee.c **** 		if (iic_wait_ack() != 0)
+ 307              		.loc 1 184 7
+ 308 0084 FFF7FEFF 		bl	iic_wait_ack
+ 309 0088 0346     		mov	r3, r0
+ 310              		.loc 1 184 6
+ 311 008a 002B     		cmp	r3, #0
+ 312 008c 11D1     		bne	.L33
+ 185:./Hardware/eeprom/bsp_i2c_ee.c **** 		{
+ 186:./Hardware/eeprom/bsp_i2c_ee.c **** 			goto cmd_fail;	/* EEPROM器件无应答 */
+ 187:./Hardware/eeprom/bsp_i2c_ee.c **** 		}
+ 188:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 189:./Hardware/eeprom/bsp_i2c_ee.c **** 		usAddr++;	/* 地址增1 */		
+ 313              		.loc 1 189 9 discriminator 2
+ 314 008e 7B89     		ldrh	r3, [r7, #10]
+ 315 0090 0133     		adds	r3, r3, #1
+ 316 0092 7B81     		strh	r3, [r7, #10]	@ movhi
+ 140:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 317              		.loc 1 140 28 discriminator 2
+ 318 0094 FB89     		ldrh	r3, [r7, #14]
+ 319 0096 0133     		adds	r3, r3, #1
+ 320 0098 FB81     		strh	r3, [r7, #14]	@ movhi
+ 321              	.L18:
+ARM GAS  /tmp/ccPiIuKt.s 			page 10
+
+
+ 140:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 322              		.loc 1 140 2 discriminator 1
+ 323 009a FA89     		ldrh	r2, [r7, #14]
+ 324 009c 3B88     		ldrh	r3, [r7]
+ 325 009e 9A42     		cmp	r2, r3
+ 326 00a0 BBD3     		bcc	.L28
+ 190:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 191:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+ 192:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 命令执行成功，发送I2C总线停止信号 */
+ 193:./Hardware/eeprom/bsp_i2c_ee.c **** 	iic_stop();
+ 327              		.loc 1 193 2
+ 328 00a2 FFF7FEFF 		bl	iic_stop
+ 194:./Hardware/eeprom/bsp_i2c_ee.c **** 	return 1;
+ 329              		.loc 1 194 9
+ 330 00a6 0123     		movs	r3, #1
+ 331 00a8 07E0     		b	.L29
+ 332              	.L31:
+ 167:./Hardware/eeprom/bsp_i2c_ee.c **** 			}
+ 333              		.loc 1 167 5
+ 334 00aa 00BF     		nop
+ 335 00ac 02E0     		b	.L26
+ 336              	.L32:
+ 176:./Hardware/eeprom/bsp_i2c_ee.c **** 			}
+ 337              		.loc 1 176 5
+ 338 00ae 00BF     		nop
+ 339 00b0 00E0     		b	.L26
+ 340              	.L33:
+ 186:./Hardware/eeprom/bsp_i2c_ee.c **** 		}
+ 341              		.loc 1 186 4
+ 342 00b2 00BF     		nop
+ 343              	.L26:
+ 195:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 196:./Hardware/eeprom/bsp_i2c_ee.c **** cmd_fail: /* 命令执行失败后，切记发送停止信号，避免影响I2C总线上其他设备 */
+ 197:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 发送I2C总线停止信号 */
+ 198:./Hardware/eeprom/bsp_i2c_ee.c **** 	iic_stop();
+ 344              		.loc 1 198 2
+ 345 00b4 FFF7FEFF 		bl	iic_stop
+ 199:./Hardware/eeprom/bsp_i2c_ee.c **** 	return 0;
+ 346              		.loc 1 199 9
+ 347 00b8 0023     		movs	r3, #0
+ 348              	.L29:
+ 200:./Hardware/eeprom/bsp_i2c_ee.c **** }
+ 349              		.loc 1 200 1
+ 350 00ba 1846     		mov	r0, r3
+ 351 00bc 1037     		adds	r7, r7, #16
+ 352              	.LCFI10:
+ 353              		.cfi_def_cfa_offset 8
+ 354 00be BD46     		mov	sp, r7
+ 355              	.LCFI11:
+ 356              		.cfi_def_cfa_register 13
+ 357              		@ sp needed
+ 358 00c0 80BD     		pop	{r7, pc}
+ 359              		.cfi_endproc
+ 360              	.LFE34:
+ 362              		.section	.rodata
+ 363              		.align	2
+ 364              	.LC0:
+ARM GAS  /tmp/ccPiIuKt.s 			page 11
+
+
+ 365 0000 B2C1B3FD 		.ascii	"\262\301\263\375eeprom\263\366\264\355\243\241\015\000"
+ 365      65657072 
+ 365      6F6DB3F6 
+ 365      B4EDA3A1 
+ 365      0D00
+ 366 0012 0000     		.align	2
+ 367              	.LC1:
+ 368 0014 B2C1B3FD 		.ascii	"\262\301\263\375eeprom\263\311\271\246\243\241\015\000"
+ 368      65657072 
+ 368      6F6DB3C9 
+ 368      B9A6A3A1 
+ 368      0D00
+ 369              		.section	.text.ee_Erase,"ax",%progbits
+ 370              		.align	1
+ 371              		.global	ee_Erase
+ 372              		.syntax unified
+ 373              		.thumb
+ 374              		.thumb_func
+ 375              		.fpu softvfp
+ 377              	ee_Erase:
+ 378              	.LFB35:
+ 201:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 202:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 203:./Hardware/eeprom/bsp_i2c_ee.c **** void ee_Erase(void)
+ 204:./Hardware/eeprom/bsp_i2c_ee.c **** {
+ 379              		.loc 1 204 1
+ 380              		.cfi_startproc
+ 381              		@ args = 0, pretend = 0, frame = 264
+ 382              		@ frame_needed = 1, uses_anonymous_args = 0
+ 383 0000 80B5     		push	{r7, lr}
+ 384              	.LCFI12:
+ 385              		.cfi_def_cfa_offset 8
+ 386              		.cfi_offset 7, -8
+ 387              		.cfi_offset 14, -4
+ 388 0002 C2B0     		sub	sp, sp, #264
+ 389              	.LCFI13:
+ 390              		.cfi_def_cfa_offset 272
+ 391 0004 00AF     		add	r7, sp, #0
+ 392              	.LCFI14:
+ 393              		.cfi_def_cfa_register 7
+ 205:./Hardware/eeprom/bsp_i2c_ee.c **** 	uint16_t i;
+ 206:./Hardware/eeprom/bsp_i2c_ee.c **** 	uint8_t buf[EEPROM_SIZE];
+ 207:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+ 208:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 填充缓冲区 */
+ 209:./Hardware/eeprom/bsp_i2c_ee.c **** 	for (i = 0; i < EEPROM_SIZE; i++)
+ 394              		.loc 1 209 9
+ 395 0006 0023     		movs	r3, #0
+ 396 0008 A7F80631 		strh	r3, [r7, #262]	@ movhi
+ 397              		.loc 1 209 2
+ 398 000c 0CE0     		b	.L35
+ 399              	.L36:
+ 210:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 211:./Hardware/eeprom/bsp_i2c_ee.c **** 		buf[i] = 0xFF;
+ 400              		.loc 1 211 6 discriminator 3
+ 401 000e B7F80631 		ldrh	r3, [r7, #262]
+ 402              		.loc 1 211 10 discriminator 3
+ 403 0012 07F58472 		add	r2, r7, #264
+ARM GAS  /tmp/ccPiIuKt.s 			page 12
+
+
+ 404 0016 A2F58272 		sub	r2, r2, #260
+ 405 001a FF21     		movs	r1, #255
+ 406 001c D154     		strb	r1, [r2, r3]
+ 209:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 407              		.loc 1 209 32 discriminator 3
+ 408 001e B7F80631 		ldrh	r3, [r7, #262]
+ 409 0022 0133     		adds	r3, r3, #1
+ 410 0024 A7F80631 		strh	r3, [r7, #262]	@ movhi
+ 411              	.L35:
+ 209:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 412              		.loc 1 209 2 discriminator 1
+ 413 0028 B7F80631 		ldrh	r3, [r7, #262]
+ 414 002c FF2B     		cmp	r3, #255
+ 415 002e EED9     		bls	.L36
+ 212:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 213:./Hardware/eeprom/bsp_i2c_ee.c **** 	
+ 214:./Hardware/eeprom/bsp_i2c_ee.c **** 	/* 写EEPROM, 起始地址 = 0，数据长度为 256 */
+ 215:./Hardware/eeprom/bsp_i2c_ee.c **** 	if (ee_WriteBytes(buf, 0, EEPROM_SIZE) == 0)
+ 416              		.loc 1 215 6
+ 417 0030 3B1D     		adds	r3, r7, #4
+ 418 0032 4FF48072 		mov	r2, #256
+ 419 0036 0021     		movs	r1, #0
+ 420 0038 1846     		mov	r0, r3
+ 421 003a FFF7FEFF 		bl	ee_WriteBytes
+ 422 003e 0346     		mov	r3, r0
+ 423              		.loc 1 215 5
+ 424 0040 002B     		cmp	r3, #0
+ 425 0042 03D1     		bne	.L37
+ 216:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 217:./Hardware/eeprom/bsp_i2c_ee.c **** 		printf("擦除eeprom出错！\r\n");
+ 426              		.loc 1 217 3
+ 427 0044 0548     		ldr	r0, .L39
+ 428 0046 FFF7FEFF 		bl	puts
+ 429 004a 02E0     		b	.L34
+ 430              	.L37:
+ 218:./Hardware/eeprom/bsp_i2c_ee.c **** 		return;
+ 219:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 220:./Hardware/eeprom/bsp_i2c_ee.c **** 	else
+ 221:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 222:./Hardware/eeprom/bsp_i2c_ee.c **** 		printf("擦除eeprom成功！\r\n");
+ 431              		.loc 1 222 3
+ 432 004c 0448     		ldr	r0, .L39+4
+ 433 004e FFF7FEFF 		bl	puts
+ 434              	.L34:
+ 223:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 224:./Hardware/eeprom/bsp_i2c_ee.c **** }
+ 435              		.loc 1 224 1
+ 436 0052 07F58477 		add	r7, r7, #264
+ 437              	.LCFI15:
+ 438              		.cfi_def_cfa_offset 8
+ 439 0056 BD46     		mov	sp, r7
+ 440              	.LCFI16:
+ 441              		.cfi_def_cfa_register 13
+ 442              		@ sp needed
+ 443 0058 80BD     		pop	{r7, pc}
+ 444              	.L40:
+ 445 005a 00BF     		.align	2
+ARM GAS  /tmp/ccPiIuKt.s 			page 13
+
+
+ 446              	.L39:
+ 447 005c 00000000 		.word	.LC0
+ 448 0060 14000000 		.word	.LC1
+ 449              		.cfi_endproc
+ 450              	.LFE35:
+ 452              		.section	.text.ee_Delay,"ax",%progbits
+ 453              		.align	1
+ 454              		.syntax unified
+ 455              		.thumb
+ 456              		.thumb_func
+ 457              		.fpu softvfp
+ 459              	ee_Delay:
+ 460              	.LFB36:
+ 225:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 226:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 227:./Hardware/eeprom/bsp_i2c_ee.c **** /*-------------------------------------------------------------------------------------------------
+ 228:./Hardware/eeprom/bsp_i2c_ee.c **** static void ee_Delay(__IO uint32_t nCount)	 //简单的延时函数
+ 229:./Hardware/eeprom/bsp_i2c_ee.c **** {
+ 461              		.loc 1 229 1
+ 462              		.cfi_startproc
+ 463              		@ args = 0, pretend = 0, frame = 8
+ 464              		@ frame_needed = 1, uses_anonymous_args = 0
+ 465              		@ link register save eliminated.
+ 466 0000 80B4     		push	{r7}
+ 467              	.LCFI17:
+ 468              		.cfi_def_cfa_offset 4
+ 469              		.cfi_offset 7, -4
+ 470 0002 83B0     		sub	sp, sp, #12
+ 471              	.LCFI18:
+ 472              		.cfi_def_cfa_offset 16
+ 473 0004 00AF     		add	r7, sp, #0
+ 474              	.LCFI19:
+ 475              		.cfi_def_cfa_register 7
+ 476 0006 7860     		str	r0, [r7, #4]
+ 230:./Hardware/eeprom/bsp_i2c_ee.c **** 	for(; nCount != 0; nCount--);
+ 477              		.loc 1 230 2
+ 478 0008 02E0     		b	.L42
+ 479              	.L43:
+ 480              		.loc 1 230 27 discriminator 2
+ 481 000a 7B68     		ldr	r3, [r7, #4]
+ 482 000c 013B     		subs	r3, r3, #1
+ 483 000e 7B60     		str	r3, [r7, #4]
+ 484              	.L42:
+ 485              		.loc 1 230 15 discriminator 1
+ 486 0010 7B68     		ldr	r3, [r7, #4]
+ 487              		.loc 1 230 2 discriminator 1
+ 488 0012 002B     		cmp	r3, #0
+ 489 0014 F9D1     		bne	.L43
+ 231:./Hardware/eeprom/bsp_i2c_ee.c **** }
+ 490              		.loc 1 231 1
+ 491 0016 00BF     		nop
+ 492 0018 00BF     		nop
+ 493 001a 0C37     		adds	r7, r7, #12
+ 494              	.LCFI20:
+ 495              		.cfi_def_cfa_offset 4
+ 496 001c BD46     		mov	sp, r7
+ 497              	.LCFI21:
+ARM GAS  /tmp/ccPiIuKt.s 			page 14
+
+
+ 498              		.cfi_def_cfa_register 13
+ 499              		@ sp needed
+ 500 001e 80BC     		pop	{r7}
+ 501              	.LCFI22:
+ 502              		.cfi_restore 7
+ 503              		.cfi_def_cfa_offset 0
+ 504 0020 7047     		bx	lr
+ 505              		.cfi_endproc
+ 506              	.LFE36:
+ 508              		.section	.rodata
+ 509 0026 0000     		.align	2
+ 510              	.LC2:
+ 511 0028 C3BBD3D0 		.ascii	"\303\273\323\320\274\354\262\342\265\275\264\256\320"
+ 511      BCECB2E2 
+ 511      B5BDB4AE 
+ 511      D0
+ 512 0035 D0454550 		.ascii	"\320EEPROM!\015\000"
+ 512      524F4D21 
+ 512      0D00
+ 513 003f 00       		.align	2
+ 514              	.LC3:
+ 515 0040 D0B46565 		.ascii	"\320\264eeprom\263\366\264\355\243\241\015\000"
+ 515      70726F6D 
+ 515      B3F6B4ED 
+ 515      A3A10D00 
+ 516              		.align	2
+ 517              	.LC4:
+ 518 0050 D0B46565 		.ascii	"\320\264eeprom\263\311\271\246\243\241\015\000"
+ 518      70726F6D 
+ 518      B3C9B9A6 
+ 518      A3A10D00 
+ 519              		.align	2
+ 520              	.LC5:
+ 521 0060 B6C16565 		.ascii	"\266\301eeprom\263\366\264\355\243\241\015\000"
+ 521      70726F6D 
+ 521      B3F6B4ED 
+ 521      A3A10D00 
+ 522              		.align	2
+ 523              	.LC6:
+ 524 0070 B6C16565 		.ascii	"\266\301eeprom\263\311\271\246\243\254\312\375\276\335"
+ 524      70726F6D 
+ 524      B3C9B9A6 
+ 524      A3ACCAFD 
+ 524      BEDD
+ 525 0082 C8E7CFC2 		.ascii	"\310\347\317\302\243\272\015\000"
+ 525      A3BA0D00 
+ 526 008a 0000     		.align	2
+ 527              	.LC7:
+ 528 008c 30782530 		.ascii	"0x%02X \000"
+ 528      32582000 
+ 529              		.align	2
+ 530              	.LC8:
+ 531 0094 B4EDCEF3 		.ascii	"\264\355\316\363:EEPROM\266\301\263\366\323\353\320"
+ 531      3A454550 
+ 531      524F4DB6 
+ 531      C1B3F6D3 
+ 531      EBD0
+ARM GAS  /tmp/ccPiIuKt.s 			page 15
+
+
+ 532 00a6 B4C8EBB5 		.ascii	"\264\310\353\265\304\312\375\276\335\262\273\322\273"
+ 532      C4CAFDBE 
+ 532      DDB2BBD2 
+ 532      BB
+ 533 00b3 D6C200   		.ascii	"\326\302\000"
+ 534 00b6 0000     		.align	2
+ 535              	.LC9:
+ 536 00b8 20253032 		.ascii	" %02X\000"
+ 536      5800
+ 537 00be 0000     		.align	2
+ 538              	.LC10:
+ 539 00c0 0D00     		.ascii	"\015\000"
+ 540 00c2 0000     		.align	2
+ 541              	.LC11:
+ 542 00c4 65657072 		.ascii	"eeprom\266\301\320\264\262\342\312\324\263\311\271\246"
+ 542      6F6DB6C1 
+ 542      D0B4B2E2 
+ 542      CAD4B3C9 
+ 542      B9A6
+ 543 00d6 0D00     		.ascii	"\015\000"
+ 544              		.section	.text.ee_Test,"ax",%progbits
+ 545              		.align	1
+ 546              		.global	ee_Test
+ 547              		.syntax unified
+ 548              		.thumb
+ 549              		.thumb_func
+ 550              		.fpu softvfp
+ 552              	ee_Test:
+ 553              	.LFB37:
+ 232:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 233:./Hardware/eeprom/bsp_i2c_ee.c **** 
+ 234:./Hardware/eeprom/bsp_i2c_ee.c **** /*
+ 235:./Hardware/eeprom/bsp_i2c_ee.c ****  * eeprom AT24C02 读写测试
+ 236:./Hardware/eeprom/bsp_i2c_ee.c ****  * 正常返回1，异常返回0
+ 237:./Hardware/eeprom/bsp_i2c_ee.c ****  */
+ 238:./Hardware/eeprom/bsp_i2c_ee.c **** uint8_t ee_Test(void) 
+ 239:./Hardware/eeprom/bsp_i2c_ee.c **** {
+ 554              		.loc 1 239 1
+ 555              		.cfi_startproc
+ 556              		@ args = 0, pretend = 0, frame = 520
+ 557              		@ frame_needed = 1, uses_anonymous_args = 0
+ 558 0000 80B5     		push	{r7, lr}
+ 559              	.LCFI23:
+ 560              		.cfi_def_cfa_offset 8
+ 561              		.cfi_offset 7, -8
+ 562              		.cfi_offset 14, -4
+ 563 0002 ADF5027D 		sub	sp, sp, #520
+ 564              	.LCFI24:
+ 565              		.cfi_def_cfa_offset 528
+ 566 0006 00AF     		add	r7, sp, #0
+ 567              	.LCFI25:
+ 568              		.cfi_def_cfa_register 7
+ 240:./Hardware/eeprom/bsp_i2c_ee.c ****   uint16_t i;
+ 241:./Hardware/eeprom/bsp_i2c_ee.c **** 	uint8_t write_buf[EEPROM_SIZE];
+ 242:./Hardware/eeprom/bsp_i2c_ee.c ****   uint8_t read_buf[EEPROM_SIZE];
+ 243:./Hardware/eeprom/bsp_i2c_ee.c ****   
+ 244:./Hardware/eeprom/bsp_i2c_ee.c **** /*-----------------------------------------------------------------------------------*/  
+ARM GAS  /tmp/ccPiIuKt.s 			page 16
+
+
+ 245:./Hardware/eeprom/bsp_i2c_ee.c ****   if (ee_CheckOk() == 0)
+ 569              		.loc 1 245 7
+ 570 0008 FFF7FEFF 		bl	ee_CheckOk
+ 571 000c 0346     		mov	r3, r0
+ 572              		.loc 1 245 6
+ 573 000e 002B     		cmp	r3, #0
+ 574 0010 04D1     		bne	.L45
+ 246:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 247:./Hardware/eeprom/bsp_i2c_ee.c **** 		/* 没有检测到EEPROM */
+ 248:./Hardware/eeprom/bsp_i2c_ee.c **** 		printf("没有检测到串行EEPROM!\r\n");
+ 575              		.loc 1 248 3
+ 576 0012 4748     		ldr	r0, .L56
+ 577 0014 FFF7FEFF 		bl	puts
+ 249:./Hardware/eeprom/bsp_i2c_ee.c **** 				
+ 250:./Hardware/eeprom/bsp_i2c_ee.c **** 		return 0;
+ 578              		.loc 1 250 10
+ 579 0018 0023     		movs	r3, #0
+ 580 001a 83E0     		b	.L55
+ 581              	.L45:
+ 251:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 252:./Hardware/eeprom/bsp_i2c_ee.c **** /*------------------------------------------------------------------------------------*/  
+ 253:./Hardware/eeprom/bsp_i2c_ee.c ****   /* 填充测试缓冲区 */
+ 254:./Hardware/eeprom/bsp_i2c_ee.c **** 	for (i = 0; i < EEPROM_SIZE; i++)
+ 582              		.loc 1 254 9
+ 583 001c 0023     		movs	r3, #0
+ 584 001e A7F80632 		strh	r3, [r7, #518]	@ movhi
+ 585              		.loc 1 254 2
+ 586 0022 0EE0     		b	.L47
+ 587              	.L48:
+ 255:./Hardware/eeprom/bsp_i2c_ee.c **** 	{		
+ 256:./Hardware/eeprom/bsp_i2c_ee.c **** 		write_buf[i] = i;
+ 588              		.loc 1 256 12 discriminator 3
+ 589 0024 B7F80632 		ldrh	r3, [r7, #518]
+ 590              		.loc 1 256 16 discriminator 3
+ 591 0028 B7F80622 		ldrh	r2, [r7, #518]	@ movhi
+ 592 002c D1B2     		uxtb	r1, r2
+ 593 002e 07F50272 		add	r2, r7, #520
+ 594 0032 A2F58272 		sub	r2, r2, #260
+ 595 0036 D154     		strb	r1, [r2, r3]
+ 254:./Hardware/eeprom/bsp_i2c_ee.c **** 	{		
+ 596              		.loc 1 254 32 discriminator 3
+ 597 0038 B7F80632 		ldrh	r3, [r7, #518]
+ 598 003c 0133     		adds	r3, r3, #1
+ 599 003e A7F80632 		strh	r3, [r7, #518]	@ movhi
+ 600              	.L47:
+ 254:./Hardware/eeprom/bsp_i2c_ee.c **** 	{		
+ 601              		.loc 1 254 2 discriminator 1
+ 602 0042 B7F80632 		ldrh	r3, [r7, #518]
+ 603 0046 FF2B     		cmp	r3, #255
+ 604 0048 ECD9     		bls	.L48
+ 257:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 258:./Hardware/eeprom/bsp_i2c_ee.c **** /*------------------------------------------------------------------------------------*/  
+ 259:./Hardware/eeprom/bsp_i2c_ee.c ****   if (ee_WriteBytes(write_buf, 0, EEPROM_SIZE) == 0)
+ 605              		.loc 1 259 7
+ 606 004a 07F58273 		add	r3, r7, #260
+ 607 004e 4FF48072 		mov	r2, #256
+ 608 0052 0021     		movs	r1, #0
+ARM GAS  /tmp/ccPiIuKt.s 			page 17
+
+
+ 609 0054 1846     		mov	r0, r3
+ 610 0056 FFF7FEFF 		bl	ee_WriteBytes
+ 611 005a 0346     		mov	r3, r0
+ 612              		.loc 1 259 6
+ 613 005c 002B     		cmp	r3, #0
+ 614 005e 04D1     		bne	.L49
+ 260:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 261:./Hardware/eeprom/bsp_i2c_ee.c **** 		printf("写eeprom出错！\r\n");
+ 615              		.loc 1 261 3
+ 616 0060 3448     		ldr	r0, .L56+4
+ 617 0062 FFF7FEFF 		bl	puts
+ 262:./Hardware/eeprom/bsp_i2c_ee.c **** 		return 0;
+ 618              		.loc 1 262 10
+ 619 0066 0023     		movs	r3, #0
+ 620 0068 5CE0     		b	.L55
+ 621              	.L49:
+ 263:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 264:./Hardware/eeprom/bsp_i2c_ee.c **** 	else
+ 265:./Hardware/eeprom/bsp_i2c_ee.c **** 	{		
+ 266:./Hardware/eeprom/bsp_i2c_ee.c **** 		printf("写eeprom成功！\r\n");
+ 622              		.loc 1 266 3
+ 623 006a 3348     		ldr	r0, .L56+8
+ 624 006c FFF7FEFF 		bl	puts
+ 267:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 268:./Hardware/eeprom/bsp_i2c_ee.c ****   
+ 269:./Hardware/eeprom/bsp_i2c_ee.c ****   /*写完之后需要适当的延时再去读，不然会出错*/
+ 270:./Hardware/eeprom/bsp_i2c_ee.c ****   ee_Delay(0x0FFFFF);
+ 625              		.loc 1 270 3
+ 626 0070 3248     		ldr	r0, .L56+12
+ 627 0072 FFF7FEFF 		bl	ee_Delay
+ 271:./Hardware/eeprom/bsp_i2c_ee.c **** /*-----------------------------------------------------------------------------------*/
+ 272:./Hardware/eeprom/bsp_i2c_ee.c ****   if (ee_ReadBytes(read_buf, 0, EEPROM_SIZE) == 0)
+ 628              		.loc 1 272 7
+ 629 0076 3B1D     		adds	r3, r7, #4
+ 630 0078 4FF48072 		mov	r2, #256
+ 631 007c 0021     		movs	r1, #0
+ 632 007e 1846     		mov	r0, r3
+ 633 0080 FFF7FEFF 		bl	ee_ReadBytes
+ 634 0084 0346     		mov	r3, r0
+ 635              		.loc 1 272 6
+ 636 0086 002B     		cmp	r3, #0
+ 637 0088 04D1     		bne	.L50
+ 273:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 274:./Hardware/eeprom/bsp_i2c_ee.c **** 		printf("读eeprom出错！\r\n");
+ 638              		.loc 1 274 3
+ 639 008a 2D48     		ldr	r0, .L56+16
+ 640 008c FFF7FEFF 		bl	puts
+ 275:./Hardware/eeprom/bsp_i2c_ee.c **** 		return 0;
+ 641              		.loc 1 275 10
+ 642 0090 0023     		movs	r3, #0
+ 643 0092 47E0     		b	.L55
+ 644              	.L50:
+ 276:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 277:./Hardware/eeprom/bsp_i2c_ee.c **** 	else
+ 278:./Hardware/eeprom/bsp_i2c_ee.c **** 	{		
+ 279:./Hardware/eeprom/bsp_i2c_ee.c **** 		printf("读eeprom成功，数据如下：\r\n");
+ 645              		.loc 1 279 3
+ARM GAS  /tmp/ccPiIuKt.s 			page 18
+
+
+ 646 0094 2B48     		ldr	r0, .L56+20
+ 647 0096 FFF7FEFF 		bl	puts
+ 280:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 281:./Hardware/eeprom/bsp_i2c_ee.c **** /*-----------------------------------------------------------------------------------*/  
+ 282:./Hardware/eeprom/bsp_i2c_ee.c ****   for (i = 0; i < EEPROM_SIZE; i++)
+ 648              		.loc 1 282 10
+ 649 009a 0023     		movs	r3, #0
+ 650 009c A7F80632 		strh	r3, [r7, #518]	@ movhi
+ 651              		.loc 1 282 3
+ 652 00a0 38E0     		b	.L51
+ 653              	.L54:
+ 283:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 284:./Hardware/eeprom/bsp_i2c_ee.c **** 		if(read_buf[i] != write_buf[i])
+ 654              		.loc 1 284 14
+ 655 00a2 B7F80632 		ldrh	r3, [r7, #518]
+ 656 00a6 07F50272 		add	r2, r7, #520
+ 657 00aa A2F50172 		sub	r2, r2, #516
+ 658 00ae D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 659              		.loc 1 284 30
+ 660 00b0 B7F80632 		ldrh	r3, [r7, #518]
+ 661 00b4 07F50271 		add	r1, r7, #520
+ 662 00b8 A1F58271 		sub	r1, r1, #260
+ 663 00bc CB5C     		ldrb	r3, [r1, r3]	@ zero_extendqisi2
+ 664              		.loc 1 284 5
+ 665 00be 9A42     		cmp	r2, r3
+ 666 00c0 0FD0     		beq	.L52
+ 285:./Hardware/eeprom/bsp_i2c_ee.c **** 		{
+ 286:./Hardware/eeprom/bsp_i2c_ee.c **** 			printf("0x%02X ", read_buf[i]);
+ 667              		.loc 1 286 30
+ 668 00c2 B7F80632 		ldrh	r3, [r7, #518]
+ 669 00c6 07F50272 		add	r2, r7, #520
+ 670 00ca A2F50172 		sub	r2, r2, #516
+ 671 00ce D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 672              		.loc 1 286 4
+ 673 00d0 1946     		mov	r1, r3
+ 674 00d2 1D48     		ldr	r0, .L56+24
+ 675 00d4 FFF7FEFF 		bl	printf
+ 287:./Hardware/eeprom/bsp_i2c_ee.c **** 			printf("错误:EEPROM读出与写入的数据不一致");
+ 676              		.loc 1 287 4
+ 677 00d8 1C48     		ldr	r0, .L56+28
+ 678 00da FFF7FEFF 		bl	printf
+ 288:./Hardware/eeprom/bsp_i2c_ee.c **** 			return 0;
+ 679              		.loc 1 288 11
+ 680 00de 0023     		movs	r3, #0
+ 681 00e0 20E0     		b	.L55
+ 682              	.L52:
+ 289:./Hardware/eeprom/bsp_i2c_ee.c **** 		}
+ 290:./Hardware/eeprom/bsp_i2c_ee.c ****     printf(" %02X", read_buf[i]);
+ 683              		.loc 1 290 29
+ 684 00e2 B7F80632 		ldrh	r3, [r7, #518]
+ 685 00e6 07F50272 		add	r2, r7, #520
+ 686 00ea A2F50172 		sub	r2, r2, #516
+ 687 00ee D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 688              		.loc 1 290 5
+ 689 00f0 1946     		mov	r1, r3
+ 690 00f2 1748     		ldr	r0, .L56+32
+ 691 00f4 FFF7FEFF 		bl	printf
+ARM GAS  /tmp/ccPiIuKt.s 			page 19
+
+
+ 291:./Hardware/eeprom/bsp_i2c_ee.c **** 		
+ 292:./Hardware/eeprom/bsp_i2c_ee.c **** 		if ((i & 15) == 15)
+ 692              		.loc 1 292 10
+ 693 00f8 B7F80632 		ldrh	r3, [r7, #518]
+ 694 00fc 03F00F03 		and	r3, r3, #15
+ 695              		.loc 1 292 6
+ 696 0100 0F2B     		cmp	r3, #15
+ 697 0102 02D1     		bne	.L53
+ 293:./Hardware/eeprom/bsp_i2c_ee.c **** 		{
+ 294:./Hardware/eeprom/bsp_i2c_ee.c **** 			printf("\r\n");	
+ 698              		.loc 1 294 4
+ 699 0104 1348     		ldr	r0, .L56+36
+ 700 0106 FFF7FEFF 		bl	puts
+ 701              	.L53:
+ 282:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 702              		.loc 1 282 33 discriminator 2
+ 703 010a B7F80632 		ldrh	r3, [r7, #518]
+ 704 010e 0133     		adds	r3, r3, #1
+ 705 0110 A7F80632 		strh	r3, [r7, #518]	@ movhi
+ 706              	.L51:
+ 282:./Hardware/eeprom/bsp_i2c_ee.c **** 	{
+ 707              		.loc 1 282 3 discriminator 1
+ 708 0114 B7F80632 		ldrh	r3, [r7, #518]
+ 709 0118 FF2B     		cmp	r3, #255
+ 710 011a C2D9     		bls	.L54
+ 295:./Hardware/eeprom/bsp_i2c_ee.c **** 		}		
+ 296:./Hardware/eeprom/bsp_i2c_ee.c **** 	}
+ 297:./Hardware/eeprom/bsp_i2c_ee.c ****   printf("eeprom读写测试成功\r\n");
+ 711              		.loc 1 297 3
+ 712 011c 0E48     		ldr	r0, .L56+40
+ 713 011e FFF7FEFF 		bl	puts
+ 298:./Hardware/eeprom/bsp_i2c_ee.c ****   return 1;
+ 714              		.loc 1 298 10
+ 715 0122 0123     		movs	r3, #1
+ 716              	.L55:
+ 299:./Hardware/eeprom/bsp_i2c_ee.c **** }
+ 717              		.loc 1 299 1 discriminator 1
+ 718 0124 1846     		mov	r0, r3
+ 719 0126 07F50277 		add	r7, r7, #520
+ 720              	.LCFI26:
+ 721              		.cfi_def_cfa_offset 8
+ 722 012a BD46     		mov	sp, r7
+ 723              	.LCFI27:
+ 724              		.cfi_def_cfa_register 13
+ 725              		@ sp needed
+ 726 012c 80BD     		pop	{r7, pc}
+ 727              	.L57:
+ 728 012e 00BF     		.align	2
+ 729              	.L56:
+ 730 0130 28000000 		.word	.LC2
+ 731 0134 40000000 		.word	.LC3
+ 732 0138 50000000 		.word	.LC4
+ 733 013c FFFF0F00 		.word	1048575
+ 734 0140 60000000 		.word	.LC5
+ 735 0144 70000000 		.word	.LC6
+ 736 0148 8C000000 		.word	.LC7
+ 737 014c 94000000 		.word	.LC8
+ARM GAS  /tmp/ccPiIuKt.s 			page 20
+
+
+ 738 0150 B8000000 		.word	.LC9
+ 739 0154 C0000000 		.word	.LC10
+ 740 0158 C4000000 		.word	.LC11
+ 741              		.cfi_endproc
+ 742              	.LFE37:
+ 744              		.text
+ 745              	.Letext0:
+ 746              		.file 2 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 747              		.file 3 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  /tmp/ccPiIuKt.s 			page 21
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 bsp_i2c_ee.c
+     /tmp/ccPiIuKt.s:16     .text.ee_CheckOk:0000000000000000 $t
+     /tmp/ccPiIuKt.s:24     .text.ee_CheckOk:0000000000000000 ee_CheckOk
+     /tmp/ccPiIuKt.s:62     .text.ee_ReadBytes:0000000000000000 $t
+     /tmp/ccPiIuKt.s:69     .text.ee_ReadBytes:0000000000000000 ee_ReadBytes
+     /tmp/ccPiIuKt.s:201    .text.ee_WriteBytes:0000000000000000 $t
+     /tmp/ccPiIuKt.s:208    .text.ee_WriteBytes:0000000000000000 ee_WriteBytes
+     /tmp/ccPiIuKt.s:363    .rodata:0000000000000000 $d
+     /tmp/ccPiIuKt.s:370    .text.ee_Erase:0000000000000000 $t
+     /tmp/ccPiIuKt.s:377    .text.ee_Erase:0000000000000000 ee_Erase
+     /tmp/ccPiIuKt.s:447    .text.ee_Erase:000000000000005c $d
+     /tmp/ccPiIuKt.s:453    .text.ee_Delay:0000000000000000 $t
+     /tmp/ccPiIuKt.s:459    .text.ee_Delay:0000000000000000 ee_Delay
+     /tmp/ccPiIuKt.s:545    .text.ee_Test:0000000000000000 $t
+     /tmp/ccPiIuKt.s:552    .text.ee_Test:0000000000000000 ee_Test
+     /tmp/ccPiIuKt.s:730    .text.ee_Test:0000000000000130 $d
+
+UNDEFINED SYMBOLS
+iic_check_device
+iic_stop
+iic_start
+iic_send_byte
+iic_wait_ack
+iic_read_byte
+iic_ack
+iic_no_ack
+puts
+printf

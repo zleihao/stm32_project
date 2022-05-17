@@ -1,0 +1,1011 @@
+ARM GAS  /tmp/ccyz31vB.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"bsp_i2c_gpio.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.i2c_Delay,"ax",%progbits
+  16              		.align	1
+  17              		.arch armv7-m
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	i2c_Delay:
+  24              	.LFB29:
+  25              		.file 1 "./Hardware/iic/bsp_i2c_gpio.c"
+   1:./Hardware/iic/bsp_i2c_gpio.c **** /**
+   2:./Hardware/iic/bsp_i2c_gpio.c ****   ******************************************************************************
+   3:./Hardware/iic/bsp_i2c_gpio.c ****   * @file    bsp_i2c_ee.c
+   4:./Hardware/iic/bsp_i2c_gpio.c ****   * @version V1.0
+   5:./Hardware/iic/bsp_i2c_gpio.c ****   * @date    2013-xx-xx
+   6:./Hardware/iic/bsp_i2c_gpio.c ****   * @brief   用gpio模拟i2c总线, 适用于STM32系列CPU。该模块不包括应用层命令帧，仅包括I2C总线基本操作
+   7:./Hardware/iic/bsp_i2c_gpio.c ****   ******************************************************************************
+   8:./Hardware/iic/bsp_i2c_gpio.c ****   * @attention
+   9:./Hardware/iic/bsp_i2c_gpio.c ****   *
+  10:./Hardware/iic/bsp_i2c_gpio.c ****   * 实验平台:野火 F103-指南者 STM32 开发板 
+  11:./Hardware/iic/bsp_i2c_gpio.c ****   * 论坛    :http://www.firebbs.cn
+  12:./Hardware/iic/bsp_i2c_gpio.c ****   * 淘宝    :https://fire-stm32.taobao.com
+  13:./Hardware/iic/bsp_i2c_gpio.c ****   *
+  14:./Hardware/iic/bsp_i2c_gpio.c ****   ******************************************************************************
+  15:./Hardware/iic/bsp_i2c_gpio.c ****   */ 
+  16:./Hardware/iic/bsp_i2c_gpio.c **** 
+  17:./Hardware/iic/bsp_i2c_gpio.c **** /*
+  18:./Hardware/iic/bsp_i2c_gpio.c **** 	应用说明：
+  19:./Hardware/iic/bsp_i2c_gpio.c **** 	在访问I2C设备前，请先调用 iic_check_device() 检测I2C设备是否正常，该函数会配置GPIO
+  20:./Hardware/iic/bsp_i2c_gpio.c **** 
+  21:./Hardware/iic/bsp_i2c_gpio.c **** */
+  22:./Hardware/iic/bsp_i2c_gpio.c **** #include "bsp_i2c_gpio.h"
+  23:./Hardware/iic/bsp_i2c_gpio.c **** #include "stm32f10x.h"
+  24:./Hardware/iic/bsp_i2c_gpio.c **** 
+  25:./Hardware/iic/bsp_i2c_gpio.c **** 
+  26:./Hardware/iic/bsp_i2c_gpio.c **** static void i2c_CfgGpio(void);
+  27:./Hardware/iic/bsp_i2c_gpio.c **** 
+  28:./Hardware/iic/bsp_i2c_gpio.c **** 
+  29:./Hardware/iic/bsp_i2c_gpio.c **** /*
+  30:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+  31:./Hardware/iic/bsp_i2c_gpio.c **** *	函 数 名: i2c_Delay
+  32:./Hardware/iic/bsp_i2c_gpio.c **** *	功能说明: I2C总线位延迟，最快400KHz
+  33:./Hardware/iic/bsp_i2c_gpio.c **** *	形    参：无
+ARM GAS  /tmp/ccyz31vB.s 			page 2
+
+
+  34:./Hardware/iic/bsp_i2c_gpio.c **** *	返 回 值: 无
+  35:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+  36:./Hardware/iic/bsp_i2c_gpio.c **** */
+  37:./Hardware/iic/bsp_i2c_gpio.c **** static void i2c_Delay(void)
+  38:./Hardware/iic/bsp_i2c_gpio.c **** {
+  26              		.loc 1 38 1
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 8
+  29              		@ frame_needed = 1, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  31 0000 80B4     		push	{r7}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 4
+  34              		.cfi_offset 7, -4
+  35 0002 83B0     		sub	sp, sp, #12
+  36              	.LCFI1:
+  37              		.cfi_def_cfa_offset 16
+  38 0004 00AF     		add	r7, sp, #0
+  39              	.LCFI2:
+  40              		.cfi_def_cfa_register 7
+  39:./Hardware/iic/bsp_i2c_gpio.c **** 	uint8_t i;
+  40:./Hardware/iic/bsp_i2c_gpio.c **** 
+  41:./Hardware/iic/bsp_i2c_gpio.c **** 	/*　
+  42:./Hardware/iic/bsp_i2c_gpio.c **** 	 	下面的时间是通过逻辑分析仪测试得到的。
+  43:./Hardware/iic/bsp_i2c_gpio.c ****     工作条件：CPU主频72MHz ，MDK编译环境，1级优化
+  44:./Hardware/iic/bsp_i2c_gpio.c ****   
+  45:./Hardware/iic/bsp_i2c_gpio.c **** 		循环次数为10时，SCL频率 = 205KHz 
+  46:./Hardware/iic/bsp_i2c_gpio.c **** 		循环次数为7时，SCL频率 = 347KHz， SCL高电平时间1.5us，SCL低电平时间2.87us 
+  47:./Hardware/iic/bsp_i2c_gpio.c **** 	 	循环次数为5时，SCL频率 = 421KHz， SCL高电平时间1.25us，SCL低电平时间2.375us 
+  48:./Hardware/iic/bsp_i2c_gpio.c **** 	*/
+  49:./Hardware/iic/bsp_i2c_gpio.c **** 	for (i = 0; i < 10; i++);
+  41              		.loc 1 49 9
+  42 0006 0023     		movs	r3, #0
+  43 0008 FB71     		strb	r3, [r7, #7]
+  44              		.loc 1 49 2
+  45 000a 02E0     		b	.L2
+  46              	.L3:
+  47              		.loc 1 49 23 discriminator 3
+  48 000c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  49 000e 0133     		adds	r3, r3, #1
+  50 0010 FB71     		strb	r3, [r7, #7]
+  51              	.L2:
+  52              		.loc 1 49 2 discriminator 1
+  53 0012 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  54 0014 092B     		cmp	r3, #9
+  55 0016 F9D9     		bls	.L3
+  50:./Hardware/iic/bsp_i2c_gpio.c **** }
+  56              		.loc 1 50 1
+  57 0018 00BF     		nop
+  58 001a 00BF     		nop
+  59 001c 0C37     		adds	r7, r7, #12
+  60              	.LCFI3:
+  61              		.cfi_def_cfa_offset 4
+  62 001e BD46     		mov	sp, r7
+  63              	.LCFI4:
+  64              		.cfi_def_cfa_register 13
+  65              		@ sp needed
+ARM GAS  /tmp/ccyz31vB.s 			page 3
+
+
+  66 0020 80BC     		pop	{r7}
+  67              	.LCFI5:
+  68              		.cfi_restore 7
+  69              		.cfi_def_cfa_offset 0
+  70 0022 7047     		bx	lr
+  71              		.cfi_endproc
+  72              	.LFE29:
+  74              		.section	.text.iic_start,"ax",%progbits
+  75              		.align	1
+  76              		.global	iic_start
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  80              		.fpu softvfp
+  82              	iic_start:
+  83              	.LFB30:
+  51:./Hardware/iic/bsp_i2c_gpio.c **** 
+  52:./Hardware/iic/bsp_i2c_gpio.c **** /*
+  53:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+  54:./Hardware/iic/bsp_i2c_gpio.c **** *	函 数 名: iic_start
+  55:./Hardware/iic/bsp_i2c_gpio.c **** *	功能说明: CPU发起I2C总线启动信号
+  56:./Hardware/iic/bsp_i2c_gpio.c **** *	形    参：无
+  57:./Hardware/iic/bsp_i2c_gpio.c **** *	返 回 值: 无
+  58:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+  59:./Hardware/iic/bsp_i2c_gpio.c **** */
+  60:./Hardware/iic/bsp_i2c_gpio.c **** void iic_start(void)
+  61:./Hardware/iic/bsp_i2c_gpio.c **** {
+  84              		.loc 1 61 1
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 1, uses_anonymous_args = 0
+  88 0000 80B5     		push	{r7, lr}
+  89              	.LCFI6:
+  90              		.cfi_def_cfa_offset 8
+  91              		.cfi_offset 7, -8
+  92              		.cfi_offset 14, -4
+  93 0002 00AF     		add	r7, sp, #0
+  94              	.LCFI7:
+  95              		.cfi_def_cfa_register 7
+  62:./Hardware/iic/bsp_i2c_gpio.c **** 	/* 当SCL高电平时，SDA出现一个下跳沿表示I2C总线启动信号 */
+  63:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SDA_Hight();
+  96              		.loc 1 63 2
+  97 0004 094B     		ldr	r3, .L5
+  98 0006 8022     		movs	r2, #128
+  99 0008 1A61     		str	r2, [r3, #16]
+  64:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SCL_Hight();
+ 100              		.loc 1 64 2
+ 101 000a 084B     		ldr	r3, .L5
+ 102 000c 4022     		movs	r2, #64
+ 103 000e 1A61     		str	r2, [r3, #16]
+  65:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 104              		.loc 1 65 2
+ 105 0010 FFF7FEFF 		bl	i2c_Delay
+  66:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SDA_Low();
+ 106              		.loc 1 66 2
+ 107 0014 054B     		ldr	r3, .L5
+ 108 0016 8022     		movs	r2, #128
+ARM GAS  /tmp/ccyz31vB.s 			page 4
+
+
+ 109 0018 5A61     		str	r2, [r3, #20]
+  67:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 110              		.loc 1 67 2
+ 111 001a FFF7FEFF 		bl	i2c_Delay
+  68:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SCL_Low();
+ 112              		.loc 1 68 2
+ 113 001e 034B     		ldr	r3, .L5
+ 114 0020 4022     		movs	r2, #64
+ 115 0022 5A61     		str	r2, [r3, #20]
+  69:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 116              		.loc 1 69 2
+ 117 0024 FFF7FEFF 		bl	i2c_Delay
+  70:./Hardware/iic/bsp_i2c_gpio.c **** }
+ 118              		.loc 1 70 1
+ 119 0028 00BF     		nop
+ 120 002a 80BD     		pop	{r7, pc}
+ 121              	.L6:
+ 122              		.align	2
+ 123              	.L5:
+ 124 002c 000C0140 		.word	1073810432
+ 125              		.cfi_endproc
+ 126              	.LFE30:
+ 128              		.section	.text.iic_stop,"ax",%progbits
+ 129              		.align	1
+ 130              		.global	iic_stop
+ 131              		.syntax unified
+ 132              		.thumb
+ 133              		.thumb_func
+ 134              		.fpu softvfp
+ 136              	iic_stop:
+ 137              	.LFB31:
+  71:./Hardware/iic/bsp_i2c_gpio.c **** 
+  72:./Hardware/iic/bsp_i2c_gpio.c **** /*
+  73:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+  74:./Hardware/iic/bsp_i2c_gpio.c **** *	函 数 名: iic_stop
+  75:./Hardware/iic/bsp_i2c_gpio.c **** *	功能说明: CPU发起I2C总线停止信号
+  76:./Hardware/iic/bsp_i2c_gpio.c **** *	形    参：无
+  77:./Hardware/iic/bsp_i2c_gpio.c **** *	返 回 值: 无
+  78:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+  79:./Hardware/iic/bsp_i2c_gpio.c **** */
+  80:./Hardware/iic/bsp_i2c_gpio.c **** void iic_stop(void)
+  81:./Hardware/iic/bsp_i2c_gpio.c **** {
+ 138              		.loc 1 81 1
+ 139              		.cfi_startproc
+ 140              		@ args = 0, pretend = 0, frame = 0
+ 141              		@ frame_needed = 1, uses_anonymous_args = 0
+ 142 0000 80B5     		push	{r7, lr}
+ 143              	.LCFI8:
+ 144              		.cfi_def_cfa_offset 8
+ 145              		.cfi_offset 7, -8
+ 146              		.cfi_offset 14, -4
+ 147 0002 00AF     		add	r7, sp, #0
+ 148              	.LCFI9:
+ 149              		.cfi_def_cfa_register 7
+  82:./Hardware/iic/bsp_i2c_gpio.c **** 	/* 当SCL高电平时，SDA出现一个上跳沿表示I2C总线停止信号 */
+  83:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SDA_Low();
+ 150              		.loc 1 83 2
+ARM GAS  /tmp/ccyz31vB.s 			page 5
+
+
+ 151 0004 064B     		ldr	r3, .L8
+ 152 0006 8022     		movs	r2, #128
+ 153 0008 5A61     		str	r2, [r3, #20]
+  84:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SCL_Hight();
+ 154              		.loc 1 84 2
+ 155 000a 054B     		ldr	r3, .L8
+ 156 000c 4022     		movs	r2, #64
+ 157 000e 1A61     		str	r2, [r3, #16]
+  85:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 158              		.loc 1 85 2
+ 159 0010 FFF7FEFF 		bl	i2c_Delay
+  86:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SDA_Hight();
+ 160              		.loc 1 86 2
+ 161 0014 024B     		ldr	r3, .L8
+ 162 0016 8022     		movs	r2, #128
+ 163 0018 1A61     		str	r2, [r3, #16]
+  87:./Hardware/iic/bsp_i2c_gpio.c **** }
+ 164              		.loc 1 87 1
+ 165 001a 00BF     		nop
+ 166 001c 80BD     		pop	{r7, pc}
+ 167              	.L9:
+ 168 001e 00BF     		.align	2
+ 169              	.L8:
+ 170 0020 000C0140 		.word	1073810432
+ 171              		.cfi_endproc
+ 172              	.LFE31:
+ 174              		.section	.text.iic_send_byte,"ax",%progbits
+ 175              		.align	1
+ 176              		.global	iic_send_byte
+ 177              		.syntax unified
+ 178              		.thumb
+ 179              		.thumb_func
+ 180              		.fpu softvfp
+ 182              	iic_send_byte:
+ 183              	.LFB32:
+  88:./Hardware/iic/bsp_i2c_gpio.c **** 
+  89:./Hardware/iic/bsp_i2c_gpio.c **** /*
+  90:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+  91:./Hardware/iic/bsp_i2c_gpio.c **** *	函 数 名: iic_send_byte
+  92:./Hardware/iic/bsp_i2c_gpio.c **** *	功能说明: CPU向I2C总线设备发送8bit数据
+  93:./Hardware/iic/bsp_i2c_gpio.c **** *	形    参：_ucByte ： 等待发送的字节
+  94:./Hardware/iic/bsp_i2c_gpio.c **** *	返 回 值: 无
+  95:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+  96:./Hardware/iic/bsp_i2c_gpio.c **** */
+  97:./Hardware/iic/bsp_i2c_gpio.c **** void iic_send_byte(uint8_t _ucByte)
+  98:./Hardware/iic/bsp_i2c_gpio.c **** {
+ 184              		.loc 1 98 1
+ 185              		.cfi_startproc
+ 186              		@ args = 0, pretend = 0, frame = 16
+ 187              		@ frame_needed = 1, uses_anonymous_args = 0
+ 188 0000 80B5     		push	{r7, lr}
+ 189              	.LCFI10:
+ 190              		.cfi_def_cfa_offset 8
+ 191              		.cfi_offset 7, -8
+ 192              		.cfi_offset 14, -4
+ 193 0002 84B0     		sub	sp, sp, #16
+ 194              	.LCFI11:
+ARM GAS  /tmp/ccyz31vB.s 			page 6
+
+
+ 195              		.cfi_def_cfa_offset 24
+ 196 0004 00AF     		add	r7, sp, #0
+ 197              	.LCFI12:
+ 198              		.cfi_def_cfa_register 7
+ 199 0006 0346     		mov	r3, r0
+ 200 0008 FB71     		strb	r3, [r7, #7]
+  99:./Hardware/iic/bsp_i2c_gpio.c **** 	uint8_t i;
+ 100:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 101:./Hardware/iic/bsp_i2c_gpio.c **** 	/* 先发送字节的高位bit7 */
+ 102:./Hardware/iic/bsp_i2c_gpio.c **** 	for (i = 0; i < 8; i++)
+ 201              		.loc 1 102 9
+ 202 000a 0023     		movs	r3, #0
+ 203 000c FB73     		strb	r3, [r7, #15]
+ 204              		.loc 1 102 2
+ 205 000e 22E0     		b	.L11
+ 206              	.L15:
+ 103:./Hardware/iic/bsp_i2c_gpio.c **** 	{		
+ 104:./Hardware/iic/bsp_i2c_gpio.c **** 		if (_ucByte & 0x80)
+ 207              		.loc 1 104 7
+ 208 0010 97F90730 		ldrsb	r3, [r7, #7]
+ 209              		.loc 1 104 6
+ 210 0014 002B     		cmp	r3, #0
+ 211 0016 03DA     		bge	.L12
+ 105:./Hardware/iic/bsp_i2c_gpio.c **** 		{
+ 106:./Hardware/iic/bsp_i2c_gpio.c **** 			IIC_SDA_Hight();
+ 212              		.loc 1 106 4
+ 213 0018 134B     		ldr	r3, .L16
+ 214 001a 8022     		movs	r2, #128
+ 215 001c 1A61     		str	r2, [r3, #16]
+ 216 001e 02E0     		b	.L13
+ 217              	.L12:
+ 107:./Hardware/iic/bsp_i2c_gpio.c **** 		}
+ 108:./Hardware/iic/bsp_i2c_gpio.c **** 		else
+ 109:./Hardware/iic/bsp_i2c_gpio.c **** 		{
+ 110:./Hardware/iic/bsp_i2c_gpio.c **** 			IIC_SDA_Low();
+ 218              		.loc 1 110 4
+ 219 0020 114B     		ldr	r3, .L16
+ 220 0022 8022     		movs	r2, #128
+ 221 0024 5A61     		str	r2, [r3, #20]
+ 222              	.L13:
+ 111:./Hardware/iic/bsp_i2c_gpio.c **** 		}
+ 112:./Hardware/iic/bsp_i2c_gpio.c **** 		i2c_Delay();
+ 223              		.loc 1 112 3
+ 224 0026 FFF7FEFF 		bl	i2c_Delay
+ 113:./Hardware/iic/bsp_i2c_gpio.c **** 		IIC_SCL_Hight();
+ 225              		.loc 1 113 3
+ 226 002a 0F4B     		ldr	r3, .L16
+ 227 002c 4022     		movs	r2, #64
+ 228 002e 1A61     		str	r2, [r3, #16]
+ 114:./Hardware/iic/bsp_i2c_gpio.c **** 		i2c_Delay();	
+ 229              		.loc 1 114 3
+ 230 0030 FFF7FEFF 		bl	i2c_Delay
+ 115:./Hardware/iic/bsp_i2c_gpio.c **** 		IIC_SCL_Low();
+ 231              		.loc 1 115 3
+ 232 0034 0C4B     		ldr	r3, .L16
+ 233 0036 4022     		movs	r2, #64
+ 234 0038 5A61     		str	r2, [r3, #20]
+ARM GAS  /tmp/ccyz31vB.s 			page 7
+
+
+ 116:./Hardware/iic/bsp_i2c_gpio.c **** 		if (i == 7)
+ 235              		.loc 1 116 6
+ 236 003a FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 237 003c 072B     		cmp	r3, #7
+ 238 003e 02D1     		bne	.L14
+ 117:./Hardware/iic/bsp_i2c_gpio.c **** 		{
+ 118:./Hardware/iic/bsp_i2c_gpio.c **** 			 IIC_SDA_Hight(); // 释放总线
+ 239              		.loc 1 118 5
+ 240 0040 094B     		ldr	r3, .L16
+ 241 0042 8022     		movs	r2, #128
+ 242 0044 1A61     		str	r2, [r3, #16]
+ 243              	.L14:
+ 119:./Hardware/iic/bsp_i2c_gpio.c **** 		}
+ 120:./Hardware/iic/bsp_i2c_gpio.c **** 		_ucByte <<= 1;	/* 左移一个bit */
+ 244              		.loc 1 120 11 discriminator 2
+ 245 0046 FB79     		ldrb	r3, [r7, #7]
+ 246 0048 5B00     		lsls	r3, r3, #1
+ 247 004a FB71     		strb	r3, [r7, #7]
+ 121:./Hardware/iic/bsp_i2c_gpio.c **** 		i2c_Delay();
+ 248              		.loc 1 121 3 discriminator 2
+ 249 004c FFF7FEFF 		bl	i2c_Delay
+ 102:./Hardware/iic/bsp_i2c_gpio.c **** 	{		
+ 250              		.loc 1 102 22 discriminator 2
+ 251 0050 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 252 0052 0133     		adds	r3, r3, #1
+ 253 0054 FB73     		strb	r3, [r7, #15]
+ 254              	.L11:
+ 102:./Hardware/iic/bsp_i2c_gpio.c **** 	{		
+ 255              		.loc 1 102 2 discriminator 1
+ 256 0056 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 257 0058 072B     		cmp	r3, #7
+ 258 005a D9D9     		bls	.L15
+ 122:./Hardware/iic/bsp_i2c_gpio.c **** 	}
+ 123:./Hardware/iic/bsp_i2c_gpio.c **** }
+ 259              		.loc 1 123 1
+ 260 005c 00BF     		nop
+ 261 005e 00BF     		nop
+ 262 0060 1037     		adds	r7, r7, #16
+ 263              	.LCFI13:
+ 264              		.cfi_def_cfa_offset 8
+ 265 0062 BD46     		mov	sp, r7
+ 266              	.LCFI14:
+ 267              		.cfi_def_cfa_register 13
+ 268              		@ sp needed
+ 269 0064 80BD     		pop	{r7, pc}
+ 270              	.L17:
+ 271 0066 00BF     		.align	2
+ 272              	.L16:
+ 273 0068 000C0140 		.word	1073810432
+ 274              		.cfi_endproc
+ 275              	.LFE32:
+ 277              		.section	.text.iic_read_byte,"ax",%progbits
+ 278              		.align	1
+ 279              		.global	iic_read_byte
+ 280              		.syntax unified
+ 281              		.thumb
+ 282              		.thumb_func
+ARM GAS  /tmp/ccyz31vB.s 			page 8
+
+
+ 283              		.fpu softvfp
+ 285              	iic_read_byte:
+ 286              	.LFB33:
+ 124:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 125:./Hardware/iic/bsp_i2c_gpio.c **** /*
+ 126:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 127:./Hardware/iic/bsp_i2c_gpio.c **** *	函 数 名: iic_read_byte
+ 128:./Hardware/iic/bsp_i2c_gpio.c **** *	功能说明: CPU从I2C总线设备读取8bit数据
+ 129:./Hardware/iic/bsp_i2c_gpio.c **** *	形    参：无
+ 130:./Hardware/iic/bsp_i2c_gpio.c **** *	返 回 值: 读到的数据
+ 131:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 132:./Hardware/iic/bsp_i2c_gpio.c **** */
+ 133:./Hardware/iic/bsp_i2c_gpio.c **** uint8_t iic_read_byte(void)
+ 134:./Hardware/iic/bsp_i2c_gpio.c **** {
+ 287              		.loc 1 134 1
+ 288              		.cfi_startproc
+ 289              		@ args = 0, pretend = 0, frame = 8
+ 290              		@ frame_needed = 1, uses_anonymous_args = 0
+ 291 0000 80B5     		push	{r7, lr}
+ 292              	.LCFI15:
+ 293              		.cfi_def_cfa_offset 8
+ 294              		.cfi_offset 7, -8
+ 295              		.cfi_offset 14, -4
+ 296 0002 82B0     		sub	sp, sp, #8
+ 297              	.LCFI16:
+ 298              		.cfi_def_cfa_offset 16
+ 299 0004 00AF     		add	r7, sp, #0
+ 300              	.LCFI17:
+ 301              		.cfi_def_cfa_register 7
+ 135:./Hardware/iic/bsp_i2c_gpio.c **** 	uint8_t i;
+ 136:./Hardware/iic/bsp_i2c_gpio.c **** 	uint8_t value;
+ 137:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 138:./Hardware/iic/bsp_i2c_gpio.c **** 	/* 读到第1个bit为数据的bit7 */
+ 139:./Hardware/iic/bsp_i2c_gpio.c **** 	value = 0;
+ 302              		.loc 1 139 8
+ 303 0006 0023     		movs	r3, #0
+ 304 0008 BB71     		strb	r3, [r7, #6]
+ 140:./Hardware/iic/bsp_i2c_gpio.c **** 	for (i = 0; i < 8; i++)
+ 305              		.loc 1 140 9
+ 306 000a 0023     		movs	r3, #0
+ 307 000c FB71     		strb	r3, [r7, #7]
+ 308              		.loc 1 140 2
+ 309 000e 18E0     		b	.L19
+ 310              	.L21:
+ 141:./Hardware/iic/bsp_i2c_gpio.c **** 	{
+ 142:./Hardware/iic/bsp_i2c_gpio.c **** 		value <<= 1;
+ 311              		.loc 1 142 9
+ 312 0010 BB79     		ldrb	r3, [r7, #6]
+ 313 0012 5B00     		lsls	r3, r3, #1
+ 314 0014 BB71     		strb	r3, [r7, #6]
+ 143:./Hardware/iic/bsp_i2c_gpio.c **** 		IIC_SCL_Hight();
+ 315              		.loc 1 143 3
+ 316 0016 0F4B     		ldr	r3, .L23
+ 317 0018 4022     		movs	r2, #64
+ 318 001a 1A61     		str	r2, [r3, #16]
+ 144:./Hardware/iic/bsp_i2c_gpio.c **** 		i2c_Delay();
+ 319              		.loc 1 144 3
+ARM GAS  /tmp/ccyz31vB.s 			page 9
+
+
+ 320 001c FFF7FEFF 		bl	i2c_Delay
+ 145:./Hardware/iic/bsp_i2c_gpio.c **** 		if (IIC_SDA_READ())
+ 321              		.loc 1 145 7
+ 322 0020 0C4B     		ldr	r3, .L23
+ 323 0022 9B68     		ldr	r3, [r3, #8]
+ 324 0024 03F08003 		and	r3, r3, #128
+ 325              		.loc 1 145 6
+ 326 0028 002B     		cmp	r3, #0
+ 327 002a 02D0     		beq	.L20
+ 146:./Hardware/iic/bsp_i2c_gpio.c **** 		{
+ 147:./Hardware/iic/bsp_i2c_gpio.c **** 			value++;
+ 328              		.loc 1 147 9
+ 329 002c BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 330 002e 0133     		adds	r3, r3, #1
+ 331 0030 BB71     		strb	r3, [r7, #6]
+ 332              	.L20:
+ 148:./Hardware/iic/bsp_i2c_gpio.c **** 		}
+ 149:./Hardware/iic/bsp_i2c_gpio.c **** 		IIC_SCL_Low();
+ 333              		.loc 1 149 3 discriminator 2
+ 334 0032 084B     		ldr	r3, .L23
+ 335 0034 4022     		movs	r2, #64
+ 336 0036 5A61     		str	r2, [r3, #20]
+ 150:./Hardware/iic/bsp_i2c_gpio.c **** 		i2c_Delay();
+ 337              		.loc 1 150 3 discriminator 2
+ 338 0038 FFF7FEFF 		bl	i2c_Delay
+ 140:./Hardware/iic/bsp_i2c_gpio.c **** 	{
+ 339              		.loc 1 140 22 discriminator 2
+ 340 003c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 341 003e 0133     		adds	r3, r3, #1
+ 342 0040 FB71     		strb	r3, [r7, #7]
+ 343              	.L19:
+ 140:./Hardware/iic/bsp_i2c_gpio.c **** 	{
+ 344              		.loc 1 140 2 discriminator 1
+ 345 0042 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 346 0044 072B     		cmp	r3, #7
+ 347 0046 E3D9     		bls	.L21
+ 151:./Hardware/iic/bsp_i2c_gpio.c **** 	}
+ 152:./Hardware/iic/bsp_i2c_gpio.c **** 	return value;
+ 348              		.loc 1 152 9
+ 349 0048 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 153:./Hardware/iic/bsp_i2c_gpio.c **** }
+ 350              		.loc 1 153 1
+ 351 004a 1846     		mov	r0, r3
+ 352 004c 0837     		adds	r7, r7, #8
+ 353              	.LCFI18:
+ 354              		.cfi_def_cfa_offset 8
+ 355 004e BD46     		mov	sp, r7
+ 356              	.LCFI19:
+ 357              		.cfi_def_cfa_register 13
+ 358              		@ sp needed
+ 359 0050 80BD     		pop	{r7, pc}
+ 360              	.L24:
+ 361 0052 00BF     		.align	2
+ 362              	.L23:
+ 363 0054 000C0140 		.word	1073810432
+ 364              		.cfi_endproc
+ 365              	.LFE33:
+ARM GAS  /tmp/ccyz31vB.s 			page 10
+
+
+ 367              		.section	.text.iic_wait_ack,"ax",%progbits
+ 368              		.align	1
+ 369              		.global	iic_wait_ack
+ 370              		.syntax unified
+ 371              		.thumb
+ 372              		.thumb_func
+ 373              		.fpu softvfp
+ 375              	iic_wait_ack:
+ 376              	.LFB34:
+ 154:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 155:./Hardware/iic/bsp_i2c_gpio.c **** /*
+ 156:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 157:./Hardware/iic/bsp_i2c_gpio.c **** *	函 数 名: iic_wait_ack
+ 158:./Hardware/iic/bsp_i2c_gpio.c **** *	功能说明: CPU产生一个时钟，并读取器件的ACK应答信号
+ 159:./Hardware/iic/bsp_i2c_gpio.c **** *	形    参：无
+ 160:./Hardware/iic/bsp_i2c_gpio.c **** *	返 回 值: 返回0表示正确应答，1表示无器件响应
+ 161:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 162:./Hardware/iic/bsp_i2c_gpio.c **** */
+ 163:./Hardware/iic/bsp_i2c_gpio.c **** uint8_t iic_wait_ack(void)
+ 164:./Hardware/iic/bsp_i2c_gpio.c **** {
+ 377              		.loc 1 164 1
+ 378              		.cfi_startproc
+ 379              		@ args = 0, pretend = 0, frame = 8
+ 380              		@ frame_needed = 1, uses_anonymous_args = 0
+ 381 0000 80B5     		push	{r7, lr}
+ 382              	.LCFI20:
+ 383              		.cfi_def_cfa_offset 8
+ 384              		.cfi_offset 7, -8
+ 385              		.cfi_offset 14, -4
+ 386 0002 82B0     		sub	sp, sp, #8
+ 387              	.LCFI21:
+ 388              		.cfi_def_cfa_offset 16
+ 389 0004 00AF     		add	r7, sp, #0
+ 390              	.LCFI22:
+ 391              		.cfi_def_cfa_register 7
+ 165:./Hardware/iic/bsp_i2c_gpio.c **** 	uint8_t re;
+ 166:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 167:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SDA_Hight();	/* CPU释放SDA总线 */
+ 392              		.loc 1 167 2
+ 393 0006 0F4B     		ldr	r3, .L29
+ 394 0008 8022     		movs	r2, #128
+ 395 000a 1A61     		str	r2, [r3, #16]
+ 168:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 396              		.loc 1 168 2
+ 397 000c FFF7FEFF 		bl	i2c_Delay
+ 169:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SCL_Hight();	/* CPU驱动SCL = 1, 此时器件会返回ACK应答 */
+ 398              		.loc 1 169 2
+ 399 0010 0C4B     		ldr	r3, .L29
+ 400 0012 4022     		movs	r2, #64
+ 401 0014 1A61     		str	r2, [r3, #16]
+ 170:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 402              		.loc 1 170 2
+ 403 0016 FFF7FEFF 		bl	i2c_Delay
+ 171:./Hardware/iic/bsp_i2c_gpio.c **** 	if (IIC_SDA_READ())	/* CPU读取SDA口线状态 */
+ 404              		.loc 1 171 6
+ 405 001a 0A4B     		ldr	r3, .L29
+ 406 001c 9B68     		ldr	r3, [r3, #8]
+ARM GAS  /tmp/ccyz31vB.s 			page 11
+
+
+ 407 001e 03F08003 		and	r3, r3, #128
+ 408              		.loc 1 171 5
+ 409 0022 002B     		cmp	r3, #0
+ 410 0024 02D0     		beq	.L26
+ 172:./Hardware/iic/bsp_i2c_gpio.c **** 	{
+ 173:./Hardware/iic/bsp_i2c_gpio.c **** 		re = 1;
+ 411              		.loc 1 173 6
+ 412 0026 0123     		movs	r3, #1
+ 413 0028 FB71     		strb	r3, [r7, #7]
+ 414 002a 01E0     		b	.L27
+ 415              	.L26:
+ 174:./Hardware/iic/bsp_i2c_gpio.c **** 	}
+ 175:./Hardware/iic/bsp_i2c_gpio.c **** 	else
+ 176:./Hardware/iic/bsp_i2c_gpio.c **** 	{
+ 177:./Hardware/iic/bsp_i2c_gpio.c **** 		re = 0;
+ 416              		.loc 1 177 6
+ 417 002c 0023     		movs	r3, #0
+ 418 002e FB71     		strb	r3, [r7, #7]
+ 419              	.L27:
+ 178:./Hardware/iic/bsp_i2c_gpio.c **** 	}
+ 179:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SCL_Low();
+ 420              		.loc 1 179 2
+ 421 0030 044B     		ldr	r3, .L29
+ 422 0032 4022     		movs	r2, #64
+ 423 0034 5A61     		str	r2, [r3, #20]
+ 180:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 424              		.loc 1 180 2
+ 425 0036 FFF7FEFF 		bl	i2c_Delay
+ 181:./Hardware/iic/bsp_i2c_gpio.c **** 	return re;
+ 426              		.loc 1 181 9
+ 427 003a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 182:./Hardware/iic/bsp_i2c_gpio.c **** }
+ 428              		.loc 1 182 1
+ 429 003c 1846     		mov	r0, r3
+ 430 003e 0837     		adds	r7, r7, #8
+ 431              	.LCFI23:
+ 432              		.cfi_def_cfa_offset 8
+ 433 0040 BD46     		mov	sp, r7
+ 434              	.LCFI24:
+ 435              		.cfi_def_cfa_register 13
+ 436              		@ sp needed
+ 437 0042 80BD     		pop	{r7, pc}
+ 438              	.L30:
+ 439              		.align	2
+ 440              	.L29:
+ 441 0044 000C0140 		.word	1073810432
+ 442              		.cfi_endproc
+ 443              	.LFE34:
+ 445              		.section	.text.iic_ack,"ax",%progbits
+ 446              		.align	1
+ 447              		.global	iic_ack
+ 448              		.syntax unified
+ 449              		.thumb
+ 450              		.thumb_func
+ 451              		.fpu softvfp
+ 453              	iic_ack:
+ 454              	.LFB35:
+ARM GAS  /tmp/ccyz31vB.s 			page 12
+
+
+ 183:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 184:./Hardware/iic/bsp_i2c_gpio.c **** /*
+ 185:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 186:./Hardware/iic/bsp_i2c_gpio.c **** *	函 数 名: iic_ack
+ 187:./Hardware/iic/bsp_i2c_gpio.c **** *	功能说明: CPU产生一个ACK信号
+ 188:./Hardware/iic/bsp_i2c_gpio.c **** *	形    参：无
+ 189:./Hardware/iic/bsp_i2c_gpio.c **** *	返 回 值: 无
+ 190:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 191:./Hardware/iic/bsp_i2c_gpio.c **** */
+ 192:./Hardware/iic/bsp_i2c_gpio.c **** void iic_ack(void)
+ 193:./Hardware/iic/bsp_i2c_gpio.c **** {
+ 455              		.loc 1 193 1
+ 456              		.cfi_startproc
+ 457              		@ args = 0, pretend = 0, frame = 0
+ 458              		@ frame_needed = 1, uses_anonymous_args = 0
+ 459 0000 80B5     		push	{r7, lr}
+ 460              	.LCFI25:
+ 461              		.cfi_def_cfa_offset 8
+ 462              		.cfi_offset 7, -8
+ 463              		.cfi_offset 14, -4
+ 464 0002 00AF     		add	r7, sp, #0
+ 465              	.LCFI26:
+ 466              		.cfi_def_cfa_register 7
+ 194:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SDA_Low();	/* CPU驱动SDA = 0 */
+ 467              		.loc 1 194 2
+ 468 0004 094B     		ldr	r3, .L32
+ 469 0006 8022     		movs	r2, #128
+ 470 0008 5A61     		str	r2, [r3, #20]
+ 195:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 471              		.loc 1 195 2
+ 472 000a FFF7FEFF 		bl	i2c_Delay
+ 196:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SCL_Hight();	/* CPU产生1个时钟 */
+ 473              		.loc 1 196 2
+ 474 000e 074B     		ldr	r3, .L32
+ 475 0010 4022     		movs	r2, #64
+ 476 0012 1A61     		str	r2, [r3, #16]
+ 197:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 477              		.loc 1 197 2
+ 478 0014 FFF7FEFF 		bl	i2c_Delay
+ 198:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SCL_Low();
+ 479              		.loc 1 198 2
+ 480 0018 044B     		ldr	r3, .L32
+ 481 001a 4022     		movs	r2, #64
+ 482 001c 5A61     		str	r2, [r3, #20]
+ 199:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 483              		.loc 1 199 2
+ 484 001e FFF7FEFF 		bl	i2c_Delay
+ 200:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SDA_Hight();	/* CPU释放SDA总线 */
+ 485              		.loc 1 200 2
+ 486 0022 024B     		ldr	r3, .L32
+ 487 0024 8022     		movs	r2, #128
+ 488 0026 1A61     		str	r2, [r3, #16]
+ 201:./Hardware/iic/bsp_i2c_gpio.c **** }
+ 489              		.loc 1 201 1
+ 490 0028 00BF     		nop
+ 491 002a 80BD     		pop	{r7, pc}
+ 492              	.L33:
+ARM GAS  /tmp/ccyz31vB.s 			page 13
+
+
+ 493              		.align	2
+ 494              	.L32:
+ 495 002c 000C0140 		.word	1073810432
+ 496              		.cfi_endproc
+ 497              	.LFE35:
+ 499              		.section	.text.iic_no_ack,"ax",%progbits
+ 500              		.align	1
+ 501              		.global	iic_no_ack
+ 502              		.syntax unified
+ 503              		.thumb
+ 504              		.thumb_func
+ 505              		.fpu softvfp
+ 507              	iic_no_ack:
+ 508              	.LFB36:
+ 202:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 203:./Hardware/iic/bsp_i2c_gpio.c **** /*
+ 204:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 205:./Hardware/iic/bsp_i2c_gpio.c **** *	函 数 名: iic_no_ack
+ 206:./Hardware/iic/bsp_i2c_gpio.c **** *	功能说明: CPU产生1个NACK信号
+ 207:./Hardware/iic/bsp_i2c_gpio.c **** *	形    参：无
+ 208:./Hardware/iic/bsp_i2c_gpio.c **** *	返 回 值: 无
+ 209:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 210:./Hardware/iic/bsp_i2c_gpio.c **** */
+ 211:./Hardware/iic/bsp_i2c_gpio.c **** void iic_no_ack(void)
+ 212:./Hardware/iic/bsp_i2c_gpio.c **** {
+ 509              		.loc 1 212 1
+ 510              		.cfi_startproc
+ 511              		@ args = 0, pretend = 0, frame = 0
+ 512              		@ frame_needed = 1, uses_anonymous_args = 0
+ 513 0000 80B5     		push	{r7, lr}
+ 514              	.LCFI27:
+ 515              		.cfi_def_cfa_offset 8
+ 516              		.cfi_offset 7, -8
+ 517              		.cfi_offset 14, -4
+ 518 0002 00AF     		add	r7, sp, #0
+ 519              	.LCFI28:
+ 520              		.cfi_def_cfa_register 7
+ 213:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SDA_Hight();	/* CPU驱动SDA = 1 */
+ 521              		.loc 1 213 2
+ 522 0004 084B     		ldr	r3, .L35
+ 523 0006 8022     		movs	r2, #128
+ 524 0008 1A61     		str	r2, [r3, #16]
+ 214:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 525              		.loc 1 214 2
+ 526 000a FFF7FEFF 		bl	i2c_Delay
+ 215:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SCL_Hight();	/* CPU产生1个时钟 */
+ 527              		.loc 1 215 2
+ 528 000e 064B     		ldr	r3, .L35
+ 529 0010 4022     		movs	r2, #64
+ 530 0012 1A61     		str	r2, [r3, #16]
+ 216:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();
+ 531              		.loc 1 216 2
+ 532 0014 FFF7FEFF 		bl	i2c_Delay
+ 217:./Hardware/iic/bsp_i2c_gpio.c **** 	IIC_SCL_Low();
+ 533              		.loc 1 217 2
+ 534 0018 034B     		ldr	r3, .L35
+ 535 001a 4022     		movs	r2, #64
+ARM GAS  /tmp/ccyz31vB.s 			page 14
+
+
+ 536 001c 5A61     		str	r2, [r3, #20]
+ 218:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_Delay();	
+ 537              		.loc 1 218 2
+ 538 001e FFF7FEFF 		bl	i2c_Delay
+ 219:./Hardware/iic/bsp_i2c_gpio.c **** }
+ 539              		.loc 1 219 1
+ 540 0022 00BF     		nop
+ 541 0024 80BD     		pop	{r7, pc}
+ 542              	.L36:
+ 543 0026 00BF     		.align	2
+ 544              	.L35:
+ 545 0028 000C0140 		.word	1073810432
+ 546              		.cfi_endproc
+ 547              	.LFE36:
+ 549              		.section	.text.i2c_CfgGpio,"ax",%progbits
+ 550              		.align	1
+ 551              		.syntax unified
+ 552              		.thumb
+ 553              		.thumb_func
+ 554              		.fpu softvfp
+ 556              	i2c_CfgGpio:
+ 557              	.LFB37:
+ 220:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 221:./Hardware/iic/bsp_i2c_gpio.c **** /*
+ 222:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 223:./Hardware/iic/bsp_i2c_gpio.c **** *	函 数 名: i2c_CfgGpio
+ 224:./Hardware/iic/bsp_i2c_gpio.c **** *	功能说明: 配置I2C总线的GPIO，采用模拟IO的方式实现
+ 225:./Hardware/iic/bsp_i2c_gpio.c **** *	形    参：无
+ 226:./Hardware/iic/bsp_i2c_gpio.c **** *	返 回 值: 无
+ 227:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 228:./Hardware/iic/bsp_i2c_gpio.c **** */
+ 229:./Hardware/iic/bsp_i2c_gpio.c **** static void i2c_CfgGpio(void)
+ 230:./Hardware/iic/bsp_i2c_gpio.c **** {
+ 558              		.loc 1 230 1
+ 559              		.cfi_startproc
+ 560              		@ args = 0, pretend = 0, frame = 8
+ 561              		@ frame_needed = 1, uses_anonymous_args = 0
+ 562 0000 80B5     		push	{r7, lr}
+ 563              	.LCFI29:
+ 564              		.cfi_def_cfa_offset 8
+ 565              		.cfi_offset 7, -8
+ 566              		.cfi_offset 14, -4
+ 567 0002 82B0     		sub	sp, sp, #8
+ 568              	.LCFI30:
+ 569              		.cfi_def_cfa_offset 16
+ 570 0004 00AF     		add	r7, sp, #0
+ 571              	.LCFI31:
+ 572              		.cfi_def_cfa_register 7
+ 231:./Hardware/iic/bsp_i2c_gpio.c **** 	GPIO_InitTypeDef GPIO_InitStructure;
+ 232:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 233:./Hardware/iic/bsp_i2c_gpio.c **** 	RCC_APB2PeriphClockCmd(IIC_RCC_PORT, ENABLE);	/* 打开GPIO时钟 */
+ 573              		.loc 1 233 2
+ 574 0006 0121     		movs	r1, #1
+ 575 0008 0820     		movs	r0, #8
+ 576 000a FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 234:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 235:./Hardware/iic/bsp_i2c_gpio.c **** 	GPIO_InitStructure.GPIO_Pin = IIC_SCL_PIN | IIC_SDA_PIN;
+ARM GAS  /tmp/ccyz31vB.s 			page 15
+
+
+ 577              		.loc 1 235 30
+ 578 000e C023     		movs	r3, #192
+ 579 0010 BB80     		strh	r3, [r7, #4]	@ movhi
+ 236:./Hardware/iic/bsp_i2c_gpio.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 580              		.loc 1 236 32
+ 581 0012 0323     		movs	r3, #3
+ 582 0014 BB71     		strb	r3, [r7, #6]
+ 237:./Hardware/iic/bsp_i2c_gpio.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;  	/* 开漏输出 */
+ 583              		.loc 1 237 31
+ 584 0016 1423     		movs	r3, #20
+ 585 0018 FB71     		strb	r3, [r7, #7]
+ 238:./Hardware/iic/bsp_i2c_gpio.c **** 	GPIO_Init(IIC_GPIO_PORT, &GPIO_InitStructure);
+ 586              		.loc 1 238 2
+ 587 001a 3B1D     		adds	r3, r7, #4
+ 588 001c 1946     		mov	r1, r3
+ 589 001e 0448     		ldr	r0, .L38
+ 590 0020 FFF7FEFF 		bl	GPIO_Init
+ 239:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 240:./Hardware/iic/bsp_i2c_gpio.c **** 	/* 给一个停止信号, 复位I2C总线上的所有设备到待机模式 */
+ 241:./Hardware/iic/bsp_i2c_gpio.c **** 	iic_stop();
+ 591              		.loc 1 241 2
+ 592 0024 FFF7FEFF 		bl	iic_stop
+ 242:./Hardware/iic/bsp_i2c_gpio.c **** }
+ 593              		.loc 1 242 1
+ 594 0028 00BF     		nop
+ 595 002a 0837     		adds	r7, r7, #8
+ 596              	.LCFI32:
+ 597              		.cfi_def_cfa_offset 8
+ 598 002c BD46     		mov	sp, r7
+ 599              	.LCFI33:
+ 600              		.cfi_def_cfa_register 13
+ 601              		@ sp needed
+ 602 002e 80BD     		pop	{r7, pc}
+ 603              	.L39:
+ 604              		.align	2
+ 605              	.L38:
+ 606 0030 000C0140 		.word	1073810432
+ 607              		.cfi_endproc
+ 608              	.LFE37:
+ 610              		.section	.text.iic_check_device,"ax",%progbits
+ 611              		.align	1
+ 612              		.global	iic_check_device
+ 613              		.syntax unified
+ 614              		.thumb
+ 615              		.thumb_func
+ 616              		.fpu softvfp
+ 618              	iic_check_device:
+ 619              	.LFB38:
+ 243:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 244:./Hardware/iic/bsp_i2c_gpio.c **** /*
+ 245:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 246:./Hardware/iic/bsp_i2c_gpio.c **** *	函 数 名: iic_check_device
+ 247:./Hardware/iic/bsp_i2c_gpio.c **** *	功能说明: 检测I2C总线设备，CPU向发送设备地址，然后读取设备应答来判断该设备是否存在
+ 248:./Hardware/iic/bsp_i2c_gpio.c **** *	形    参：_Address：设备的I2C总线地址
+ 249:./Hardware/iic/bsp_i2c_gpio.c **** *	返 回 值: 返回值 0 表示正确， 返回1表示未探测到
+ 250:./Hardware/iic/bsp_i2c_gpio.c **** ***************************************************************************************************
+ 251:./Hardware/iic/bsp_i2c_gpio.c **** */
+ARM GAS  /tmp/ccyz31vB.s 			page 16
+
+
+ 252:./Hardware/iic/bsp_i2c_gpio.c **** uint8_t iic_check_device(uint8_t _Address)
+ 253:./Hardware/iic/bsp_i2c_gpio.c **** {
+ 620              		.loc 1 253 1
+ 621              		.cfi_startproc
+ 622              		@ args = 0, pretend = 0, frame = 16
+ 623              		@ frame_needed = 1, uses_anonymous_args = 0
+ 624 0000 80B5     		push	{r7, lr}
+ 625              	.LCFI34:
+ 626              		.cfi_def_cfa_offset 8
+ 627              		.cfi_offset 7, -8
+ 628              		.cfi_offset 14, -4
+ 629 0002 84B0     		sub	sp, sp, #16
+ 630              	.LCFI35:
+ 631              		.cfi_def_cfa_offset 24
+ 632 0004 00AF     		add	r7, sp, #0
+ 633              	.LCFI36:
+ 634              		.cfi_def_cfa_register 7
+ 635 0006 0346     		mov	r3, r0
+ 636 0008 FB71     		strb	r3, [r7, #7]
+ 254:./Hardware/iic/bsp_i2c_gpio.c **** 	uint8_t ucAck;
+ 255:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 256:./Hardware/iic/bsp_i2c_gpio.c **** 	i2c_CfgGpio();		/* 配置GPIO */
+ 637              		.loc 1 256 2
+ 638 000a FFF7FEFF 		bl	i2c_CfgGpio
+ 257:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 258:./Hardware/iic/bsp_i2c_gpio.c **** 	
+ 259:./Hardware/iic/bsp_i2c_gpio.c **** 	iic_start();		/* 发送启动信号 */
+ 639              		.loc 1 259 2
+ 640 000e FFF7FEFF 		bl	iic_start
+ 260:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 261:./Hardware/iic/bsp_i2c_gpio.c **** 	/* 发送设备地址+读写控制bit（0 = w， 1 = r) bit7 先传 */
+ 262:./Hardware/iic/bsp_i2c_gpio.c **** 	iic_send_byte(_Address | EEPROM_I2C_WR);
+ 641              		.loc 1 262 2
+ 642 0012 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 643 0014 1846     		mov	r0, r3
+ 644 0016 FFF7FEFF 		bl	iic_send_byte
+ 263:./Hardware/iic/bsp_i2c_gpio.c **** 	ucAck = iic_wait_ack();	/* 检测设备的ACK应答 */
+ 645              		.loc 1 263 10
+ 646 001a FFF7FEFF 		bl	iic_wait_ack
+ 647 001e 0346     		mov	r3, r0
+ 648 0020 FB73     		strb	r3, [r7, #15]
+ 264:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 265:./Hardware/iic/bsp_i2c_gpio.c **** 	iic_stop();			/* 发送停止信号 */
+ 649              		.loc 1 265 2
+ 650 0022 FFF7FEFF 		bl	iic_stop
+ 266:./Hardware/iic/bsp_i2c_gpio.c **** 
+ 267:./Hardware/iic/bsp_i2c_gpio.c **** 	return ucAck;
+ 651              		.loc 1 267 9
+ 652 0026 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 268:./Hardware/iic/bsp_i2c_gpio.c **** }
+ 653              		.loc 1 268 1
+ 654 0028 1846     		mov	r0, r3
+ 655 002a 1037     		adds	r7, r7, #16
+ 656              	.LCFI37:
+ 657              		.cfi_def_cfa_offset 8
+ 658 002c BD46     		mov	sp, r7
+ 659              	.LCFI38:
+ARM GAS  /tmp/ccyz31vB.s 			page 17
+
+
+ 660              		.cfi_def_cfa_register 13
+ 661              		@ sp needed
+ 662 002e 80BD     		pop	{r7, pc}
+ 663              		.cfi_endproc
+ 664              	.LFE38:
+ 666              		.text
+ 667              	.Letext0:
+ 668              		.file 2 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 669              		.file 3 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 670              		.file 4 "./Libraries/CMSIS/stm32f10x.h"
+ 671              		.file 5 "./Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_gpio.h"
+ARM GAS  /tmp/ccyz31vB.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 bsp_i2c_gpio.c
+     /tmp/ccyz31vB.s:16     .text.i2c_Delay:0000000000000000 $t
+     /tmp/ccyz31vB.s:23     .text.i2c_Delay:0000000000000000 i2c_Delay
+     /tmp/ccyz31vB.s:75     .text.iic_start:0000000000000000 $t
+     /tmp/ccyz31vB.s:82     .text.iic_start:0000000000000000 iic_start
+     /tmp/ccyz31vB.s:124    .text.iic_start:000000000000002c $d
+     /tmp/ccyz31vB.s:129    .text.iic_stop:0000000000000000 $t
+     /tmp/ccyz31vB.s:136    .text.iic_stop:0000000000000000 iic_stop
+     /tmp/ccyz31vB.s:170    .text.iic_stop:0000000000000020 $d
+     /tmp/ccyz31vB.s:175    .text.iic_send_byte:0000000000000000 $t
+     /tmp/ccyz31vB.s:182    .text.iic_send_byte:0000000000000000 iic_send_byte
+     /tmp/ccyz31vB.s:273    .text.iic_send_byte:0000000000000068 $d
+     /tmp/ccyz31vB.s:278    .text.iic_read_byte:0000000000000000 $t
+     /tmp/ccyz31vB.s:285    .text.iic_read_byte:0000000000000000 iic_read_byte
+     /tmp/ccyz31vB.s:363    .text.iic_read_byte:0000000000000054 $d
+     /tmp/ccyz31vB.s:368    .text.iic_wait_ack:0000000000000000 $t
+     /tmp/ccyz31vB.s:375    .text.iic_wait_ack:0000000000000000 iic_wait_ack
+     /tmp/ccyz31vB.s:441    .text.iic_wait_ack:0000000000000044 $d
+     /tmp/ccyz31vB.s:446    .text.iic_ack:0000000000000000 $t
+     /tmp/ccyz31vB.s:453    .text.iic_ack:0000000000000000 iic_ack
+     /tmp/ccyz31vB.s:495    .text.iic_ack:000000000000002c $d
+     /tmp/ccyz31vB.s:500    .text.iic_no_ack:0000000000000000 $t
+     /tmp/ccyz31vB.s:507    .text.iic_no_ack:0000000000000000 iic_no_ack
+     /tmp/ccyz31vB.s:545    .text.iic_no_ack:0000000000000028 $d
+     /tmp/ccyz31vB.s:550    .text.i2c_CfgGpio:0000000000000000 $t
+     /tmp/ccyz31vB.s:556    .text.i2c_CfgGpio:0000000000000000 i2c_CfgGpio
+     /tmp/ccyz31vB.s:606    .text.i2c_CfgGpio:0000000000000030 $d
+     /tmp/ccyz31vB.s:611    .text.iic_check_device:0000000000000000 $t
+     /tmp/ccyz31vB.s:618    .text.iic_check_device:0000000000000000 iic_check_device
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphClockCmd
+GPIO_Init

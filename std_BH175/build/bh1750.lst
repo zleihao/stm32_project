@@ -1,0 +1,358 @@
+ARM GAS  /tmp/ccuD5Gdx.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 6
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"bh1750.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.bh_CheckOk,"ax",%progbits
+  16              		.align	1
+  17              		.global	bh_CheckOk
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	bh_CheckOk:
+  25              	.LFB29:
+  26              		.file 1 "./Hardware/bh1750/bh1750.c"
+   1:./Hardware/bh1750/bh1750.c **** /**
+   2:./Hardware/bh1750/bh1750.c ****  * @brief               bh1750.c
+   3:./Hardware/bh1750/bh1750.c ****  * @Date:               2022.4.20
+   4:./Hardware/bh1750/bh1750.c ****  * @Revision:           V1.0
+   5:./Hardware/bh1750/bh1750.c ****  * @Writer:             点灯大师
+   6:./Hardware/bh1750/bh1750.c ****  * @Affiliated unit：   黄河科技学院
+   7:./Hardware/bh1750/bh1750.c ****  * @Email:              im_leihao@163.com          
+   8:./Hardware/bh1750/bh1750.c ****  * @note:               参考BH1750数据手册，更多驱动：https://gitee.com/zleihao/st_stm3
+   9:./Hardware/bh1750/bh1750.c ****  */
+  10:./Hardware/bh1750/bh1750.c **** #include "bh1750.h"
+  11:./Hardware/bh1750/bh1750.c **** 
+  12:./Hardware/bh1750/bh1750.c **** /**
+  13:./Hardware/bh1750/bh1750.c ****  * @brief  bh_CheckOk
+  14:./Hardware/bh1750/bh1750.c ****  * @param  无
+  15:./Hardware/bh1750/bh1750.c ****  * @return 0: 检测到bh1750  1：没有检测到bh1750
+  16:./Hardware/bh1750/bh1750.c ****  * @note   检测总线上是否有bh1750设备 
+  17:./Hardware/bh1750/bh1750.c ****  */
+  18:./Hardware/bh1750/bh1750.c **** uint8_t bh_CheckOk()
+  19:./Hardware/bh1750/bh1750.c **** {
+  27              		.loc 1 19 1
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 1, uses_anonymous_args = 0
+  31 0000 80B5     		push	{r7, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 7, -8
+  35              		.cfi_offset 14, -4
+  36 0002 00AF     		add	r7, sp, #0
+  37              	.LCFI1:
+  38              		.cfi_def_cfa_register 7
+  20:./Hardware/bh1750/bh1750.c **** 	if(iic_check_device(BH_DEVICE_ADDR) == 0)
+ARM GAS  /tmp/ccuD5Gdx.s 			page 2
+
+
+  39              		.loc 1 20 5
+  40 0004 4620     		movs	r0, #70
+  41 0006 FFF7FEFF 		bl	iic_check_device
+  42 000a 0346     		mov	r3, r0
+  43              		.loc 1 20 4
+  44 000c 002B     		cmp	r3, #0
+  45 000e 03D1     		bne	.L2
+  21:./Hardware/bh1750/bh1750.c **** 	{
+  22:./Hardware/bh1750/bh1750.c **** 	   iic_stop();
+  46              		.loc 1 22 5
+  47 0010 FFF7FEFF 		bl	iic_stop
+  23:./Hardware/bh1750/bh1750.c **** 	   return 0;
+  48              		.loc 1 23 12
+  49 0014 0023     		movs	r3, #0
+  50 0016 02E0     		b	.L3
+  51              	.L2:
+  24:./Hardware/bh1750/bh1750.c **** 	}
+  25:./Hardware/bh1750/bh1750.c **** 	else {
+  26:./Hardware/bh1750/bh1750.c ****         iic_stop();
+  52              		.loc 1 26 9
+  53 0018 FFF7FEFF 		bl	iic_stop
+  27:./Hardware/bh1750/bh1750.c **** 		return 1;
+  54              		.loc 1 27 10
+  55 001c 0123     		movs	r3, #1
+  56              	.L3:
+  28:./Hardware/bh1750/bh1750.c ****     }
+  29:./Hardware/bh1750/bh1750.c **** }
+  57              		.loc 1 29 1
+  58 001e 1846     		mov	r0, r3
+  59 0020 80BD     		pop	{r7, pc}
+  60              		.cfi_endproc
+  61              	.LFE29:
+  63              		.section	.text.bh1570_Init,"ax",%progbits
+  64              		.align	1
+  65              		.global	bh1570_Init
+  66              		.syntax unified
+  67              		.thumb
+  68              		.thumb_func
+  69              		.fpu softvfp
+  71              	bh1570_Init:
+  72              	.LFB30:
+  30:./Hardware/bh1750/bh1750.c **** 
+  31:./Hardware/bh1750/bh1750.c **** /**
+  32:./Hardware/bh1750/bh1750.c ****  * @brief  bh1570_Init
+  33:./Hardware/bh1750/bh1750.c ****  * @param  无
+  34:./Hardware/bh1750/bh1750.c ****  * @return 无
+  35:./Hardware/bh1750/bh1750.c ****  * @note   设置工作模式为：连续H分辨率模式
+  36:./Hardware/bh1750/bh1750.c ****  *         设置步骤为：Power on -> Continuously H-Resolution Mode
+  37:./Hardware/bh1750/bh1750.c ****  */
+  38:./Hardware/bh1750/bh1750.c **** void bh1570_Init(void) {
+  73              		.loc 1 38 24
+  74              		.cfi_startproc
+  75              		@ args = 0, pretend = 0, frame = 0
+  76              		@ frame_needed = 1, uses_anonymous_args = 0
+  77 0000 80B5     		push	{r7, lr}
+  78              	.LCFI2:
+  79              		.cfi_def_cfa_offset 8
+ARM GAS  /tmp/ccuD5Gdx.s 			page 3
+
+
+  80              		.cfi_offset 7, -8
+  81              		.cfi_offset 14, -4
+  82 0002 00AF     		add	r7, sp, #0
+  83              	.LCFI3:
+  84              		.cfi_def_cfa_register 7
+  39:./Hardware/bh1750/bh1750.c ****     //power on
+  40:./Hardware/bh1750/bh1750.c ****     iic_start();
+  85              		.loc 1 40 5
+  86 0004 FFF7FEFF 		bl	iic_start
+  41:./Hardware/bh1750/bh1750.c ****     iic_send_byte(BH_DEVICE_ADDR);
+  87              		.loc 1 41 5
+  88 0008 4620     		movs	r0, #70
+  89 000a FFF7FEFF 		bl	iic_send_byte
+  42:./Hardware/bh1750/bh1750.c ****     iic_wait_ack();
+  90              		.loc 1 42 5
+  91 000e FFF7FEFF 		bl	iic_wait_ack
+  43:./Hardware/bh1750/bh1750.c ****     iic_send_byte(POWER_ON);
+  92              		.loc 1 43 5
+  93 0012 0120     		movs	r0, #1
+  94 0014 FFF7FEFF 		bl	iic_send_byte
+  44:./Hardware/bh1750/bh1750.c ****     iic_wait_ack();
+  95              		.loc 1 44 5
+  96 0018 FFF7FEFF 		bl	iic_wait_ack
+  45:./Hardware/bh1750/bh1750.c ****     iic_stop();
+  97              		.loc 1 45 5
+  98 001c FFF7FEFF 		bl	iic_stop
+  46:./Hardware/bh1750/bh1750.c **** 
+  47:./Hardware/bh1750/bh1750.c ****     //Continuously H-Resolution Mode
+  48:./Hardware/bh1750/bh1750.c ****     iic_start();
+  99              		.loc 1 48 5
+ 100 0020 FFF7FEFF 		bl	iic_start
+  49:./Hardware/bh1750/bh1750.c ****     iic_send_byte(BH_DEVICE_ADDR);
+ 101              		.loc 1 49 5
+ 102 0024 4620     		movs	r0, #70
+ 103 0026 FFF7FEFF 		bl	iic_send_byte
+  50:./Hardware/bh1750/bh1750.c ****     iic_wait_ack();
+ 104              		.loc 1 50 5
+ 105 002a FFF7FEFF 		bl	iic_wait_ack
+  51:./Hardware/bh1750/bh1750.c ****     iic_send_byte(H_RESOLUTION_MODE);
+ 106              		.loc 1 51 5
+ 107 002e 1020     		movs	r0, #16
+ 108 0030 FFF7FEFF 		bl	iic_send_byte
+  52:./Hardware/bh1750/bh1750.c ****     iic_wait_ack();
+ 109              		.loc 1 52 5
+ 110 0034 FFF7FEFF 		bl	iic_wait_ack
+  53:./Hardware/bh1750/bh1750.c ****     iic_stop();   
+ 111              		.loc 1 53 5
+ 112 0038 FFF7FEFF 		bl	iic_stop
+  54:./Hardware/bh1750/bh1750.c **** 
+  55:./Hardware/bh1750/bh1750.c ****     //Wait to complete 1st H-resolution mode measurement.( max. 180ms. )
+  56:./Hardware/bh1750/bh1750.c ****     SysTick_Delay_Ms(200);
+ 113              		.loc 1 56 5
+ 114 003c C820     		movs	r0, #200
+ 115 003e FFF7FEFF 		bl	SysTick_Delay_Ms
+  57:./Hardware/bh1750/bh1750.c **** }
+ 116              		.loc 1 57 1
+ 117 0042 00BF     		nop
+ARM GAS  /tmp/ccuD5Gdx.s 			page 4
+
+
+ 118 0044 80BD     		pop	{r7, pc}
+ 119              		.cfi_endproc
+ 120              	.LFE30:
+ 122              		.global	__aeabi_ui2f
+ 123              		.global	__aeabi_f2d
+ 124              		.global	__aeabi_ddiv
+ 125              		.global	__aeabi_d2f
+ 126              		.section	.text.read_result,"ax",%progbits
+ 127              		.align	1
+ 128              		.global	read_result
+ 129              		.syntax unified
+ 130              		.thumb
+ 131              		.thumb_func
+ 132              		.fpu softvfp
+ 134              	read_result:
+ 135              	.LFB31:
+  58:./Hardware/bh1750/bh1750.c **** 
+  59:./Hardware/bh1750/bh1750.c **** /**
+  60:./Hardware/bh1750/bh1750.c ****  * @brief  read_result
+  61:./Hardware/bh1750/bh1750.c ****  * @param  无
+  62:./Hardware/bh1750/bh1750.c ****  * @return 无
+  63:./Hardware/bh1750/bh1750.c ****  * @note   读取到设备bh1750采集到值
+  64:./Hardware/bh1750/bh1750.c ****  */
+  65:./Hardware/bh1750/bh1750.c **** float read_result(void) {
+ 136              		.loc 1 65 25
+ 137              		.cfi_startproc
+ 138              		@ args = 0, pretend = 0, frame = 8
+ 139              		@ frame_needed = 1, uses_anonymous_args = 0
+ 140 0000 80B5     		push	{r7, lr}
+ 141              	.LCFI4:
+ 142              		.cfi_def_cfa_offset 8
+ 143              		.cfi_offset 7, -8
+ 144              		.cfi_offset 14, -4
+ 145 0002 82B0     		sub	sp, sp, #8
+ 146              	.LCFI5:
+ 147              		.cfi_def_cfa_offset 16
+ 148 0004 00AF     		add	r7, sp, #0
+ 149              	.LCFI6:
+ 150              		.cfi_def_cfa_register 7
+  66:./Hardware/bh1750/bh1750.c ****     uint8_t msb,lsb;
+  67:./Hardware/bh1750/bh1750.c ****     uint16_t dat;  
+  68:./Hardware/bh1750/bh1750.c ****     float temp;
+  69:./Hardware/bh1750/bh1750.c **** 
+  70:./Hardware/bh1750/bh1750.c ****     iic_start();
+ 151              		.loc 1 70 5
+ 152 0006 FFF7FEFF 		bl	iic_start
+  71:./Hardware/bh1750/bh1750.c ****     //读
+  72:./Hardware/bh1750/bh1750.c ****     iic_send_byte(BH_DEVICE_ADDR | IIC_RD);
+ 153              		.loc 1 72 5
+ 154 000a 4720     		movs	r0, #71
+ 155 000c FFF7FEFF 		bl	iic_send_byte
+  73:./Hardware/bh1750/bh1750.c ****     iic_wait_ack();
+ 156              		.loc 1 73 5
+ 157 0010 FFF7FEFF 		bl	iic_wait_ack
+  74:./Hardware/bh1750/bh1750.c ****     //读取高8位数据
+  75:./Hardware/bh1750/bh1750.c ****     msb = iic_read_byte();
+ 158              		.loc 1 75 11
+ARM GAS  /tmp/ccuD5Gdx.s 			page 5
+
+
+ 159 0014 FFF7FEFF 		bl	iic_read_byte
+ 160 0018 0346     		mov	r3, r0
+ 161 001a FB71     		strb	r3, [r7, #7]
+  76:./Hardware/bh1750/bh1750.c ****     iic_ack();
+ 162              		.loc 1 76 5
+ 163 001c FFF7FEFF 		bl	iic_ack
+  77:./Hardware/bh1750/bh1750.c ****     //读取低8位数据
+  78:./Hardware/bh1750/bh1750.c ****     lsb = iic_read_byte();
+ 164              		.loc 1 78 11
+ 165 0020 FFF7FEFF 		bl	iic_read_byte
+ 166 0024 0346     		mov	r3, r0
+ 167 0026 BB71     		strb	r3, [r7, #6]
+  79:./Hardware/bh1750/bh1750.c ****     iic_no_ack();
+ 168              		.loc 1 79 5
+ 169 0028 FFF7FEFF 		bl	iic_no_ack
+  80:./Hardware/bh1750/bh1750.c ****     iic_stop();
+ 170              		.loc 1 80 5
+ 171 002c FFF7FEFF 		bl	iic_stop
+  81:./Hardware/bh1750/bh1750.c ****     SysTick_Delay_Ms(5);
+ 172              		.loc 1 81 5
+ 173 0030 0520     		movs	r0, #5
+ 174 0032 FFF7FEFF 		bl	SysTick_Delay_Ms
+  82:./Hardware/bh1750/bh1750.c ****     //合并数据
+  83:./Hardware/bh1750/bh1750.c ****     dat = msb;
+ 175              		.loc 1 83 9
+ 176 0036 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 177 0038 BB80     		strh	r3, [r7, #4]	@ movhi
+  84:./Hardware/bh1750/bh1750.c ****     dat = (dat << 8) | lsb;
+ 178              		.loc 1 84 16
+ 179 003a BB88     		ldrh	r3, [r7, #4]
+ 180 003c 1B02     		lsls	r3, r3, #8
+ 181              		.loc 1 84 22
+ 182 003e 1AB2     		sxth	r2, r3
+ 183 0040 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 184 0042 1BB2     		sxth	r3, r3
+ 185 0044 1343     		orrs	r3, r3, r2
+ 186 0046 1BB2     		sxth	r3, r3
+ 187              		.loc 1 84 9
+ 188 0048 BB80     		strh	r3, [r7, #4]	@ movhi
+  85:./Hardware/bh1750/bh1750.c ****     //换算比 1.2
+  86:./Hardware/bh1750/bh1750.c ****     temp = (float)dat/1.2; 
+ 189              		.loc 1 86 12
+ 190 004a BB88     		ldrh	r3, [r7, #4]
+ 191 004c 1846     		mov	r0, r3
+ 192 004e FFF7FEFF 		bl	__aeabi_ui2f
+ 193 0052 0346     		mov	r3, r0
+ 194 0054 1846     		mov	r0, r3
+ 195 0056 FFF7FEFF 		bl	__aeabi_f2d
+ 196              		.loc 1 86 22
+ 197 005a 4FF03332 		mov	r2, #858993459
+ 198 005e 084B     		ldr	r3, .L7
+ 199 0060 FFF7FEFF 		bl	__aeabi_ddiv
+ 200 0064 0246     		mov	r2, r0
+ 201 0066 0B46     		mov	r3, r1
+ 202              		.loc 1 86 10
+ 203 0068 1046     		mov	r0, r2
+ 204 006a 1946     		mov	r1, r3
+ARM GAS  /tmp/ccuD5Gdx.s 			page 6
+
+
+ 205 006c FFF7FEFF 		bl	__aeabi_d2f
+ 206 0070 0346     		mov	r3, r0
+ 207 0072 3B60     		str	r3, [r7]	@ float
+  87:./Hardware/bh1750/bh1750.c **** 
+  88:./Hardware/bh1750/bh1750.c ****     return temp;
+ 208              		.loc 1 88 12
+ 209 0074 3B68     		ldr	r3, [r7]	@ float
+  89:./Hardware/bh1750/bh1750.c **** }...
+ 210              		.loc 1 89 1
+ 211 0076 1846     		mov	r0, r3
+ 212 0078 0837     		adds	r7, r7, #8
+ 213              	.LCFI7:
+ 214              		.cfi_def_cfa_offset 8
+ 215 007a BD46     		mov	sp, r7
+ 216              	.LCFI8:
+ 217              		.cfi_def_cfa_register 13
+ 218              		@ sp needed
+ 219 007c 80BD     		pop	{r7, pc}
+ 220              	.L8:
+ 221 007e 00BF     		.align	2
+ 222              	.L7:
+ 223 0080 3333F33F 		.word	1072902963
+ 224              		.cfi_endproc
+ 225              	.LFE31:
+ 227              		.text
+ 228              	.Letext0:
+ 229              		.file 2 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 230              		.file 3 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  /tmp/ccuD5Gdx.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 bh1750.c
+     /tmp/ccuD5Gdx.s:16     .text.bh_CheckOk:0000000000000000 $t
+     /tmp/ccuD5Gdx.s:24     .text.bh_CheckOk:0000000000000000 bh_CheckOk
+     /tmp/ccuD5Gdx.s:64     .text.bh1570_Init:0000000000000000 $t
+     /tmp/ccuD5Gdx.s:71     .text.bh1570_Init:0000000000000000 bh1570_Init
+     /tmp/ccuD5Gdx.s:127    .text.read_result:0000000000000000 $t
+     /tmp/ccuD5Gdx.s:134    .text.read_result:0000000000000000 read_result
+     /tmp/ccuD5Gdx.s:223    .text.read_result:0000000000000080 $d
+
+UNDEFINED SYMBOLS
+iic_check_device
+iic_stop
+iic_start
+iic_send_byte
+iic_wait_ack
+SysTick_Delay_Ms
+__aeabi_ui2f
+__aeabi_f2d
+__aeabi_ddiv
+__aeabi_d2f
+iic_read_byte
+iic_ack
+iic_no_ack
