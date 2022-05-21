@@ -1,0 +1,1085 @@
+ARM GAS  /tmp/ccPN0vK2.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"stm32f10x_cec.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.CEC_DeInit,"ax",%progbits
+  16              		.align	1
+  17              		.global	CEC_DeInit
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	CEC_DeInit:
+  25              	.LFB29:
+  26              		.file 1 "./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c"
+   1:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+   2:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   ******************************************************************************
+   3:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @file    stm32f10x_cec.c
+   4:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @author  MCD Application Team
+   5:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @version V3.5.0
+   6:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @date    11-March-2011
+   7:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief   This file provides all the CEC firmware functions.
+   8:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   ******************************************************************************
+   9:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @attention
+  10:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *
+  11:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  12:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  13:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  14:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  15:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  16:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  17:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *
+  18:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+  19:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   ******************************************************************************
+  20:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+  21:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  22:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /* Includes ------------------------------------------------------------------*/
+  23:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #include "stm32f10x_cec.h"
+  24:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #include "stm32f10x_rcc.h"
+  25:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  26:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /** @addtogroup STM32F10x_StdPeriph_Driver
+  27:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @{
+  28:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+  29:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  30:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /** @defgroup CEC 
+  31:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief CEC driver modules
+  32:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @{
+ARM GAS  /tmp/ccPN0vK2.s 			page 2
+
+
+  33:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+  34:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  35:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /** @defgroup CEC_Private_TypesDefinitions
+  36:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @{
+  37:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+  38:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  39:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+  40:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @}
+  41:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+  42:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  43:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  44:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /** @defgroup CEC_Private_Defines
+  45:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @{
+  46:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */ 
+  47:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  48:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /* ------------ CEC registers bit address in the alias region ----------- */
+  49:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define CEC_OFFSET                (CEC_BASE - PERIPH_BASE)
+  50:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  51:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /* --- CFGR Register ---*/
+  52:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  53:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /* Alias word address of PE bit */
+  54:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define CFGR_OFFSET                 (CEC_OFFSET + 0x00)
+  55:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define PE_BitNumber                0x00
+  56:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define CFGR_PE_BB                  (PERIPH_BB_BASE + (CFGR_OFFSET * 32) + (PE_BitNumber * 4))
+  57:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  58:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /* Alias word address of IE bit */
+  59:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define IE_BitNumber                0x01
+  60:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define CFGR_IE_BB                  (PERIPH_BB_BASE + (CFGR_OFFSET * 32) + (IE_BitNumber * 4))
+  61:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  62:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /* --- CSR Register ---*/
+  63:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  64:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /* Alias word address of TSOM bit */
+  65:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define CSR_OFFSET                  (CEC_OFFSET + 0x10)
+  66:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define TSOM_BitNumber              0x00
+  67:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define CSR_TSOM_BB                 (PERIPH_BB_BASE + (CSR_OFFSET * 32) + (TSOM_BitNumber * 4))
+  68:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  69:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /* Alias word address of TEOM bit */
+  70:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define TEOM_BitNumber              0x01
+  71:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define CSR_TEOM_BB                 (PERIPH_BB_BASE + (CSR_OFFSET * 32) + (TEOM_BitNumber * 4))
+  72:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+  73:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define CFGR_CLEAR_Mask            (uint8_t)(0xF3)        /* CFGR register Mask */
+  74:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** #define FLAG_Mask                  ((uint32_t)0x00FFFFFF) /* CEC FLAG mask */
+  75:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****  
+  76:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+  77:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @}
+  78:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */ 
+  79:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  80:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  81:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /** @defgroup CEC_Private_Macros
+  82:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @{
+  83:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */ 
+  84:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  85:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+  86:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @}
+  87:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */ 
+  88:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  89:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ARM GAS  /tmp/ccPN0vK2.s 			page 3
+
+
+  90:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /** @defgroup CEC_Private_Variables
+  91:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @{
+  92:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */ 
+  93:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  94:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+  95:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @}
+  96:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */ 
+  97:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  98:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+  99:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /** @defgroup CEC_Private_FunctionPrototypes
+ 100:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @{
+ 101:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 102:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****  
+ 103:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 104:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @}
+ 105:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */ 
+ 106:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 107:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 108:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /** @defgroup CEC_Private_Functions
+ 109:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @{
+ 110:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */ 
+ 111:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 112:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 113:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Deinitializes the CEC peripheral registers to their default reset 
+ 114:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *         values.
+ 115:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  None
+ 116:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 117:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 118:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_DeInit(void)
+ 119:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {
+  27              		.loc 1 119 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+ 120:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Enable CEC reset state */
+ 121:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   RCC_APB1PeriphResetCmd(RCC_APB1Periph_CEC, ENABLE);  
+  36              		.loc 1 121 3 view .LVU1
+  37 0002 0121     		movs	r1, #1
+  38 0004 4FF08040 		mov	r0, #1073741824
+  39 0008 FFF7FEFF 		bl	RCC_APB1PeriphResetCmd
+  40              	.LVL0:
+ 122:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Release CEC from reset state */
+ 123:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   RCC_APB1PeriphResetCmd(RCC_APB1Periph_CEC, DISABLE); 
+  41              		.loc 1 123 3 view .LVU2
+  42 000c 0021     		movs	r1, #0
+  43 000e 4FF08040 		mov	r0, #1073741824
+  44 0012 FFF7FEFF 		bl	RCC_APB1PeriphResetCmd
+  45              	.LVL1:
+ 124:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+  46              		.loc 1 124 1 is_stmt 0 view .LVU3
+  47 0016 08BD     		pop	{r3, pc}
+  48              		.cfi_endproc
+ARM GAS  /tmp/ccPN0vK2.s 			page 4
+
+
+  49              	.LFE29:
+  51              		.section	.text.CEC_Init,"ax",%progbits
+  52              		.align	1
+  53              		.global	CEC_Init
+  54              		.syntax unified
+  55              		.thumb
+  56              		.thumb_func
+  57              		.fpu softvfp
+  59              	CEC_Init:
+  60              	.LVL2:
+  61              	.LFB30:
+ 125:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 126:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 127:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 128:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Initializes the CEC peripheral according to the specified 
+ 129:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *         parameters in the CEC_InitStruct.
+ 130:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  CEC_InitStruct: pointer to an CEC_InitTypeDef structure that
+ 131:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *         contains the configuration information for the specified
+ 132:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *         CEC peripheral.
+ 133:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 134:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 135:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_Init(CEC_InitTypeDef* CEC_InitStruct)
+ 136:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {
+  62              		.loc 1 136 1 is_stmt 1 view -0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 0
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+  66              		@ link register save eliminated.
+ 137:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   uint16_t tmpreg = 0;
+  67              		.loc 1 137 3 view .LVU5
+ 138:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****  
+ 139:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the parameters */
+ 140:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   assert_param(IS_CEC_BIT_TIMING_ERROR_MODE(CEC_InitStruct->CEC_BitTimingMode)); 
+  68              		.loc 1 140 3 view .LVU6
+ 141:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   assert_param(IS_CEC_BIT_PERIOD_ERROR_MODE(CEC_InitStruct->CEC_BitPeriodMode));
+  69              		.loc 1 141 3 view .LVU7
+ 142:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****      
+ 143:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /*---------------------------- CEC CFGR Configuration -----------------*/
+ 144:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Get the CEC CFGR value */
+ 145:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   tmpreg = CEC->CFGR;
+  70              		.loc 1 145 3 view .LVU8
+  71              		.loc 1 145 15 is_stmt 0 view .LVU9
+  72 0000 0449     		ldr	r1, .L4
+  73 0002 0A68     		ldr	r2, [r1]
+  74              	.LVL3:
+ 146:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 147:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Clear BTEM and BPEM bits */
+ 148:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   tmpreg &= CFGR_CLEAR_Mask;
+  75              		.loc 1 148 3 is_stmt 1 view .LVU10
+  76              		.loc 1 148 10 is_stmt 0 view .LVU11
+  77 0004 02F0F302 		and	r2, r2, #243
+  78              	.LVL4:
+ 149:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 150:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Configure CEC: Bit Timing Error and Bit Period Error */
+ 151:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   tmpreg |= (uint16_t)(CEC_InitStruct->CEC_BitTimingMode | CEC_InitStruct->CEC_BitPeriodMode);
+  79              		.loc 1 151 3 is_stmt 1 view .LVU12
+  80              		.loc 1 151 38 is_stmt 0 view .LVU13
+ARM GAS  /tmp/ccPN0vK2.s 			page 5
+
+
+  81 0008 0388     		ldrh	r3, [r0]
+  82              		.loc 1 151 74 view .LVU14
+  83 000a 4088     		ldrh	r0, [r0, #2]
+  84              	.LVL5:
+  85              		.loc 1 151 13 view .LVU15
+  86 000c 0343     		orrs	r3, r3, r0
+  87              		.loc 1 151 10 view .LVU16
+  88 000e 1343     		orrs	r3, r3, r2
+  89              	.LVL6:
+ 152:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 153:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Write to CEC CFGR  register*/
+ 154:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   CEC->CFGR = tmpreg;
+  90              		.loc 1 154 3 is_stmt 1 view .LVU17
+  91              		.loc 1 154 13 is_stmt 0 view .LVU18
+  92 0010 0B60     		str	r3, [r1]
+ 155:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 156:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+  93              		.loc 1 156 1 view .LVU19
+  94 0012 7047     		bx	lr
+  95              	.L5:
+  96              		.align	2
+  97              	.L4:
+  98 0014 00780040 		.word	1073772544
+  99              		.cfi_endproc
+ 100              	.LFE30:
+ 102              		.section	.text.CEC_Cmd,"ax",%progbits
+ 103              		.align	1
+ 104              		.global	CEC_Cmd
+ 105              		.syntax unified
+ 106              		.thumb
+ 107              		.thumb_func
+ 108              		.fpu softvfp
+ 110              	CEC_Cmd:
+ 111              	.LVL7:
+ 112              	.LFB31:
+ 157:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 158:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 159:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Enables or disables the specified CEC peripheral.
+ 160:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  NewState: new state of the CEC peripheral. 
+ 161:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     This parameter can be: ENABLE or DISABLE.
+ 162:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 163:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 164:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_Cmd(FunctionalState NewState)
+ 165:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {
+ 113              		.loc 1 165 1 is_stmt 1 view -0
+ 114              		.cfi_startproc
+ 115              		@ args = 0, pretend = 0, frame = 0
+ 116              		@ frame_needed = 0, uses_anonymous_args = 0
+ 117              		@ link register save eliminated.
+ 166:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the parameters */
+ 167:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 118              		.loc 1 167 3 view .LVU21
+ 168:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 169:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *(__IO uint32_t *) CFGR_PE_BB = (uint32_t)NewState;
+ 119              		.loc 1 169 3 view .LVU22
+ 120              		.loc 1 169 33 is_stmt 0 view .LVU23
+ 121 0000 044B     		ldr	r3, .L9
+ARM GAS  /tmp/ccPN0vK2.s 			page 6
+
+
+ 122 0002 1860     		str	r0, [r3]
+ 170:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 171:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   if(NewState == DISABLE)
+ 123              		.loc 1 171 3 is_stmt 1 view .LVU24
+ 124              		.loc 1 171 5 is_stmt 0 view .LVU25
+ 125 0004 20B9     		cbnz	r0, .L6
+ 126              	.L8:
+ 172:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   {
+ 173:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     /* Wait until the PE bit is cleared by hardware (Idle Line detected) */
+ 174:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     while((CEC->CFGR & CEC_CFGR_PE) != (uint32_t)RESET)
+ 175:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     {
+ 176:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     }  
+ 127              		.loc 1 176 5 is_stmt 1 discriminator 1 view .LVU26
+ 174:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     {
+ 128              		.loc 1 174 10 discriminator 1 view .LVU27
+ 174:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     {
+ 129              		.loc 1 174 15 is_stmt 0 discriminator 1 view .LVU28
+ 130 0006 044B     		ldr	r3, .L9+4
+ 131 0008 1B68     		ldr	r3, [r3]
+ 174:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     {
+ 132              		.loc 1 174 10 discriminator 1 view .LVU29
+ 133 000a 13F0010F 		tst	r3, #1
+ 134 000e FAD1     		bne	.L8
+ 135              	.L6:
+ 177:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   }  
+ 178:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 136              		.loc 1 178 1 view .LVU30
+ 137 0010 7047     		bx	lr
+ 138              	.L10:
+ 139 0012 00BF     		.align	2
+ 140              	.L9:
+ 141 0014 00000F42 		.word	1108279296
+ 142 0018 00780040 		.word	1073772544
+ 143              		.cfi_endproc
+ 144              	.LFE31:
+ 146              		.section	.text.CEC_ITConfig,"ax",%progbits
+ 147              		.align	1
+ 148              		.global	CEC_ITConfig
+ 149              		.syntax unified
+ 150              		.thumb
+ 151              		.thumb_func
+ 152              		.fpu softvfp
+ 154              	CEC_ITConfig:
+ 155              	.LVL8:
+ 156              	.LFB32:
+ 179:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 180:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 181:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Enables or disables the CEC interrupt.
+ 182:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  NewState: new state of the CEC interrupt.
+ 183:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 184:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 185:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 186:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_ITConfig(FunctionalState NewState)
+ 187:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {
+ 157              		.loc 1 187 1 is_stmt 1 view -0
+ 158              		.cfi_startproc
+ 159              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/ccPN0vK2.s 			page 7
+
+
+ 160              		@ frame_needed = 0, uses_anonymous_args = 0
+ 161              		@ link register save eliminated.
+ 188:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the parameters */
+ 189:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 162              		.loc 1 189 3 view .LVU32
+ 190:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 191:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *(__IO uint32_t *) CFGR_IE_BB = (uint32_t)NewState;
+ 163              		.loc 1 191 3 view .LVU33
+ 164              		.loc 1 191 33 is_stmt 0 view .LVU34
+ 165 0000 014B     		ldr	r3, .L12
+ 166 0002 5860     		str	r0, [r3, #4]
+ 192:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 167              		.loc 1 192 1 view .LVU35
+ 168 0004 7047     		bx	lr
+ 169              	.L13:
+ 170 0006 00BF     		.align	2
+ 171              	.L12:
+ 172 0008 00000F42 		.word	1108279296
+ 173              		.cfi_endproc
+ 174              	.LFE32:
+ 176              		.section	.text.CEC_OwnAddressConfig,"ax",%progbits
+ 177              		.align	1
+ 178              		.global	CEC_OwnAddressConfig
+ 179              		.syntax unified
+ 180              		.thumb
+ 181              		.thumb_func
+ 182              		.fpu softvfp
+ 184              	CEC_OwnAddressConfig:
+ 185              	.LVL9:
+ 186              	.LFB33:
+ 193:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 194:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 195:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Defines the Own Address of the CEC device.
+ 196:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  CEC_OwnAddress: The CEC own address
+ 197:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 198:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 199:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_OwnAddressConfig(uint8_t CEC_OwnAddress)
+ 200:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {
+ 187              		.loc 1 200 1 is_stmt 1 view -0
+ 188              		.cfi_startproc
+ 189              		@ args = 0, pretend = 0, frame = 0
+ 190              		@ frame_needed = 0, uses_anonymous_args = 0
+ 191              		@ link register save eliminated.
+ 201:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the parameters */
+ 202:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   assert_param(IS_CEC_ADDRESS(CEC_OwnAddress));
+ 192              		.loc 1 202 3 view .LVU37
+ 203:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 204:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Set the CEC own address */
+ 205:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   CEC->OAR = CEC_OwnAddress;
+ 193              		.loc 1 205 3 view .LVU38
+ 194              		.loc 1 205 12 is_stmt 0 view .LVU39
+ 195 0000 014B     		ldr	r3, .L15
+ 196 0002 5860     		str	r0, [r3, #4]
+ 206:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 197              		.loc 1 206 1 view .LVU40
+ 198 0004 7047     		bx	lr
+ 199              	.L16:
+ARM GAS  /tmp/ccPN0vK2.s 			page 8
+
+
+ 200 0006 00BF     		.align	2
+ 201              	.L15:
+ 202 0008 00780040 		.word	1073772544
+ 203              		.cfi_endproc
+ 204              	.LFE33:
+ 206              		.section	.text.CEC_SetPrescaler,"ax",%progbits
+ 207              		.align	1
+ 208              		.global	CEC_SetPrescaler
+ 209              		.syntax unified
+ 210              		.thumb
+ 211              		.thumb_func
+ 212              		.fpu softvfp
+ 214              	CEC_SetPrescaler:
+ 215              	.LVL10:
+ 216              	.LFB34:
+ 207:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 208:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 209:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Sets the CEC prescaler value.
+ 210:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  CEC_Prescaler: CEC prescaler new value
+ 211:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 212:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 213:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_SetPrescaler(uint16_t CEC_Prescaler)
+ 214:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {
+ 217              		.loc 1 214 1 is_stmt 1 view -0
+ 218              		.cfi_startproc
+ 219              		@ args = 0, pretend = 0, frame = 0
+ 220              		@ frame_needed = 0, uses_anonymous_args = 0
+ 221              		@ link register save eliminated.
+ 215:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the parameters */
+ 216:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   assert_param(IS_CEC_PRESCALER(CEC_Prescaler));
+ 222              		.loc 1 216 3 view .LVU42
+ 217:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 218:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Set the  Prescaler value*/
+ 219:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   CEC->PRES = CEC_Prescaler;
+ 223              		.loc 1 219 3 view .LVU43
+ 224              		.loc 1 219 13 is_stmt 0 view .LVU44
+ 225 0000 014B     		ldr	r3, .L18
+ 226 0002 9860     		str	r0, [r3, #8]
+ 220:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 227              		.loc 1 220 1 view .LVU45
+ 228 0004 7047     		bx	lr
+ 229              	.L19:
+ 230 0006 00BF     		.align	2
+ 231              	.L18:
+ 232 0008 00780040 		.word	1073772544
+ 233              		.cfi_endproc
+ 234              	.LFE34:
+ 236              		.section	.text.CEC_SendDataByte,"ax",%progbits
+ 237              		.align	1
+ 238              		.global	CEC_SendDataByte
+ 239              		.syntax unified
+ 240              		.thumb
+ 241              		.thumb_func
+ 242              		.fpu softvfp
+ 244              	CEC_SendDataByte:
+ 245              	.LVL11:
+ 246              	.LFB35:
+ARM GAS  /tmp/ccPN0vK2.s 			page 9
+
+
+ 221:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 222:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 223:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Transmits single data through the CEC peripheral.
+ 224:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  Data: the data to transmit.
+ 225:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 226:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 227:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_SendDataByte(uint8_t Data)
+ 228:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {  
+ 247              		.loc 1 228 1 is_stmt 1 view -0
+ 248              		.cfi_startproc
+ 249              		@ args = 0, pretend = 0, frame = 0
+ 250              		@ frame_needed = 0, uses_anonymous_args = 0
+ 251              		@ link register save eliminated.
+ 229:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Transmit Data */
+ 230:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   CEC->TXD = Data ;
+ 252              		.loc 1 230 3 view .LVU47
+ 253              		.loc 1 230 12 is_stmt 0 view .LVU48
+ 254 0000 014B     		ldr	r3, .L21
+ 255 0002 5861     		str	r0, [r3, #20]
+ 231:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 256              		.loc 1 231 1 view .LVU49
+ 257 0004 7047     		bx	lr
+ 258              	.L22:
+ 259 0006 00BF     		.align	2
+ 260              	.L21:
+ 261 0008 00780040 		.word	1073772544
+ 262              		.cfi_endproc
+ 263              	.LFE35:
+ 265              		.section	.text.CEC_ReceiveDataByte,"ax",%progbits
+ 266              		.align	1
+ 267              		.global	CEC_ReceiveDataByte
+ 268              		.syntax unified
+ 269              		.thumb
+ 270              		.thumb_func
+ 271              		.fpu softvfp
+ 273              	CEC_ReceiveDataByte:
+ 274              	.LFB36:
+ 232:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 233:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 234:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 235:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Returns the most recent received data by the CEC peripheral.
+ 236:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  None
+ 237:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval The received data.
+ 238:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 239:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** uint8_t CEC_ReceiveDataByte(void)
+ 240:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {
+ 275              		.loc 1 240 1 is_stmt 1 view -0
+ 276              		.cfi_startproc
+ 277              		@ args = 0, pretend = 0, frame = 0
+ 278              		@ frame_needed = 0, uses_anonymous_args = 0
+ 279              		@ link register save eliminated.
+ 241:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Receive Data */
+ 242:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   return (uint8_t)(CEC->RXD);
+ 280              		.loc 1 242 3 view .LVU51
+ 281              		.loc 1 242 23 is_stmt 0 view .LVU52
+ 282 0000 014B     		ldr	r3, .L24
+ 283 0002 9869     		ldr	r0, [r3, #24]
+ARM GAS  /tmp/ccPN0vK2.s 			page 10
+
+
+ 243:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 284              		.loc 1 243 1 view .LVU53
+ 285 0004 C0B2     		uxtb	r0, r0
+ 286 0006 7047     		bx	lr
+ 287              	.L25:
+ 288              		.align	2
+ 289              	.L24:
+ 290 0008 00780040 		.word	1073772544
+ 291              		.cfi_endproc
+ 292              	.LFE36:
+ 294              		.section	.text.CEC_StartOfMessage,"ax",%progbits
+ 295              		.align	1
+ 296              		.global	CEC_StartOfMessage
+ 297              		.syntax unified
+ 298              		.thumb
+ 299              		.thumb_func
+ 300              		.fpu softvfp
+ 302              	CEC_StartOfMessage:
+ 303              	.LFB37:
+ 244:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 245:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 246:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Starts a new message.
+ 247:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  None
+ 248:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 249:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 250:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_StartOfMessage(void)
+ 251:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {  
+ 304              		.loc 1 251 1 is_stmt 1 view -0
+ 305              		.cfi_startproc
+ 306              		@ args = 0, pretend = 0, frame = 0
+ 307              		@ frame_needed = 0, uses_anonymous_args = 0
+ 308              		@ link register save eliminated.
+ 252:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Starts of new message */
+ 253:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *(__IO uint32_t *) CSR_TSOM_BB = (uint32_t)0x1;
+ 309              		.loc 1 253 3 view .LVU55
+ 310              		.loc 1 253 34 is_stmt 0 view .LVU56
+ 311 0000 024B     		ldr	r3, .L27
+ 312 0002 0122     		movs	r2, #1
+ 313 0004 C3F80022 		str	r2, [r3, #512]
+ 254:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 314              		.loc 1 254 1 view .LVU57
+ 315 0008 7047     		bx	lr
+ 316              	.L28:
+ 317 000a 00BF     		.align	2
+ 318              	.L27:
+ 319 000c 00000F42 		.word	1108279296
+ 320              		.cfi_endproc
+ 321              	.LFE37:
+ 323              		.section	.text.CEC_EndOfMessageCmd,"ax",%progbits
+ 324              		.align	1
+ 325              		.global	CEC_EndOfMessageCmd
+ 326              		.syntax unified
+ 327              		.thumb
+ 328              		.thumb_func
+ 329              		.fpu softvfp
+ 331              	CEC_EndOfMessageCmd:
+ 332              	.LVL12:
+ARM GAS  /tmp/ccPN0vK2.s 			page 11
+
+
+ 333              	.LFB38:
+ 255:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 256:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 257:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Transmits message with or without an EOM bit.
+ 258:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  NewState: new state of the CEC Tx End Of Message. 
+ 259:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     This parameter can be: ENABLE or DISABLE.
+ 260:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 261:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 262:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_EndOfMessageCmd(FunctionalState NewState)
+ 263:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {   
+ 334              		.loc 1 263 1 is_stmt 1 view -0
+ 335              		.cfi_startproc
+ 336              		@ args = 0, pretend = 0, frame = 0
+ 337              		@ frame_needed = 0, uses_anonymous_args = 0
+ 338              		@ link register save eliminated.
+ 264:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the parameters */
+ 265:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 339              		.loc 1 265 3 view .LVU59
+ 266:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 267:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* The data byte will be transmitted with or without an EOM bit*/
+ 268:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *(__IO uint32_t *) CSR_TEOM_BB = (uint32_t)NewState;
+ 340              		.loc 1 268 3 view .LVU60
+ 341              		.loc 1 268 34 is_stmt 0 view .LVU61
+ 342 0000 014B     		ldr	r3, .L30
+ 343 0002 C3F80402 		str	r0, [r3, #516]
+ 269:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 344              		.loc 1 269 1 view .LVU62
+ 345 0006 7047     		bx	lr
+ 346              	.L31:
+ 347              		.align	2
+ 348              	.L30:
+ 349 0008 00000F42 		.word	1108279296
+ 350              		.cfi_endproc
+ 351              	.LFE38:
+ 353              		.section	.text.CEC_GetFlagStatus,"ax",%progbits
+ 354              		.align	1
+ 355              		.global	CEC_GetFlagStatus
+ 356              		.syntax unified
+ 357              		.thumb
+ 358              		.thumb_func
+ 359              		.fpu softvfp
+ 361              	CEC_GetFlagStatus:
+ 362              	.LVL13:
+ 363              	.LFB39:
+ 270:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 271:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 272:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Gets the CEC flag status
+ 273:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  CEC_FLAG: specifies the CEC flag to check. 
+ 274:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *   This parameter can be one of the following values:
+ 275:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_BTE: Bit Timing Error
+ 276:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_BPE: Bit Period Error
+ 277:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_RBTFE: Rx Block Transfer Finished Error
+ 278:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_SBE: Start Bit Error
+ 279:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_ACKE: Block Acknowledge Error
+ 280:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_LINE: Line Error
+ 281:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_TBTFE: Tx Block Transfer Finished Error
+ 282:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_TEOM: Tx End Of Message 
+ARM GAS  /tmp/ccPN0vK2.s 			page 12
+
+
+ 283:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_TERR: Tx Error
+ 284:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_TBTRF: Tx Byte Transfer Request or Block Transfer Finished
+ 285:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_RSOM: Rx Start Of Message
+ 286:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_REOM: Rx End Of Message
+ 287:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_RERR: Rx Error
+ 288:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_RBTF: Rx Byte/Block Transfer Finished
+ 289:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval The new state of CEC_FLAG (SET or RESET)
+ 290:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 291:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** FlagStatus CEC_GetFlagStatus(uint32_t CEC_FLAG) 
+ 292:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {
+ 364              		.loc 1 292 1 is_stmt 1 view -0
+ 365              		.cfi_startproc
+ 366              		@ args = 0, pretend = 0, frame = 0
+ 367              		@ frame_needed = 0, uses_anonymous_args = 0
+ 368              		@ link register save eliminated.
+ 293:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   FlagStatus bitstatus = RESET;
+ 369              		.loc 1 293 3 view .LVU64
+ 294:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   uint32_t cecreg = 0, cecbase = 0;
+ 370              		.loc 1 294 3 view .LVU65
+ 295:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 296:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the parameters */
+ 297:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   assert_param(IS_CEC_GET_FLAG(CEC_FLAG));
+ 371              		.loc 1 297 3 view .LVU66
+ 298:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****  
+ 299:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Get the CEC peripheral base address */
+ 300:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   cecbase = (uint32_t)(CEC_BASE);
+ 372              		.loc 1 300 3 view .LVU67
+ 301:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 302:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Read flag register index */
+ 303:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   cecreg = CEC_FLAG >> 28;
+ 373              		.loc 1 303 3 view .LVU68
+ 304:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 305:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Get bit[23:0] of the flag */
+ 306:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   CEC_FLAG &= FLAG_Mask;
+ 374              		.loc 1 306 3 view .LVU69
+ 375              		.loc 1 306 12 is_stmt 0 view .LVU70
+ 376 0000 20F07F43 		bic	r3, r0, #-16777216
+ 377              	.LVL14:
+ 307:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 308:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   if(cecreg != 0)
+ 378              		.loc 1 308 3 is_stmt 1 view .LVU71
+ 379              		.loc 1 308 5 is_stmt 0 view .LVU72
+ 380 0004 020F     		lsrs	r2, r0, #28
+ 381 0006 06D0     		beq	.L35
+ 309:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   {
+ 310:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     /* Flag in CEC ESR Register */
+ 311:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     CEC_FLAG = (uint32_t)(CEC_FLAG >> 16);
+ 382              		.loc 1 311 5 is_stmt 1 view .LVU73
+ 383              		.loc 1 311 14 is_stmt 0 view .LVU74
+ 384 0008 1B0C     		lsrs	r3, r3, #16
+ 385              	.LVL15:
+ 312:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     
+ 313:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     /* Get the CEC ESR register address */
+ 314:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     cecbase += 0xC;
+ 386              		.loc 1 314 5 is_stmt 1 view .LVU75
+ 387              		.loc 1 314 13 is_stmt 0 view .LVU76
+ 388 000a 054A     		ldr	r2, .L37
+ARM GAS  /tmp/ccPN0vK2.s 			page 13
+
+
+ 389              	.LVL16:
+ 390              	.L33:
+ 315:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   }
+ 316:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   else
+ 317:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   {
+ 318:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     /* Get the CEC CSR register address */
+ 319:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     cecbase += 0x10;
+ 320:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   }
+ 321:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 322:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   if(((*(__IO uint32_t *)cecbase) & CEC_FLAG) != (uint32_t)RESET)
+ 391              		.loc 1 322 3 is_stmt 1 view .LVU77
+ 392              		.loc 1 322 8 is_stmt 0 view .LVU78
+ 393 000c 1268     		ldr	r2, [r2]
+ 394              	.LVL17:
+ 395              		.loc 1 322 5 view .LVU79
+ 396 000e 1A42     		tst	r2, r3
+ 397 0010 03D0     		beq	.L36
+ 323:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   {
+ 324:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     /* CEC_FLAG is set */
+ 325:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     bitstatus = SET;
+ 398              		.loc 1 325 15 view .LVU80
+ 399 0012 0120     		movs	r0, #1
+ 400              	.LVL18:
+ 401              		.loc 1 325 15 view .LVU81
+ 402 0014 7047     		bx	lr
+ 403              	.LVL19:
+ 404              	.L35:
+ 319:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   }
+ 405              		.loc 1 319 13 view .LVU82
+ 406 0016 034A     		ldr	r2, .L37+4
+ 407 0018 F8E7     		b	.L33
+ 408              	.LVL20:
+ 409              	.L36:
+ 326:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   }
+ 327:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   else
+ 328:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   {
+ 329:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     /* CEC_FLAG is reset */
+ 330:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     bitstatus = RESET;
+ 410              		.loc 1 330 15 view .LVU83
+ 411 001a 0020     		movs	r0, #0
+ 412              	.LVL21:
+ 331:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   }
+ 332:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 333:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Return the CEC_FLAG status */
+ 334:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   return  bitstatus;
+ 413              		.loc 1 334 3 is_stmt 1 view .LVU84
+ 335:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 414              		.loc 1 335 1 is_stmt 0 view .LVU85
+ 415 001c 7047     		bx	lr
+ 416              	.L38:
+ 417 001e 00BF     		.align	2
+ 418              	.L37:
+ 419 0020 0C780040 		.word	1073772556
+ 420 0024 10780040 		.word	1073772560
+ 421              		.cfi_endproc
+ 422              	.LFE39:
+ 424              		.section	.text.CEC_ClearFlag,"ax",%progbits
+ARM GAS  /tmp/ccPN0vK2.s 			page 14
+
+
+ 425              		.align	1
+ 426              		.global	CEC_ClearFlag
+ 427              		.syntax unified
+ 428              		.thumb
+ 429              		.thumb_func
+ 430              		.fpu softvfp
+ 432              	CEC_ClearFlag:
+ 433              	.LVL22:
+ 434              	.LFB40:
+ 336:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 337:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 338:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Clears the CEC's pending flags.
+ 339:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  CEC_FLAG: specifies the flag to clear. 
+ 340:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *   This parameter can be any combination of the following values:
+ 341:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_TERR: Tx Error
+ 342:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_TBTRF: Tx Byte Transfer Request or Block Transfer Finished
+ 343:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_RSOM: Rx Start Of Message
+ 344:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_REOM: Rx End Of Message
+ 345:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_RERR: Rx Error
+ 346:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_FLAG_RBTF: Rx Byte/Block Transfer Finished
+ 347:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 348:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 349:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_ClearFlag(uint32_t CEC_FLAG)
+ 350:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** { 
+ 435              		.loc 1 350 1 is_stmt 1 view -0
+ 436              		.cfi_startproc
+ 437              		@ args = 0, pretend = 0, frame = 0
+ 438              		@ frame_needed = 0, uses_anonymous_args = 0
+ 439              		@ link register save eliminated.
+ 351:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   uint32_t tmp = 0x0;
+ 440              		.loc 1 351 3 view .LVU87
+ 352:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 353:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the parameters */
+ 354:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   assert_param(IS_CEC_CLEAR_FLAG(CEC_FLAG));
+ 441              		.loc 1 354 3 view .LVU88
+ 355:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 356:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   tmp = CEC->CSR & 0x2;
+ 442              		.loc 1 356 3 view .LVU89
+ 443              		.loc 1 356 12 is_stmt 0 view .LVU90
+ 444 0000 054B     		ldr	r3, .L40
+ 445 0002 1969     		ldr	r1, [r3, #16]
+ 446              		.loc 1 356 7 view .LVU91
+ 447 0004 01F00201 		and	r1, r1, #2
+ 448              	.LVL23:
+ 357:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****        
+ 358:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Clear the selected CEC flags */
+ 359:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   CEC->CSR &= (uint32_t)(((~(uint32_t)CEC_FLAG) & 0xFFFFFFFC) | tmp);
+ 449              		.loc 1 359 3 is_stmt 1 view .LVU92
+ 450              		.loc 1 359 12 is_stmt 0 view .LVU93
+ 451 0008 1A69     		ldr	r2, [r3, #16]
+ 452              		.loc 1 359 28 view .LVU94
+ 453 000a C043     		mvns	r0, r0
+ 454              	.LVL24:
+ 455              		.loc 1 359 49 view .LVU95
+ 456 000c 20F00300 		bic	r0, r0, #3
+ 457              	.LVL25:
+ 458              		.loc 1 359 15 view .LVU96
+ARM GAS  /tmp/ccPN0vK2.s 			page 15
+
+
+ 459 0010 0843     		orrs	r0, r0, r1
+ 460              		.loc 1 359 12 view .LVU97
+ 461 0012 1040     		ands	r0, r0, r2
+ 462 0014 1861     		str	r0, [r3, #16]
+ 360:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 463              		.loc 1 360 1 view .LVU98
+ 464 0016 7047     		bx	lr
+ 465              	.L41:
+ 466              		.align	2
+ 467              	.L40:
+ 468 0018 00780040 		.word	1073772544
+ 469              		.cfi_endproc
+ 470              	.LFE40:
+ 472              		.section	.text.CEC_GetITStatus,"ax",%progbits
+ 473              		.align	1
+ 474              		.global	CEC_GetITStatus
+ 475              		.syntax unified
+ 476              		.thumb
+ 477              		.thumb_func
+ 478              		.fpu softvfp
+ 480              	CEC_GetITStatus:
+ 481              	.LVL26:
+ 482              	.LFB41:
+ 361:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 362:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 363:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Checks whether the specified CEC interrupt has occurred or not.
+ 364:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  CEC_IT: specifies the CEC interrupt source to check. 
+ 365:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *   This parameter can be one of the following values:
+ 366:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_IT_TERR: Tx Error
+ 367:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_IT_TBTF: Tx Block Transfer Finished
+ 368:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_IT_RERR: Rx Error
+ 369:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_IT_RBTF: Rx Block Transfer Finished
+ 370:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval The new state of CEC_IT (SET or RESET).
+ 371:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 372:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** ITStatus CEC_GetITStatus(uint8_t CEC_IT)
+ 373:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {
+ 483              		.loc 1 373 1 is_stmt 1 view -0
+ 484              		.cfi_startproc
+ 485              		@ args = 0, pretend = 0, frame = 0
+ 486              		@ frame_needed = 0, uses_anonymous_args = 0
+ 487              		@ link register save eliminated.
+ 374:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   ITStatus bitstatus = RESET;
+ 488              		.loc 1 374 3 view .LVU100
+ 375:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   uint32_t enablestatus = 0;
+ 489              		.loc 1 375 3 view .LVU101
+ 376:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 377:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the parameters */
+ 378:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****    assert_param(IS_CEC_GET_IT(CEC_IT));
+ 490              		.loc 1 378 4 view .LVU102
+ 379:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****    
+ 380:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Get the CEC IT enable bit status */
+ 381:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   enablestatus = (CEC->CFGR & (uint8_t)CEC_CFGR_IE) ;
+ 491              		.loc 1 381 3 view .LVU103
+ 492              		.loc 1 381 22 is_stmt 0 view .LVU104
+ 493 0000 064A     		ldr	r2, .L46
+ 494 0002 1368     		ldr	r3, [r2]
+ 495              		.loc 1 381 16 view .LVU105
+ARM GAS  /tmp/ccPN0vK2.s 			page 16
+
+
+ 496 0004 03F00203 		and	r3, r3, #2
+ 497              	.LVL27:
+ 382:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 383:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the status of the specified CEC interrupt */
+ 384:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   if (((CEC->CSR & CEC_IT) != (uint32_t)RESET) && enablestatus)
+ 498              		.loc 1 384 3 is_stmt 1 view .LVU106
+ 499              		.loc 1 384 12 is_stmt 0 view .LVU107
+ 500 0008 1269     		ldr	r2, [r2, #16]
+ 501              		.loc 1 384 6 view .LVU108
+ 502 000a 1042     		tst	r0, r2
+ 503 000c 02D0     		beq	.L44
+ 504              		.loc 1 384 48 discriminator 1 view .LVU109
+ 505 000e 1BB9     		cbnz	r3, .L45
+ 385:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   {
+ 386:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     /* CEC_IT is set */
+ 387:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     bitstatus = SET;
+ 388:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   }
+ 389:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   else
+ 390:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   {
+ 391:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     /* CEC_IT is reset */
+ 392:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****     bitstatus = RESET;
+ 506              		.loc 1 392 15 view .LVU110
+ 507 0010 0020     		movs	r0, #0
+ 508              	.LVL28:
+ 509              		.loc 1 392 15 view .LVU111
+ 510 0012 7047     		bx	lr
+ 511              	.LVL29:
+ 512              	.L44:
+ 513              		.loc 1 392 15 view .LVU112
+ 514 0014 0020     		movs	r0, #0
+ 515              	.LVL30:
+ 516              		.loc 1 392 15 view .LVU113
+ 517 0016 7047     		bx	lr
+ 518              	.LVL31:
+ 519              	.L45:
+ 387:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   }
+ 520              		.loc 1 387 15 view .LVU114
+ 521 0018 0120     		movs	r0, #1
+ 522              	.LVL32:
+ 393:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   }
+ 394:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Return the CEC_IT status */
+ 395:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   return  bitstatus;
+ 523              		.loc 1 395 3 is_stmt 1 view .LVU115
+ 396:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 524              		.loc 1 396 1 is_stmt 0 view .LVU116
+ 525 001a 7047     		bx	lr
+ 526              	.L47:
+ 527              		.align	2
+ 528              	.L46:
+ 529 001c 00780040 		.word	1073772544
+ 530              		.cfi_endproc
+ 531              	.LFE41:
+ 533              		.section	.text.CEC_ClearITPendingBit,"ax",%progbits
+ 534              		.align	1
+ 535              		.global	CEC_ClearITPendingBit
+ 536              		.syntax unified
+ 537              		.thumb
+ARM GAS  /tmp/ccPN0vK2.s 			page 17
+
+
+ 538              		.thumb_func
+ 539              		.fpu softvfp
+ 541              	CEC_ClearITPendingBit:
+ 542              	.LVL33:
+ 543              	.LFB42:
+ 397:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** 
+ 398:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** /**
+ 399:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @brief  Clears the CEC's interrupt pending bits.
+ 400:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @param  CEC_IT: specifies the CEC interrupt pending bit to clear.
+ 401:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *   This parameter can be any combination of the following values:
+ 402:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_IT_TERR: Tx Error
+ 403:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_IT_TBTF: Tx Block Transfer Finished
+ 404:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_IT_RERR: Rx Error
+ 405:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   *     @arg CEC_IT_RBTF: Rx Block Transfer Finished
+ 406:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   * @retval None
+ 407:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   */
+ 408:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** void CEC_ClearITPendingBit(uint16_t CEC_IT)
+ 409:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** {
+ 544              		.loc 1 409 1 is_stmt 1 view -0
+ 545              		.cfi_startproc
+ 546              		@ args = 0, pretend = 0, frame = 0
+ 547              		@ frame_needed = 0, uses_anonymous_args = 0
+ 548              		@ link register save eliminated.
+ 410:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   uint32_t tmp = 0x0;
+ 549              		.loc 1 410 3 view .LVU118
+ 411:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 412:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Check the parameters */
+ 413:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   assert_param(IS_CEC_GET_IT(CEC_IT));
+ 550              		.loc 1 413 3 view .LVU119
+ 414:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 415:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   tmp = CEC->CSR & 0x2;
+ 551              		.loc 1 415 3 view .LVU120
+ 552              		.loc 1 415 12 is_stmt 0 view .LVU121
+ 553 0000 054B     		ldr	r3, .L49
+ 554 0002 1969     		ldr	r1, [r3, #16]
+ 555              		.loc 1 415 7 view .LVU122
+ 556 0004 01F00201 		and	r1, r1, #2
+ 557              	.LVL34:
+ 416:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   
+ 417:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   /* Clear the selected CEC interrupt pending bits */
+ 418:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c ****   CEC->CSR &= (uint32_t)(((~(uint32_t)CEC_IT) & 0xFFFFFFFC) | tmp);
+ 558              		.loc 1 418 3 is_stmt 1 view .LVU123
+ 559              		.loc 1 418 12 is_stmt 0 view .LVU124
+ 560 0008 1A69     		ldr	r2, [r3, #16]
+ 561              		.loc 1 418 28 view .LVU125
+ 562 000a C043     		mvns	r0, r0
+ 563              	.LVL35:
+ 564              		.loc 1 418 47 view .LVU126
+ 565 000c 20F00300 		bic	r0, r0, #3
+ 566              		.loc 1 418 15 view .LVU127
+ 567 0010 0843     		orrs	r0, r0, r1
+ 568              		.loc 1 418 12 view .LVU128
+ 569 0012 1040     		ands	r0, r0, r2
+ 570 0014 1861     		str	r0, [r3, #16]
+ 419:./Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c **** }
+ 571              		.loc 1 419 1 view .LVU129
+ 572 0016 7047     		bx	lr
+ARM GAS  /tmp/ccPN0vK2.s 			page 18
+
+
+ 573              	.L50:
+ 574              		.align	2
+ 575              	.L49:
+ 576 0018 00780040 		.word	1073772544
+ 577              		.cfi_endproc
+ 578              	.LFE42:
+ 580              		.text
+ 581              	.Letext0:
+ 582              		.file 2 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 583              		.file 3 "/home/hao/Documents/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 584              		.file 4 "./Libraries/CMSIS/stm32f10x.h"
+ 585              		.file 5 "./Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_cec.h"
+ 586              		.file 6 "./Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_rcc.h"
+ARM GAS  /tmp/ccPN0vK2.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32f10x_cec.c
+     /tmp/ccPN0vK2.s:16     .text.CEC_DeInit:0000000000000000 $t
+     /tmp/ccPN0vK2.s:24     .text.CEC_DeInit:0000000000000000 CEC_DeInit
+     /tmp/ccPN0vK2.s:52     .text.CEC_Init:0000000000000000 $t
+     /tmp/ccPN0vK2.s:59     .text.CEC_Init:0000000000000000 CEC_Init
+     /tmp/ccPN0vK2.s:98     .text.CEC_Init:0000000000000014 $d
+     /tmp/ccPN0vK2.s:103    .text.CEC_Cmd:0000000000000000 $t
+     /tmp/ccPN0vK2.s:110    .text.CEC_Cmd:0000000000000000 CEC_Cmd
+     /tmp/ccPN0vK2.s:141    .text.CEC_Cmd:0000000000000014 $d
+     /tmp/ccPN0vK2.s:147    .text.CEC_ITConfig:0000000000000000 $t
+     /tmp/ccPN0vK2.s:154    .text.CEC_ITConfig:0000000000000000 CEC_ITConfig
+     /tmp/ccPN0vK2.s:172    .text.CEC_ITConfig:0000000000000008 $d
+     /tmp/ccPN0vK2.s:177    .text.CEC_OwnAddressConfig:0000000000000000 $t
+     /tmp/ccPN0vK2.s:184    .text.CEC_OwnAddressConfig:0000000000000000 CEC_OwnAddressConfig
+     /tmp/ccPN0vK2.s:202    .text.CEC_OwnAddressConfig:0000000000000008 $d
+     /tmp/ccPN0vK2.s:207    .text.CEC_SetPrescaler:0000000000000000 $t
+     /tmp/ccPN0vK2.s:214    .text.CEC_SetPrescaler:0000000000000000 CEC_SetPrescaler
+     /tmp/ccPN0vK2.s:232    .text.CEC_SetPrescaler:0000000000000008 $d
+     /tmp/ccPN0vK2.s:237    .text.CEC_SendDataByte:0000000000000000 $t
+     /tmp/ccPN0vK2.s:244    .text.CEC_SendDataByte:0000000000000000 CEC_SendDataByte
+     /tmp/ccPN0vK2.s:261    .text.CEC_SendDataByte:0000000000000008 $d
+     /tmp/ccPN0vK2.s:266    .text.CEC_ReceiveDataByte:0000000000000000 $t
+     /tmp/ccPN0vK2.s:273    .text.CEC_ReceiveDataByte:0000000000000000 CEC_ReceiveDataByte
+     /tmp/ccPN0vK2.s:290    .text.CEC_ReceiveDataByte:0000000000000008 $d
+     /tmp/ccPN0vK2.s:295    .text.CEC_StartOfMessage:0000000000000000 $t
+     /tmp/ccPN0vK2.s:302    .text.CEC_StartOfMessage:0000000000000000 CEC_StartOfMessage
+     /tmp/ccPN0vK2.s:319    .text.CEC_StartOfMessage:000000000000000c $d
+     /tmp/ccPN0vK2.s:324    .text.CEC_EndOfMessageCmd:0000000000000000 $t
+     /tmp/ccPN0vK2.s:331    .text.CEC_EndOfMessageCmd:0000000000000000 CEC_EndOfMessageCmd
+     /tmp/ccPN0vK2.s:349    .text.CEC_EndOfMessageCmd:0000000000000008 $d
+     /tmp/ccPN0vK2.s:354    .text.CEC_GetFlagStatus:0000000000000000 $t
+     /tmp/ccPN0vK2.s:361    .text.CEC_GetFlagStatus:0000000000000000 CEC_GetFlagStatus
+     /tmp/ccPN0vK2.s:419    .text.CEC_GetFlagStatus:0000000000000020 $d
+     /tmp/ccPN0vK2.s:425    .text.CEC_ClearFlag:0000000000000000 $t
+     /tmp/ccPN0vK2.s:432    .text.CEC_ClearFlag:0000000000000000 CEC_ClearFlag
+     /tmp/ccPN0vK2.s:468    .text.CEC_ClearFlag:0000000000000018 $d
+     /tmp/ccPN0vK2.s:473    .text.CEC_GetITStatus:0000000000000000 $t
+     /tmp/ccPN0vK2.s:480    .text.CEC_GetITStatus:0000000000000000 CEC_GetITStatus
+     /tmp/ccPN0vK2.s:529    .text.CEC_GetITStatus:000000000000001c $d
+     /tmp/ccPN0vK2.s:534    .text.CEC_ClearITPendingBit:0000000000000000 $t
+     /tmp/ccPN0vK2.s:541    .text.CEC_ClearITPendingBit:0000000000000000 CEC_ClearITPendingBit
+     /tmp/ccPN0vK2.s:576    .text.CEC_ClearITPendingBit:0000000000000018 $d
+
+UNDEFINED SYMBOLS
+RCC_APB1PeriphResetCmd

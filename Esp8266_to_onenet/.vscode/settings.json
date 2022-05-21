@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "usart.h": "c",
+        "bsp_esp8266_test.h": "c",
+        "string.h": "c"
+    }
+}
